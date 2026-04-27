@@ -661,3 +661,108 @@ def test_seed_is_idempotent(
         select(PipelineRun).where(PipelineRun.trace_id == trace_id)
     ).all()
     assert len(rows) == 1  # not duplicated
+
+
+def test_seed_draft_creates_synthetic_row(
+    in_memory_session: Session,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """seed_draft_from_filed inserts a 99-prefixed CRD row with recomputed hash."""
+    if not _SAMPLE_STATE.exists():
+        pytest.skip(f"sample state not found at {_SAMPLE_STATE}")
+
+    with _SAMPLE_STATE.open(encoding="utf-8") as f:
+        filed = json.load(f)
+
+    # Stage a fake PDF at the canonical cache path under tmp_path.
+    src_pdf = (
+        tmp_path / "brochures" / str(filed["brochure_crd"])
+        / f"{filed['brochure_version_id']}.pdf"
+    )
+    src_pdf.parent.mkdir(parents=True, exist_ok=True)
+    src_pdf.write_bytes(b"%PDF-1.4 stub\n")
+
+    from adv_lens.app import settings as settings_module
+
+    monkeypatch.setattr(settings_module.settings, "data_dir", tmp_path)
+    monkeypatch.setattr(seed_module.settings, "data_dir", tmp_path)
+    engine = in_memory_session.get_bind()
+    monkeypatch.setattr(seed_module, "engine", engine)
+
+    trace_id = seed_module.seed_draft_from_filed(_SAMPLE_STATE)
+    assert trace_id == "draft-brown-advisory-self-review"
+
+    rows = in_memory_session.exec(
+        select(PipelineRun).where(PipelineRun.trace_id == trace_id)
+    ).all()
+    assert len(rows) == 1
+    row = rows[0]
+    assert row.brochure_crd.startswith("99")
+    assert len(row.brochure_crd) == 12
+    assert row.brochure_version_id == "0"
+    assert row.status == "complete"
+
+    # Synthetic cache path was created from the source PDF
+    cached = tmp_path / "brochures" / row.brochure_crd / "0.pdf"
+    assert cached.exists()
+    assert cached.read_bytes() == b"%PDF-1.4 stub\n"
+
+    # Hash was recomputed (differs from filed sample's original hash)
+    draft_hash = row.result["report_hash"]
+    assert draft_hash != filed["report_hash"]
+    # Demo note threaded into redline.notes
+    assert "Demo seed" in row.result["redline"]["notes"]
+
+
+def test_seed_draft_skips_when_pdf_missing(
+    in_memory_session: Session,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    if not _SAMPLE_STATE.exists():
+        pytest.skip(f"sample state not found at {_SAMPLE_STATE}")
+
+    # tmp_path has no brochures/ subdirectory — cache lookup misses.
+    from adv_lens.app import settings as settings_module
+
+    monkeypatch.setattr(settings_module.settings, "data_dir", tmp_path)
+    monkeypatch.setattr(seed_module.settings, "data_dir", tmp_path)
+    engine = in_memory_session.get_bind()
+    monkeypatch.setattr(seed_module, "engine", engine)
+
+    result = seed_module.seed_draft_from_filed(_SAMPLE_STATE)
+    assert result is None
+    rows = in_memory_session.exec(select(PipelineRun)).all()
+    assert rows == []
+
+
+def test_seed_draft_is_idempotent(
+    in_memory_session: Session,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    if not _SAMPLE_STATE.exists():
+        pytest.skip(f"sample state not found at {_SAMPLE_STATE}")
+
+    with _SAMPLE_STATE.open(encoding="utf-8") as f:
+        filed = json.load(f)
+    src_pdf = (
+        tmp_path / "brochures" / str(filed["brochure_crd"])
+        / f"{filed['brochure_version_id']}.pdf"
+    )
+    src_pdf.parent.mkdir(parents=True, exist_ok=True)
+    src_pdf.write_bytes(b"%PDF-1.4 stub\n")
+
+    from adv_lens.app import settings as settings_module
+
+    monkeypatch.setattr(settings_module.settings, "data_dir", tmp_path)
+    monkeypatch.setattr(seed_module.settings, "data_dir", tmp_path)
+    engine = in_memory_session.get_bind()
+    monkeypatch.setattr(seed_module, "engine", engine)
+
+    seed_module.seed_draft_from_filed(_SAMPLE_STATE)
+    seed_module.seed_draft_from_filed(_SAMPLE_STATE)  # second call replaces, doesn't dup
+
+    rows = in_memory_session.exec(select(PipelineRun)).all()
+    assert len(rows) == 1
