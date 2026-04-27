@@ -63,10 +63,11 @@ Routes mounted at ``/review`` on the existing FastAPI app:
   decisions panel as a partial.
 
 **Why server-rendered:** the page is essentially a list, an embedded
-report, and a form with three radio buttons. A React or Next.js SPA
-would add a build step, hydration, and a separate deploy story for
-zero user-facing benefit. Jinja2 is already a dep (the redline
-renderer uses it), and HTMX is one CDN script tag.
+report, two simple forms, and a decision form with three radio
+buttons. A React or Next.js SPA would add a build step, hydration,
+and a separate deploy story for zero user-facing benefit. Jinja2 is
+already a dep (the redline renderer uses it), and HTMX is one CDN
+script tag.
 
 **Why HTMX, not plain HTML form:** a plain form would full-page-reload
 on every decision submit. HTMX swaps just the decisions-panel partial
@@ -107,16 +108,48 @@ The ``POST /report/decision`` JSON endpoint is **kept**. Stripping it
 would break the existing CLI walkthrough in the demo playbook and any
 external integrations that already consume it.
 
-### 5. Pipeline kick-off via a small form, not full CRUD.
+### 5. Pipeline kick-off via two forms (filed CRD + draft upload).
 
-The dashboard exposes one new form: CRD (required) + brochure version
-ID (optional). Submitting it does the same thing the existing
+The dashboard exposes two side-by-side forms covering both the
+"benchmark a peer firm" and the "review my own draft before filing"
+use cases.
+
+**Filed brochure (CRD):** the user provides a CRD (and optionally a
+brochure version ID). Submitting does the same thing the existing
 ``POST /pipeline/run`` JSON endpoint does — inserts a ``PipelineRun``
 row with ``status=queued``, schedules the runner via the existing
 ``get_scheduler`` dependency, redirects back to ``/review`` with a
 flash message — but accepts form-encoded input so a browser can drive
-it. The list view's row rendering already handles every status, so no
-new UI is needed once the row exists.
+it.
+
+**Draft brochure (upload):** the user uploads a PDF. The route
+(``POST /review/runs/upload``) validates magic bytes (``%PDF`` header),
+size (≤25 MB), and non-empty body, computes the SHA-256, fabricates a
+synthetic CRD (``99`` then 10 hash-derived digits — the ``99`` prefix
+marks it as not-a-real-CRD; real ones rarely exceed 8 digits), and
+writes the bytes to the cache path that ``fetch_brochure_node`` would
+otherwise populate. The pipeline then runs unchanged:
+``iapd.fetch_brochure`` checks ``path.exists()`` first and returns the
+cached bytes without touching the network.
+
+**Why the cache-hijack instead of pipeline modification.** Adding a
+"skip fetch" branch to the LangGraph topology, or pre-populating
+``state.brochure_pdf_path`` through a new code path, both involve
+touching the pipeline plumbing for what's effectively a one-line
+behavior change. The cache check inside ``IAPDClient.fetch_brochure``
+is already there for a different reason (immutable-version dedup);
+saving the upload to the same cache path turns it into the upload
+short-circuit at zero pipeline cost.
+
+**Synthetic CRD in the redline.** The output redline cites the
+synthetic CRD ("Brochure CRD ``9912345678``") which is uglier than a
+real-CRD citation. Acceptable for now — the user knows it's their own
+draft; a future pass could thread the firm label into the redline
+prompt for cleaner output.
+
+The list view's row rendering already handles every status and any
+``brochure_crd`` value, so no new list-view UI is needed once the row
+exists.
 
 **Why this is "limited CRUD" not full CRUD:**
 
@@ -179,7 +212,9 @@ applies cleanly.
   steps; same total work as before; ends on a clickable artifact
   instead of a JSON blob.
 - **No new tests outside the UI module.** All new tests live in
-  ``tests/test_review_ui.py`` (25 tests covering the five routes,
-  empty/missing/invalid edges, the seed CLI, the root redirect, and
-  the pipeline-trigger form's validation + scheduler-call capture).
-  ADR 0010's existing tests are unchanged.
+  ``tests/test_review_ui.py`` (31 tests covering the six routes,
+  empty/missing/invalid edges, the seed CLI, the root redirect, the
+  CRD-form validation + scheduler-call capture, and the upload path's
+  PDF magic-byte check / size cap / empty-file reject /
+  synthetic-CRD determinism). ADR 0010's existing tests are
+  unchanged.

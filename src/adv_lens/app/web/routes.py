@@ -8,12 +8,13 @@ for an iframe — no template surgery on the existing renderer.
 
 from __future__ import annotations
 
+import hashlib
 import re
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, select
@@ -37,6 +38,16 @@ SchedulerDep = Annotated[object, Depends(get_scheduler)]
 
 _VALID_DECISIONS = {"approved", "rejected", "revise"}
 _CRD_OK = re.compile(r"^\d+$")
+
+# 25MB ceiling on uploads — covers every real-world Part 2A brochure
+# (Brown Advisory's is 666KB; the largest in the field-test set was ~3MB).
+# Defends against accidental gigabyte-scale uploads pegging memory.
+_MAX_UPLOAD_BYTES = 25 * 1024 * 1024
+
+# Synthetic-CRD prefix for drafts. Real SEC CRDs rarely exceed 8 digits
+# in 2026; "99" + 10 hash-derived digits gives 12 digits that are
+# trivially distinguishable from real ones.
+_DRAFT_CRD_PREFIX = "99"
 
 
 def _redline_from_run(run: PipelineRun) -> RedlineReport | None:
@@ -154,6 +165,106 @@ def _url_encode(s: str) -> str:
     from urllib.parse import quote
 
     return quote(s, safe="")
+
+
+def _synthetic_crd_for_draft(sha256: str) -> str:
+    """Deterministic numeric pseudo-CRD for an uploaded draft brochure.
+
+    Same content uploaded twice gets the same identifier, which dedupes the
+    on-disk cache naturally. The 99-prefix marks it as not-a-real-CRD.
+    """
+    n = int(sha256[:8], 16) % 10**10
+    return f"{_DRAFT_CRD_PREFIX}{n:010d}"
+
+
+def _draft_label_slug(label: str) -> str:
+    """Sanitize a free-text firm label into a URL-safe slug for trace_id."""
+    cleaned = re.sub(r"[^a-z0-9]+", "-", label.strip().lower()).strip("-")
+    return cleaned[:32]
+
+
+@router.post("/review/runs/upload", response_class=HTMLResponse)
+async def schedule_run_from_upload(
+    session: SessionDep,
+    scheduler: SchedulerDep,
+    pdf: Annotated[UploadFile, File()],
+    firm_label: Annotated[str, Form()] = "",
+) -> RedirectResponse:
+    """Score a pre-file (draft) brochure uploaded as a PDF.
+
+    Different from the CRD path in two ways: (a) we already have the bytes,
+    so we write them to the same cache path ``fetch_brochure_node`` would
+    populate and the existing pipeline runs unchanged; (b) the brochure has
+    no real CRD/version yet, so we fabricate numeric ones (synthetic CRD
+    with a "99" prefix) that the rest of the pipeline treats normally.
+
+    Returns 303 redirect to ``/review`` with a queued/error flash.
+    """
+    if pdf.filename is None:
+        return RedirectResponse(
+            url=f"/review?error={_url_encode('No file selected')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+    contents = await pdf.read()
+    if len(contents) == 0:
+        return RedirectResponse(
+            url=f"/review?error={_url_encode('Uploaded file is empty')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+    if len(contents) > _MAX_UPLOAD_BYTES:
+        return RedirectResponse(
+            url=(
+                "/review?error="
+                + _url_encode(f"PDF too large (>{_MAX_UPLOAD_BYTES // 1024 // 1024}MB)")
+            ),
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+    if not contents.startswith(b"%PDF"):
+        return RedirectResponse(
+            url=f"/review?error={_url_encode('Upload must be a PDF (missing %PDF header)')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+    sha = hashlib.sha256(contents).hexdigest()
+    synthetic_crd = _synthetic_crd_for_draft(sha)
+    synthetic_vid = "0"
+
+    # Write to the cache path fetch_brochure_node would otherwise populate.
+    # The fetch node's iapd.fetch_brochure(ref) checks path.exists() first,
+    # so it returns this cached bytes without ever hitting SEC IAPD.
+    cache_path = settings.data_dir / "brochures" / synthetic_crd / f"{synthetic_vid}.pdf"
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    if not cache_path.exists():
+        cache_path.write_bytes(contents)
+
+    label_slug = _draft_label_slug(firm_label)
+    if label_slug:
+        trace_id = f"draft-{label_slug}-{sha[:8]}"
+    else:
+        trace_id = f"draft-{sha[:8]}-{new_trace_id().split('-', 1)[1]}"
+
+    session.add(
+        PipelineRun(
+            trace_id=trace_id,
+            brochure_crd=synthetic_crd,
+            brochure_version_id=synthetic_vid,
+            status="queued",
+        )
+    )
+    session.commit()
+
+    engine = session.get_bind()
+
+    def _factory() -> Session:
+        return Session(engine)
+
+    scheduler(trace_id, _factory)  # type: ignore[operator]
+
+    return RedirectResponse(
+        url=f"/review?queued={trace_id}",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
 
 
 @router.get("/review/{trace_id}", response_class=HTMLResponse)

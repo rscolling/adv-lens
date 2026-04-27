@@ -428,6 +428,175 @@ def test_review_list_shows_error_flash(client: TestClient) -> None:
     assert "flash-bad" in r.text
 
 
+# ── Upload-from-UI POST ──────────────────────────────────────────────
+_TINY_PDF = (
+    b"%PDF-1.4\n"
+    b"1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n"
+    b"2 0 obj<</Type/Pages/Count 0/Kids[]>>endobj\n"
+    b"xref\n0 3\n"
+    b"0000000000 65535 f\n"
+    b"0000000009 00000 n\n"
+    b"0000000054 00000 n\n"
+    b"trailer<</Size 3/Root 1 0 R>>\n"
+    b"startxref\n100\n%%EOF\n"
+)
+
+
+def test_upload_creates_draft_row_and_writes_cache(
+    client: TestClient,
+    in_memory_session: Session,
+    captured_schedules: list[tuple[str, object]],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from adv_lens.app import settings as settings_module
+    from adv_lens.app.web import routes as routes_module
+
+    monkeypatch.setattr(settings_module.settings, "data_dir", tmp_path)
+    monkeypatch.setattr(routes_module.settings, "data_dir", tmp_path)
+
+    r = client.post(
+        "/review/runs/upload",
+        files={"pdf": ("draft.pdf", _TINY_PDF, "application/pdf")},
+        data={"firm_label": "Acme Wealth"},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    assert r.headers["location"].startswith("/review?queued=draft-acme-wealth-")
+
+    rows = in_memory_session.exec(select(PipelineRun)).all()
+    assert len(rows) == 1
+    row = rows[0]
+    assert row.brochure_crd.startswith("99")
+    assert len(row.brochure_crd) == 12  # "99" + 10 digits
+    assert row.brochure_version_id == "0"
+    assert row.status == "queued"
+    assert row.trace_id.startswith("draft-acme-wealth-")
+    assert len(captured_schedules) == 1
+
+    # Bytes were written to the cache path that fetch_brochure expects
+    cache_path = tmp_path / "brochures" / row.brochure_crd / "0.pdf"
+    assert cache_path.exists()
+    assert cache_path.read_bytes() == _TINY_PDF
+
+
+def test_upload_rejects_non_pdf(
+    client: TestClient, in_memory_session: Session, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from adv_lens.app import settings as settings_module
+    from adv_lens.app.web import routes as routes_module
+
+    monkeypatch.setattr(settings_module.settings, "data_dir", tmp_path)
+    monkeypatch.setattr(routes_module.settings, "data_dir", tmp_path)
+
+    r = client.post(
+        "/review/runs/upload",
+        files={"pdf": ("not_a_pdf.txt", b"This is not a PDF.", "text/plain")},
+        data={},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    assert "error=" in r.headers["location"]
+    assert "Upload+must+be+a+PDF" in r.headers["location"] or "PDF" in r.headers["location"]
+    assert in_memory_session.exec(select(PipelineRun)).all() == []
+
+
+def test_upload_rejects_empty_file(
+    client: TestClient, in_memory_session: Session, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from adv_lens.app import settings as settings_module
+    from adv_lens.app.web import routes as routes_module
+
+    monkeypatch.setattr(settings_module.settings, "data_dir", tmp_path)
+    monkeypatch.setattr(routes_module.settings, "data_dir", tmp_path)
+
+    r = client.post(
+        "/review/runs/upload",
+        files={"pdf": ("empty.pdf", b"", "application/pdf")},
+        data={},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    assert "error=" in r.headers["location"]
+    assert in_memory_session.exec(select(PipelineRun)).all() == []
+
+
+def test_upload_rejects_oversize_file(
+    client: TestClient, in_memory_session: Session, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from adv_lens.app import settings as settings_module
+    from adv_lens.app.web import routes as routes_module
+
+    monkeypatch.setattr(settings_module.settings, "data_dir", tmp_path)
+    monkeypatch.setattr(routes_module.settings, "data_dir", tmp_path)
+
+    big = b"%PDF-1.4\n" + b"\0" * (26 * 1024 * 1024)
+    r = client.post(
+        "/review/runs/upload",
+        files={"pdf": ("huge.pdf", big, "application/pdf")},
+        data={},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    assert "too+large" in r.headers["location"].lower() or "too%20large" in r.headers["location"].lower()
+    assert in_memory_session.exec(select(PipelineRun)).all() == []
+
+
+def test_upload_synthetic_crd_is_deterministic(
+    client: TestClient,
+    in_memory_session: Session,
+    captured_schedules: list[tuple[str, object]],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Same content uploaded twice produces the same synthetic CRD (cache dedup)."""
+    from adv_lens.app import settings as settings_module
+    from adv_lens.app.web import routes as routes_module
+
+    monkeypatch.setattr(settings_module.settings, "data_dir", tmp_path)
+    monkeypatch.setattr(routes_module.settings, "data_dir", tmp_path)
+
+    for _ in range(2):
+        client.post(
+            "/review/runs/upload",
+            files={"pdf": ("a.pdf", _TINY_PDF, "application/pdf")},
+            data={},
+            follow_redirects=False,
+        )
+
+    rows = in_memory_session.exec(select(PipelineRun)).all()
+    assert len(rows) == 2  # two rows...
+    assert rows[0].brochure_crd == rows[1].brochure_crd  # ...same synthetic CRD
+    assert rows[0].trace_id != rows[1].trace_id          # ...distinct trace IDs
+
+
+def test_upload_without_firm_label_falls_back_to_hash_trace(
+    client: TestClient, in_memory_session: Session, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from adv_lens.app import settings as settings_module
+    from adv_lens.app.web import routes as routes_module
+
+    monkeypatch.setattr(settings_module.settings, "data_dir", tmp_path)
+    monkeypatch.setattr(routes_module.settings, "data_dir", tmp_path)
+
+    r = client.post(
+        "/review/runs/upload",
+        files={"pdf": ("x.pdf", _TINY_PDF, "application/pdf")},
+        data={"firm_label": ""},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    rows = in_memory_session.exec(select(PipelineRun)).all()
+    assert len(rows) == 1
+    # Without a label, the trace_id starts with draft-<8-hex>-
+    assert rows[0].trace_id.startswith("draft-")
+    assert "acme" not in rows[0].trace_id
+
+
 def test_review_list_warns_when_anthropic_key_missing(
     client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
