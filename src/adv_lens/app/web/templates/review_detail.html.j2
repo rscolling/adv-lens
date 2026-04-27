@@ -1,5 +1,28 @@
 {% extends "base.html.j2" %}
 {% block title %}Review {{ run.trace_id }} — ADV-Lens{% endblock %}
+
+{% macro score_band(score) -%}
+  {%- if score is none -%}
+  {%- elif score >= 90 -%}score-band-90
+  {%- elif score >= 80 -%}score-band-80
+  {%- elif score >= 70 -%}score-band-70
+  {%- elif score >= 60 -%}score-band-60
+  {%- elif score >= 50 -%}score-band-50
+  {%- else -%}score-band-lo
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro score_label(score) -%}
+  {%- if score is none -%}—
+  {%- elif score >= 90 -%}Clean — minimal follow-up
+  {%- elif score >= 80 -%}Good — minor cleanup
+  {%- elif score >= 70 -%}Minor follow-ups recommended
+  {%- elif score >= 60 -%}Needs attention before next amendment
+  {%- elif score >= 50 -%}Deficient — material gaps to address
+  {%- else -%}Severe — defer release pending revision
+  {%- endif -%}
+{%- endmacro %}
+
 {% block content %}
 
 <p style="margin:0 0 0.6em">
@@ -9,10 +32,8 @@
 <div style="display:flex;align-items:baseline;gap:0.8em;margin-bottom:0.4em">
   <h1 style="margin:0">CRD {{ run.brochure_crd }}</h1>
   {% if summary.score is not none %}
-    {% if summary.score >= 80 %}<span class="score-pill score-good">{{ summary.score }}</span>
-    {% elif summary.score >= 60 %}<span class="score-pill score-warn">{{ summary.score }}</span>
-    {% else %}<span class="score-pill score-bad">{{ summary.score }}</span>
-    {% endif %}
+    <span class="score-pill {{ score_band(summary.score) }}"
+          title="{{ score_label(summary.score) }} (0–100, higher = cleaner brochure)">{{ summary.score }}</span>
   {% endif %}
   <span class="pill pill-{{ run.status }}">{{ run.status }}</span>
   <span class="muted">·  trace <code>{{ run.trace_id }}</code></span>

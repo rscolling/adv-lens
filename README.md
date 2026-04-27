@@ -56,12 +56,21 @@ each one as a side-by-side redline + decision form, and writes the same
 ``human_reviews`` row the JSON `POST /report/decision` would — so the
 audit semantics carry through unchanged.
 
+![ADV-Lens dashboard — list view with intake forms and runs table](docs/images/dashboard-list.png)
+
 ```bash
 docker compose up -d postgres qdrant
 uv run python -m adv_lens.app.web.seed   # one-shot: load Brown Advisory samples (filed + draft)
 uv run uvicorn adv_lens.app.main:app --reload
 # → http://localhost:8000/review
 ```
+
+Click any row to open the detail page — the redline iframe on the
+left, the reviewer decision form on the right, decision history below
+it. Submitting a decision posts via HTMX and swaps the decisions panel
+in place without a full-page reload:
+
+![ADV-Lens detail view — redline + decision form + audit history](docs/images/dashboard-detail.png)
 
 **The dashboard supports both audience-facing use cases:**
 

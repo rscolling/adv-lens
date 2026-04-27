@@ -467,6 +467,8 @@ The intended day-to-day surface for a CCO or analyst. Server-rendered
 Ships in `src/adv_lens/app/web/` and is mounted on the same FastAPI
 app the JSON endpoints below run on.
 
+![Dashboard list view](images/dashboard-list.png)
+
 ### 6.3.1 What the page shows
 
 - **Intro panel** — one-paragraph elevator pitch + 3-step workflow
@@ -497,6 +499,8 @@ app the JSON endpoints below run on.
   timestamp.
 
 ### 6.3.2 The detail page
+
+![Dashboard detail view](images/dashboard-detail.png)
 
 Clicking a row opens `/review/{trace_id}`:
 

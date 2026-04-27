@@ -82,9 +82,34 @@
     padding: 0.15em 0.55em; border-radius: 4px; font-weight: 700;
     font-variant-numeric: tabular-nums;
   }
+  /* Six bands mirror the redline renderer's _score_colour scheme so the
+     pill colour in the dashboard matches what reviewers see in the
+     iframe's score gauge. */
+  .score-band-90 { background: #d4edda; color: #155724; }   /* 90-100 — clean */
+  .score-band-80 { background: #e0f5e9; color: #155724; }   /* 80-89 — good */
+  .score-band-70 { background: #fff5d6; color: #92400e; }   /* 70-79 — minor */
+  .score-band-60 { background: #ffe9c2; color: #92400e; }   /* 60-69 — needs attention */
+  .score-band-50 { background: #fde0c8; color: #9a3412; }   /* 50-59 — deficient */
+  .score-band-lo { background: #f8d7da; color: #721c24; }   /* 0-49  — severe */
+  /* Legacy three-class names — keep so old detail-page references don't break. */
   .score-good { background: #e0f5e9; color: #155724; }
   .score-warn { background: #fff5d6; color: #92400e; }
   .score-bad  { background: #f8d7da; color: #721c24; }
+
+  .score-legend {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.5em 0.7em;
+    margin: 0.4em 0 0.8em; padding: 0.6em 0.9em;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+    font-size: 12.5px;
+  }
+  .score-legend strong { color: var(--fg); }
+  .score-legend .legend-item {
+    display: inline-flex; align-items: center; gap: 0.35em;
+    color: var(--muted); white-space: nowrap;
+  }
+  .score-legend .legend-item .score-pill {
+    font-size: 11.5px; padding: 0.05em 0.45em; min-width: 0;
+  }
 
   .muted { color: var(--muted); }
   .empty { color: var(--muted); font-style: italic; padding: 2em 0; text-align: center; }
