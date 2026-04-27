@@ -204,18 +204,37 @@ def test_report_to_markdown_renders_totals(tmp_path: Path) -> None:
     assert "fetch failed" in md
 
 
-async def test_seed_peers_records_pipeline_errors(tmp_path: Path) -> None:
-    """End-to-end seed where the pipeline fails for every CRD (no network)."""
+async def test_seed_peers_records_pipeline_errors(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """seed_peers passes pipeline errors through to the per-CRD report.
+
+    Earlier this test relied on the pipeline failing because the SEC IAPD
+    fetch couldn't reach the network — true on offline-dev machines but
+    false on CI runners with internet, where the fetch happened to succeed
+    and indexed a real section. Stubbing ``run_pipeline`` directly tests
+    the error-handling branch deterministically regardless of environment.
+    """
+    from adv_lens.app.graph.state import ADVState
+    from adv_lens.retrieval import seed as seed_module
+
+    async def _failing_pipeline(crd: str, **kwargs: object) -> ADVState:
+        return ADVState(
+            trace_id="seed-test-trace",
+            brochure_crd=crd,
+            errors=[f"fetch_brochure_node: simulated failure for CRD {crd}"],
+        )
+
+    monkeypatch.setattr(seed_module, "run_pipeline", _failing_pipeline)
+
     store = _store(tmp_path)
-    # No httpx mock → real IAPDClient → SEC IAPD unreachable → state.errors populated.
-    # We simulate by providing a CRD with explicit version id that won't connect.
-    # The seed flow must surface the error rather than crash.
     specs = [PeerSpec(crd="108000", brochure_version_id="999001")]
     report = await seed_peers(specs, store)
 
     assert "108000" in report
     assert report["108000"]["sections_indexed"] == 0
     assert report["108000"]["errors"]
+    assert any("simulated failure" in e for e in report["108000"]["errors"])
 
 
 # ── Live segmenter → store smoke (no network, no LLM, no torch) ──────
