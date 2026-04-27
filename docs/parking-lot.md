@@ -108,35 +108,36 @@ week-5 polish deliverable.
 
 ## 3. Does this have a dashboard?
 
-**Added:** 2026-04-24
+**Added:** 2026-04-24. **Done 2026-04-27** (ADR 0016).
 
-**Idea.** A web dashboard for the CCO / diligence-team audience. Candidates:
+**What landed.** A server-rendered review surface at `/review` covering
+two of the three originally-considered candidates:
 
-- A run-history view: every pipeline invocation with CRD, brochure version,
-  trace ID, status, link to the Langfuse trace, and the resulting
-  scorecard / redline.
-- A peer-comparison browser: pick a CRD and an AUM band, see the
-  retrieved peer brochures side-by-side with the subject's fee schedule,
-  disciplinary disclosures, and conflicts list.
-- A HITL inbox: pending reports awaiting CCO sign-off, with approve /
-  reject / revise actions that write to the `human_reviews` audit table.
+- **Run-history view** — every `pipeline_runs` row in the table with
+  trace, CRD, status pill, score band, finding count, headline, and
+  created timestamp. Click-through opens the redline iframe + decision
+  form.
+- **HITL inbox** — the detail page is exactly that. Decision form
+  (Approve / Request revision / Reject + reviewer + rationale) submits
+  via HTMX to `POST /review/{trace_id}/decide`, which writes a row to
+  `human_reviews` keyed on `report_hash` and returns the decisions-
+  panel partial in place. Same audit semantics as ADR 0010's JSON
+  endpoint (which is kept).
 
-Right now we have FastAPI endpoints (`/healthz`, `/brochure/{crd}`,
-`/pipeline/run`) and Langfuse for observability — anyone evaluating the
-project can curl the API or read traces. The README also flags a 60-90s
-demo GIF as a week-5 deliverable.
+The third candidate — peer-comparison browser — was deferred. Peer
+hits already render in the redline iframe (per Item, with name + score
+deltas), and a dedicated browse-the-corpus surface is post-portfolio
+work.
 
-**Why not now.** CLAUDE.md is explicit: *"Building a UI before the
-pipeline works end-to-end. Ship a UI only after the agent and eval harness
-are solid."* The redline writer doesn't exist yet, so a dashboard would be
-furniture around an empty room. Langfuse already covers the
-"observability for a CCO" need that any v0 dashboard would duplicate.
+**One material scope change from the original carve-out:** the
+dashboard *also* exposes a "Score a brochure" form covering both filed
+brochures (CRD-driven) and pre-file drafts (PDF upload). ADR 0016 § 5
+documents the cache-hijack approach that makes draft uploads work
+without modifying the LangGraph pipeline.
 
-**Next check-in.** End of week 5. By then the pipeline produces a real
-scorecard, the eval harness scores it, and the demo-GIF requirement
-forces the question anyway. Decide then between (a) a thin Streamlit/Next
-front-end versus (b) leaning on Langfuse + a static HTML report and
-calling it shipped.
+**Stack picked.** Server-rendered FastAPI + Jinja2 + HTMX, no SPA. ADR
+0016 walks through why React/Next would have added a build step and
+hydration for zero user-facing benefit on this surface area.
 
 ---
 

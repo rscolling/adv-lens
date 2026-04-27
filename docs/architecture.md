@@ -86,6 +86,38 @@ for state. See ADR 0011. The CLI (`adv_lens.app.graph.cli`) still runs
 the pipeline synchronously, which is convenient for evals and one-off
 debugging.
 
+## Reviewer UI surface
+
+A separate FastAPI router under `src/adv_lens/app/web/` mounts a
+server-rendered review surface on the same app. The UI is the intended
+day-to-day entry point for a CCO; the JSON API stays available
+unchanged for scripted / operator use. ADR 0016 has the full design.
+
+```text
+GET  /                              → 307 redirect → /review
+GET  /review                        → list view (Pipeline runs table) + score-a-brochure forms
+GET  /review/{trace_id}             → detail view (redline iframe + decision form + history)
+GET  /review/{trace_id}/redline.html → standalone redline HTML (iframe target — same bytes
+                                       render_redline_html produces for the email/PDF path)
+POST /review/runs                   → schedule a pipeline run from CRD form data (filed brochure)
+POST /review/runs/upload            → schedule a pipeline run from an uploaded draft PDF
+POST /review/{trace_id}/decide      → HTMX decision submit; writes human_reviews row, returns
+                                       decisions-panel partial (no full-page reload)
+```
+
+The list view's intake form has two side-by-side panels — **filed
+brochure** (CRD-driven, fetches from SEC IAPD) and **draft brochure**
+(PDF upload). The upload path computes a synthetic numeric CRD
+(`99` + 10 hash-derived digits) and writes the bytes to the cache
+path the IAPD fetcher would otherwise populate, so the existing
+pipeline runs unchanged on uploads — no LangGraph topology branching
+needed for drafts.
+
+Decision-write semantics are unchanged from ADR 0010: every decision
+(via UI or via `POST /report/decision`) writes one row to
+`human_reviews` keyed on `report_hash`. The UI is a presentation
+layer, not a parallel audit channel.
+
 The three extractor nodes run **in parallel** off `segment_brochure`.
 Each returns only its own field of `Extractions`; the
 `merge_extractions` reducer (annotated on `ADVState.extractions`)

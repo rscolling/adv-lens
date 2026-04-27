@@ -99,7 +99,7 @@
 <p class="subtitle">A printable desk reference for compliance officers,
 M&amp;A diligence teams, and the engineers who run the system</p>
 <p class="author">Robert Colling</p>
-<p class="date">Generated 2026-04-26 from main</p>
+<p class="date">Generated 2026-04-27 from main</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -155,17 +155,32 @@ Running the system</a>
 Prerequisites</a></li>
 <li><a href="#62-first-boot" id="toc-62-first-boot">6.2 First
 boot</a></li>
+<li><a href="#63-the-reviewer-dashboard-at-review"
+id="toc-63-the-reviewer-dashboard-at-review">6.3 The reviewer dashboard
+at <code>/review</code></a>
+<ul>
+<li><a href="#631-what-the-page-shows"
+id="toc-631-what-the-page-shows">6.3.1 What the page shows</a></li>
+<li><a href="#632-the-detail-page" id="toc-632-the-detail-page">6.3.2
+The detail page</a></li>
+<li><a href="#633-seed-cli-for-demo-data"
+id="toc-633-seed-cli-for-demo-data">6.3.3 Seed CLI for demo
+data</a></li>
+<li><a href="#634-why-server-rendered-not-reactnext"
+id="toc-634-why-server-rendered-not-reactnext">6.3.4 Why
+server-rendered, not React/Next</a></li>
+</ul></li>
 <li><a
-href="#63-one-shot-cli-synchronous-useful-for-evals-and-debugging"
-id="toc-63-one-shot-cli-synchronous-useful-for-evals-and-debugging">6.3
+href="#64-one-shot-cli-synchronous-useful-for-evals-and-debugging"
+id="toc-64-one-shot-cli-synchronous-useful-for-evals-and-debugging">6.4
 One-shot CLI (synchronous; useful for evals and debugging)</a></li>
-<li><a href="#64-http-asynchronous-production-shape"
-id="toc-64-http-asynchronous-production-shape">6.4 HTTP (asynchronous;
+<li><a href="#65-http-asynchronous-production-shape"
+id="toc-65-http-asynchronous-production-shape">6.5 HTTP (asynchronous;
 production shape)</a></li>
-<li><a href="#65-approving-or-rejecting-a-report-hitl"
-id="toc-65-approving-or-rejecting-a-report-hitl">6.5 Approving or
+<li><a href="#66-approving-or-rejecting-a-report-hitl"
+id="toc-66-approving-or-rejecting-a-report-hitl">6.6 Approving or
 rejecting a report (HITL)</a></li>
-<li><a href="#66-the-audit-trail" id="toc-66-the-audit-trail">6.6 The
+<li><a href="#67-the-audit-trail" id="toc-67-the-audit-trail">6.7 The
 audit trail</a></li>
 </ul></li>
 <li><a href="#7-safety--compliance" id="toc-7-safety--compliance">7.
@@ -1018,61 +1033,159 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># visit http://localhost:3000 to provision Langfuse, paste back the</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.main  <span class="co"># or: docker compose up app</span></span></code></pre></div>
-<p>Health check: <code>GET http://localhost:8000/healthz</code></p>
-<h2 id="63-one-shot-cli-synchronous-useful-for-evals-and-debugging">6.3
-One-shot CLI (synchronous; useful for evals and debugging)</h2>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.web.seed   <span class="co"># one-shot: seed dashboard demo rows</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run uvicorn adv_lens.app.main:app <span class="at">--reload</span></span></code></pre></div>
+<p><strong>Open <a
+href="http://localhost:8000/review">http://localhost:8000/review</a> in
+a browser</strong> — that's the reviewer dashboard. Health check:
+<code>GET http://localhost:8000/healthz</code>. FastAPI auto-docs:
+<code>GET http://localhost:8000/docs</code>.</p>
+<p><strong>Windows / PowerShell users.</strong> The bash-style
+<code>VAR=value cmd</code> prefix doesn't work; use
+<code>$env:VAR = "value"</code> on its own line. Example for sqlite-only
+quickstart (no Docker):</p>
 <div class="sourceCode" id="cb4"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fetch + segment only (no LLM cost)</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.graph.cli 108000 <span class="at">--no-llm</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Full pipeline (extractors + redline + HITL marker)</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.graph.cli 108000</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pin a specific brochure version</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.graph.cli 108000 <span class="at">--brochure-version</span> 987654</span></code></pre></div>
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">POSTGRES_DSN</span> <span class="op">=</span> <span class="st">&quot;sqlite:///./data/adv_lens_dev.db&quot;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>uv run python <span class="op">-</span>m adv_lens<span class="op">.</span><span class="fu">app</span><span class="op">.</span><span class="fu">web</span><span class="op">.</span><span class="fu">seed</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>uv run uvicorn adv_lens<span class="op">.</span><span class="fu">app</span><span class="op">.</span><span class="fu">main</span><span class="op">:</span>app <span class="op">--</span>port <span class="dv">8000</span> <span class="op">--</span>reload</span></code></pre></div>
+<h2 id="63-the-reviewer-dashboard-at-review">6.3 The reviewer dashboard
+at <code>/review</code></h2>
+<p>The intended day-to-day surface for a CCO or analyst. Server-rendered
+(FastAPI + Jinja2 + HTMX), no SPA build step, no client-side state.
+Ships in <code>src/adv_lens/app/web/</code> and is mounted on the same
+FastAPI app the JSON endpoints below run on.</p>
+<h3 id="631-what-the-page-shows">6.3.1 What the page shows</h3>
+<ul>
+<li><strong>Intro panel</strong> — one-paragraph elevator pitch + 3-step
+workflow strip (fetch / score / decide) + deep links to README,
+architecture, compliance, ADR 0010 (HITL design), and <code>/docs</code>
+(the FastAPI auto- docs for the JSON API).</li>
+<li><strong>Score-a-brochure form</strong> — two side-by-side panels:
+<ul>
+<li><strong>Filed brochure</strong> — CRD + optional brochure version
+ID. Submits to <code>POST /review/runs</code>, which inserts a
+<code>pipeline_runs</code> row in <code>queued</code> status and
+schedules the runner. Pulls the brochure from SEC IAPD by CRD; for
+benchmarking, M&amp;A diligence, or compliance review of a
+competitor.</li>
+<li><strong>Draft brochure (pre-file)</strong> — file picker + optional
+firm label. Submits to <code>POST /review/runs/upload</code>. Validates
+<code>%PDF</code> magic bytes, size (≤25 MB), non-empty body. Computes
+SHA-256, fabricates a synthetic numeric CRD (<code>99</code> + 10
+hash-derived digits — the prefix marks it as not-a-real-CRD), and writes
+the bytes to the cache path that <code>fetch_brochure_node</code> would
+otherwise populate. The pipeline then runs unchanged:
+<code>iapd.fetch_brochure</code> checks <code>path.exists()</code> first
+and never hits SEC IAPD for drafts. For a CCO scoring this year's
+amendment before filing. Both forms show a yellow chip warning when
+<code>ANTHROPIC_API_KEY</code> is empty, since runs would otherwise fail
+silently.</li>
+</ul></li>
+<li><strong>Pipeline runs table</strong> — every row corresponds to one
+<code>pipeline_runs</code> row. Columns: trace ID, CRD (with version),
+status pill (queued / running / complete / failed), score
+(band-coloured), finding count, headline (truncated, hover for full),
+created timestamp.</li>
+</ul>
+<h3 id="632-the-detail-page">6.3.2 The detail page</h3>
+<p>Clicking a row opens <code>/review/{trace_id}</code>:</p>
+<ul>
+<li>A back link (<code>← All runs</code>) at the top.</li>
+<li>Heading: <code>CRD &lt;number&gt;</code> with the score pill,
+status, and trace ID.</li>
+<li><strong>Left pane:</strong> an iframe loading the full
+<code>RedlineReport</code> HTML at
+<code>/review/{trace_id}/redline.html</code>. Same bytes
+<code>render_redline_html</code> produces for the email/PDF path — score
+gauge, category breakdown table, severity-coloured finding cards.</li>
+<li><strong>Right pane:</strong> a decision form (radio buttons: Approve
+/ Request revision / Reject + reviewer email + rationale). Submits via
+HTMX to <code>POST /review/{trace_id}/decide</code>, which writes a row
+to <code>human_reviews</code> and returns the updated decisions panel as
+a partial — the page does not reload.</li>
+<li>Below the form: a decisions history panel listing all prior
+decisions for this trace_id, oldest first, with the new row briefly
+highlighted after submission.</li>
+</ul>
+<h3 id="633-seed-cli-for-demo-data">6.3.3 Seed CLI for demo data</h3>
+<p>A fresh DB starts empty. The seed CLI inserts two demo rows so the
+dashboard is non-empty on first visit:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.web.seed</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Seeds:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># - brown-advisory-rescued (filed run, real CRD 110181)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># - draft-brown-advisory-self-review (synthetic 99-prefixed CRD,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   same brochure bytes via the upload code path)</span></span></code></pre></div>
+<p>Idempotent — re-running with the same trace_id replaces the existing
+row's status/result, so a fresher <code>sample-state.json</code>
+overrides cleanly. Pass <code>--no-draft</code> to skip the draft
+companion. The draft seed no-ops gracefully when the cached brochure PDF
+is missing (fresh checkout); fetch a real brochure first to enable
+it.</p>
+<h3 id="634-why-server-rendered-not-reactnext">6.3.4 Why
+server-rendered, not React/Next</h3>
+<p>ADR 0016 has the full rationale. Short version: this is a list view,
+an iframed report, two simple intake forms, and a decision form with
+three radio buttons. A SPA would add a build step, hydration, and a
+separate deploy story for zero user-facing benefit. Jinja2 is already a
+dep (the redline renderer uses it), and HTMX is one CDN script tag.</p>
+<h2 id="64-one-shot-cli-synchronous-useful-for-evals-and-debugging">6.4
+One-shot CLI (synchronous; useful for evals and debugging)</h2>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fetch + segment only (no LLM cost)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.graph.cli 108000 <span class="at">--no-llm</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Full pipeline (extractors + redline + HITL marker)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.graph.cli 108000</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pin a specific brochure version</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.graph.cli 108000 <span class="at">--brochure-version</span> 987654</span></code></pre></div>
 <p>CLI prints the final <code>ADVState</code> as JSON. Pipe to
 <code>jq</code> for inspection.</p>
-<h2 id="64-http-asynchronous-production-shape">6.4 HTTP (asynchronous;
+<h2 id="65-http-asynchronous-production-shape">6.5 HTTP (asynchronous;
 production shape)</h2>
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> POST http://localhost:8000/pipeline/run <span class="dt">\</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="dt">\</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;crd&quot;: &quot;108000&quot;}&#39;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># → 202 {&quot;trace_id&quot;: &quot;advlens-abc123&quot;, &quot;status&quot;: &quot;queued&quot;,</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#         &quot;status_url&quot;: &quot;/pipeline/run/advlens-abc123&quot;}</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Poll</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:8000/pipeline/run/advlens-abc123</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># → 200 {&quot;trace_id&quot;: ..., &quot;status&quot;: &quot;running&quot; | &quot;complete&quot; | &quot;failed&quot;,</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#         &quot;result&quot;: {... full ADVState when complete ...}}</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> POST http://localhost:8000/pipeline/run <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;crd&quot;: &quot;108000&quot;}&#39;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># → 202 {&quot;trace_id&quot;: &quot;advlens-abc123&quot;, &quot;status&quot;: &quot;queued&quot;,</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#         &quot;status_url&quot;: &quot;/pipeline/run/advlens-abc123&quot;}</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Poll</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:8000/pipeline/run/advlens-abc123</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># → 200 {&quot;trace_id&quot;: ..., &quot;status&quot;: &quot;running&quot; | &quot;complete&quot; | &quot;failed&quot;,</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#         &quot;result&quot;: {... full ADVState when complete ...}}</span></span></code></pre></div>
 <p>The status walks <code>queued → running → complete | failed</code>.
 Polling cadence: 5-15 seconds is plenty; a typical end-to-end run is
 30-90 s on a real brochure.</p>
-<h2 id="65-approving-or-rejecting-a-report-hitl">6.5 Approving or
+<h2 id="66-approving-or-rejecting-a-report-hitl">6.6 Approving or
 rejecting a report (HITL)</h2>
+<p>The reviewer UI at <code>/review/{trace_id}</code> (§ 6.3.2) is the
+intended path: open the row, fill the form, the decision row writes
+itself. The JSON endpoint stays available for scripted / operator
+use.</p>
 <p>When <code>result.review_status == "pending_review"</code>, the CCO
 acts:</p>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> POST http://localhost:8000/report/decision <span class="dt">\</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="dt">\</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;trace_id&quot;: &quot;advlens-abc123&quot;,</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;report_hash&quot;: &quot;&lt;echoed from the pipeline result&gt;&quot;,</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;brochure_crd&quot;: &quot;108000&quot;,</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;decision&quot;: &quot;approved&quot;,</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;reviewer&quot;: &quot;jane.cco@firm.example&quot;,</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;rationale&quot;: &quot;Reviewed all medium findings; concur with the action items in F-001 and F-002.&quot;</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="st">  }&#39;</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># → 201 + DecisionResponse including the audit row id</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the decision history for a run:</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:8000/report/decision/advlens-abc123</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># → list of decisions oldest-first; re-posts deliberately create new rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> POST http://localhost:8000/report/decision <span class="dt">\</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;trace_id&quot;: &quot;advlens-abc123&quot;,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;report_hash&quot;: &quot;&lt;echoed from the pipeline result&gt;&quot;,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;brochure_crd&quot;: &quot;108000&quot;,</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;decision&quot;: &quot;approved&quot;,</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;reviewer&quot;: &quot;jane.cco@firm.example&quot;,</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;rationale&quot;: &quot;Reviewed all medium findings; concur with the action items in F-001 and F-002.&quot;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="st">  }&#39;</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># → 201 + DecisionResponse including the audit row id</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the decision history for a run:</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:8000/report/decision/advlens-abc123</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># → list of decisions oldest-first; re-posts deliberately create new rows</span></span></code></pre></div>
 <p>Decision options: <code>approved</code>, <code>rejected</code>,
 <code>revise_requested</code>.</p>
-<h2 id="66-the-audit-trail">6.6 The audit trail</h2>
+<h2 id="67-the-audit-trail">6.7 The audit trail</h2>
 <p>Three Postgres tables, queryable at any time:</p>
 <ul>
 <li><code>llm_calls</code> — one row per LLM invocation. Includes input,
@@ -1086,9 +1199,9 @@ error.</li>
 </ul>
 <p>A typical audit query: "show me every LLM call for trace X with model
 and cost":</p>
-<div class="sourceCode" id="cb7"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> node, model, prompt_tokens, completion_tokens, cost_usd, created_at</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> llm_calls <span class="kw">WHERE</span> trace_id <span class="op">=</span> <span class="st">&#39;advlens-abc123&#39;</span> <span class="kw">ORDER</span> <span class="kw">BY</span> created_at;</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> node, model, prompt_tokens, completion_tokens, cost_usd, created_at</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> llm_calls <span class="kw">WHERE</span> trace_id <span class="op">=</span> <span class="st">&#39;advlens-abc123&#39;</span> <span class="kw">ORDER</span> <span class="kw">BY</span> created_at;</span></code></pre></div>
 <blockquote>
 <p><strong>NOT BUILT YET — single-command audit-trail
 bundle.</strong></p>
@@ -1120,9 +1233,11 @@ system.</p>
 <p>The <code>hitl_gate</code> node runs at the end of every pipeline. It
 does <strong>not</strong> publish the report. It marks the report as
 <code>pending_review</code> and computes a <code>report_hash</code>
-(SHA-256 of the canonical RedlineReport JSON). The CCO acts via
-<code>POST /report/decision</code>, which writes a row to
-<code>human_reviews</code> keyed on the hash.</p>
+(SHA-256 of the canonical RedlineReport JSON). A CCO records a decision
+either through the reviewer UI at <code>/review/{trace_id}</code> (§
+6.3.2) or through <code>POST /report/decision</code> directly; both
+paths write the same row to <code>human_reviews</code> keyed on the
+hash.</p>
 <p>A re-run of the pipeline against the same CRD produces a new
 <code>trace_id</code> but a <code>report_hash</code> that may or may not
 match the prior approval. This is intentional — approvals are pinned to
@@ -1132,7 +1247,7 @@ the exact bytes the CCO read, not to a moving target.</p>
 <p>Every LLM call and every human decision lands in Postgres with a
 trace ID that joins back to the pipeline run. The audit posture is
 designed to answer: <em>"Show me how this finding was produced and who
-signed off on it."</em> See § 6.6 for query examples.</p>
+signed off on it."</em> See § 6.7 for query examples.</p>
 <h2 id="74-regulatory-posture">7.4 Regulatory posture</h2>
 <p>ADV-Lens reads exclusively public SEC filings. No client PII, no
 gated scraping. The companion <code>docs/compliance.md</code> enumerates
@@ -1181,8 +1296,8 @@ wire is no-op when Langfuse isn't configured. To turn it on:</p>
 <ol type="1">
 <li><strong>Bring up the self-host</strong> (already in
 <code>docker-compose.yml</code>):
-<div class="sourceCode" id="cb8"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span> langfuse-web langfuse-worker langfuse-db</span></code></pre></div></li>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span> langfuse-web langfuse-worker langfuse-db</span></code></pre></div></li>
 <li><strong>Provision keys</strong> in the Langfuse UI at <a
 href="http://localhost:3000">http://localhost:3000</a>: create an
 organisation + project, copy the public/secret keys.</li>
@@ -1210,8 +1325,8 @@ CCO-approved brochure run end-to-end.</p>
 <h2 id="82-weekly">8.2 Weekly</h2>
 <ul>
 <li>Run the eval harness against the golden set:
-<div class="sourceCode" id="cb10"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> eval.runner</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> eval.runner</span></code></pre></div>
 Compare F1 per section to the prior week's baseline (committed to
 <code>eval/results/</code>). A drop of more than 0.05 mean F1 in any
 section warrants a prompt or schema diff.</li>
@@ -1220,12 +1335,12 @@ section warrants a prompt or schema diff.</li>
 <p>Process restarts (deploys, OOMs, network partitions) leave any
 in-flight pipeline runs stuck in <code>status="running"</code>. The
 reaper sweeps them:</p>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dry run — show candidates without mutating</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.jobs.reaper <span class="at">--dry-run</span> <span class="at">--verbose</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Actually mark stuck rows as failed</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.jobs.reaper <span class="at">--verbose</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dry run — show candidates without mutating</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.jobs.reaper <span class="at">--dry-run</span> <span class="at">--verbose</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Actually mark stuck rows as failed</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.jobs.reaper <span class="at">--verbose</span></span></code></pre></div>
 <p>Wire into cron / a Kubernetes CronJob at whatever cadence matches
 your deployment's restart frequency. Default threshold is 10 minutes;
 tune via <code>PIPELINE_RUN_REAP_THRESHOLD_MINUTES</code> in
@@ -1235,11 +1350,11 @@ tune via <code>PIPELINE_RUN_REAP_THRESHOLD_MINUTES</code> in
 <code>llm_calls.cost_usd</code>. A typical full pipeline run costs <span
 class="math inline">0.50−</span>1.50 (one Opus call dominates). Per-day
 budget alarm:</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="dt">DATE</span>(created_at) <span class="kw">AS</span> <span class="dt">day</span>, <span class="fu">SUM</span>(cost_usd) <span class="kw">AS</span> daily_usd</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> llm_calls</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> created_at <span class="op">&gt;</span> NOW() <span class="op">-</span> <span class="dt">INTERVAL</span> <span class="st">&#39;7 days&#39;</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dt">day</span> <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="dt">day</span>;</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="dt">DATE</span>(created_at) <span class="kw">AS</span> <span class="dt">day</span>, <span class="fu">SUM</span>(cost_usd) <span class="kw">AS</span> daily_usd</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> llm_calls</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> created_at <span class="op">&gt;</span> NOW() <span class="op">-</span> <span class="dt">INTERVAL</span> <span class="st">&#39;7 days&#39;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dt">day</span> <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="dt">day</span>;</span></code></pre></div>
 <h2 id="85-eval-harness-regression-policy">8.5 Eval-harness regression
 policy</h2>
 <blockquote>
@@ -1321,7 +1436,7 @@ callout).</li>
 <li><strong>Live IAPD run</strong> — produces the real
 <code>docs/examples/sample-report.json</code> that updates § 4.2 in this
 manual.</li>
-<li><strong>Audit-trail bundle export</strong> (see § 6.6 callout).</li>
+<li><strong>Audit-trail bundle export</strong> (see § 6.7 callout).</li>
 <li><strong>Output bundle layout</strong> — design once for the CLI and
 HTTP endpoint: per-run output directory containing the cached PDF, the
 segmented sections, the extraction JSONs, the RedlineReport, and the
@@ -1354,6 +1469,7 @@ by AUM band + strategy tag is a Week-7+ thing. ADR 0013 pending.</li>
 <hr />
 <h1 id="10-reference">10. Reference</h1>
 <h2 id="101-http-endpoints">10.1 HTTP endpoints</h2>
+<p><strong>JSON / API (machine-driven):</strong></p>
 <table>
 <thead>
 <tr>
@@ -1393,6 +1509,58 @@ by AUM band + strategy tag is a Week-7+ thing. ADR 0013 pending.</li>
 <td><code>/report/decision/{trace_id}</code></td>
 <td>Read decision history</td>
 </tr>
+<tr>
+<td>GET</td>
+<td><code>/docs</code></td>
+<td>FastAPI auto-docs (Swagger UI)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reviewer UI (browser-driven):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/</code></td>
+<td>Redirect to <code>/review</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/review</code></td>
+<td>Dashboard: list of pipeline runs + score-a-brochure forms</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/review/{trace_id}</code></td>
+<td>Detail page: redline iframe + decision form + history</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/review/{trace_id}/redline.html</code></td>
+<td>Standalone redline HTML (iframe target)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/review/runs</code></td>
+<td>Schedule a run from form data (filed, by CRD)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/review/runs/upload</code></td>
+<td>Schedule a run from an uploaded draft PDF</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/review/{trace_id}/decide</code></td>
+<td>HTMX decision submit (returns panel partial)</td>
+</tr>
 </tbody>
 </table>
 <h2 id="102-cli-commands">10.2 CLI commands</h2>
@@ -1431,6 +1599,11 @@ by AUM band + strategy tag is a Week-7+ thing. ADR 0013 pending.</li>
 <tr>
 <td><code>python -m adv_lens.redline.cli &lt;report.json&gt; [--pdf]</code></td>
 <td>Render a saved RedlineReport to HTML / PDF</td>
+</tr>
+<tr>
+<td><code>python -m adv_lens.app.web.seed [--no-draft]</code></td>
+<td>Seed dashboard demo rows from
+<code>docs/examples/sample-state.json</code></td>
 </tr>
 <tr>
 <td><code>python -m eval.runner [&lt;section&gt;]</code></td>
@@ -1516,6 +1689,10 @@ by AUM band + strategy tag is a Week-7+ thing. ADR 0013 pending.</li>
     storage/
       audit.py              # HumanReview, llm_calls
       db.py                 # session + engine
+    web/                    # Reviewer UI (ADR 0016)
+      routes.py             # /review, /review/{id}, /review/runs[/upload]
+      seed.py               # Demo-row seeding CLI
+      templates/            # Jinja2: base, list, detail, decisions panel
   extractors/
     fee.py                  # Fee extractor
     disciplinary.py         # Disciplinary extractor
@@ -1541,7 +1718,7 @@ docs/
   parking-lot.md            # Captured ideas
   adr/                      # 11 ADRs
 
-tests/                      # 221 pytest tests</code></pre>
+tests/                      # 292 pytest tests</code></pre>
 <h2 id="105-adr-index">10.5 ADR index</h2>
 <table>
 <thead>
@@ -1557,11 +1734,11 @@ tests/                      # 221 pytest tests</code></pre>
 </tr>
 <tr>
 <td>0002</td>
-<td>Data sources (IAPD/IARD)</td>
+<td>Data sources (IAPD/IARD) — amended by 0015</td>
 </tr>
 <tr>
 <td>0003</td>
-<td>Segmenter strategy</td>
+<td>Segmenter strategy — amended by 0014</td>
 </tr>
 <tr>
 <td>0004</td>
@@ -1603,12 +1780,24 @@ tests/                      # 221 pytest tests</code></pre>
 <td>0013</td>
 <td>Peer auto-discovery from IARD (pending)</td>
 </tr>
+<tr>
+<td>0014</td>
+<td>Segmenter limits on multi-program / bundled-Items brochures</td>
+</tr>
+<tr>
+<td>0015</td>
+<td>SEC IAPD URL + User-Agent fragility</td>
+</tr>
+<tr>
+<td>0016</td>
+<td>Server-rendered review UI (FastAPI + Jinja + HTMX)</td>
+</tr>
 </tbody>
 </table>
 <p>Each ADR follows the Context / Decision / Consequences format and is
 one file under <code>docs/adr/</code>.</p>
 <hr />
-<p><em>End of manual. Generated 2026-04-26 from <code>main</code>. The
+<p><em>End of manual. Generated 2026-04-27 from <code>main</code>. The
 live source is <code>docs/user-manual.md</code>; this PDF is regenerated
 by <code>docs/build-pdf.sh</code>.</em></p>
 </body>

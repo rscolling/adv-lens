@@ -26,8 +26,10 @@ redline, HITL decision recorded).
   `uv run uvicorn adv_lens.app.main:app --reload` running on
   `localhost:8000`.
 - Demo data seeded: `uv run python -m adv_lens.app.web.seed` (one-shot,
-  idempotent — loads the Brown Advisory sample state into the
-  `pipeline_runs` table so `/review` is non-empty before recording).
+  idempotent — inserts **two** rows into `pipeline_runs`: the original
+  Brown Advisory filed run plus a draft-shaped companion that flows
+  through the upload code path with a synthetic `99`-prefixed CRD).
+  Both visible in the dashboard before recording.
 
 ## Tool walkthrough — ScreenToGif on Windows (recommended)
 
@@ -150,15 +152,19 @@ no hand-holding. Either let the JSON stream for ~10s or cut directly
 to the result. *Caption:* "fetch → segment → 3 extractors in parallel
 → peer retrieval → Opus redline writer → HITL gate, ~60 s."
 
-### t=0:20–0:30 — Reviewer UI list view
+### t=0:20–0:32 — Reviewer UI list view
 
-Foreground the browser at `http://localhost:8000/review`. Show the
-list with the seeded Brown Advisory row: trace, CRD, status pill
-(`complete`), score `68` in the amber band, headline, and finding
-count. *Caption:* "Every pipeline run lands here for a CCO to
-review."
+Foreground the browser at `http://localhost:8000/review`. The
+dashboard shows: title "Brochure Scoring Tool", a 3-step workflow
+strip explaining what the system does, then two side-by-side intake
+forms ("Filed brochure" / "Draft brochure"), then the runs table.
+*Caption (intro panel):* "A CCO can score a peer firm's filed
+brochure or self-review their own draft before submitting it."
 
-Click the row to open the detail page.
+The runs table shows the seeded Brown Advisory row (filed) plus the
+draft-shaped companion (synthetic `99`-prefixed CRD). Hover the table
+row briefly to make the row-highlight visible, then click the filed
+row to open the detail page.
 
 ### t=0:30–0:55 — Reviewer detail: redline + decision form
 

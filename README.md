@@ -6,8 +6,10 @@
 > advisers, disciplinary disclosure flags, conflict-of-interest enumeration,
 > and a redline against SEC plain-English expectations.
 
-**Status:** Pipeline feature-complete end-to-end on real SEC filings.
-First live IAPD run landed against Brown Advisory LLC (CRD 110181) on
+**Status:** Pipeline feature-complete end-to-end on real SEC filings,
+plus a server-rendered review UI at `/review` covering both the
+benchmark-a-filed-firm and the score-your-own-draft use cases. First
+live IAPD run landed against Brown Advisory LLC (CRD 110181) on
 2026-04-26, sample at [`docs/examples/sample-report.json`](docs/examples/sample-report.json)
 ([HTML](docs/examples/sample-report.html) /
 [PDF](docs/examples/sample-report.pdf)). Eval harness at **17/19 pass,
@@ -56,10 +58,25 @@ audit semantics carry through unchanged.
 
 ```bash
 docker compose up -d postgres qdrant
-uv run python -m adv_lens.app.web.seed   # one-shot: load Brown Advisory sample
+uv run python -m adv_lens.app.web.seed   # one-shot: load Brown Advisory samples (filed + draft)
 uv run uvicorn adv_lens.app.main:app --reload
 # → http://localhost:8000/review
 ```
+
+**The dashboard supports both audience-facing use cases:**
+
+1. **Filed brochure (benchmark / diligence).** Enter a firm's CRD; the
+   pipeline fetches the brochure from
+   [SEC IAPD](https://adviserinfo.sec.gov/), runs end-to-end, and the
+   resulting redline lands in the run list ready for reviewer sign-off.
+   For peer benchmarking, M&A diligence, or compliance review of a
+   competitor.
+2. **Draft brochure (pre-file self-review).** Upload a PDF that hasn't
+   been filed yet. Bytes stay on the local machine; same pipeline runs
+   on a synthetic ``99``-prefixed CRD. For a CCO writing this year's
+   amendment who wants to catch missing disclosures and unclear
+   language *before* the SEC examiner does. See ADR 0016 § 5 for the
+   cache-hijack trick that makes this zero-pipeline-modification.
 
 The redline body is reused verbatim from `render_redline_html`
 (iframed) so the bytes a CCO sees in the browser are the same bytes
@@ -67,6 +84,12 @@ the email/PDF path produces. Decision form posts via HTMX → the
 decisions panel updates in place. See
 [ADR 0016](docs/adr/0016-review-ui.md) for the design choices (server-
 rendered, iframe, HTMX, no SPA).
+
+The seed CLI inserts two demo rows: the live Brown Advisory filed run,
+plus a draft-shaped companion that reuses the same brochure bytes via
+the upload code path. Run it once after a fresh DB so the dashboard is
+non-empty on first visit; idempotent on re-run. Pass `--no-draft` to
+skip the draft companion.
 
 ## Demo
 
@@ -115,9 +138,21 @@ docker compose up -d postgres qdrant langfuse-web
 # visit http://localhost:3000 to provision Langfuse and grab the
 # public/secret keys, then paste them into .env
 
+uv run python -m adv_lens.app.web.seed     # one-shot: seed the dashboard demo rows
 uv run uvicorn adv_lens.app.main:app --reload
-# GET http://localhost:8000/healthz
-# GET http://localhost:8000/brochure/108000   # lists current Part 2A brochures for CRD 108000
+# → http://localhost:8000/review           # the reviewer UI (start here)
+# → http://localhost:8000/healthz          # liveness probe
+# → http://localhost:8000/docs             # FastAPI auto-docs
+```
+
+**Note for Windows users (PowerShell):** the bash-style ``VAR=value cmd``
+prefix doesn't work. To override the default Postgres DSN with sqlite
+for a no-Docker quickstart:
+
+```powershell
+$env:POSTGRES_DSN = "sqlite:///./data/adv_lens_dev.db"
+uv run python -m adv_lens.app.web.seed
+uv run uvicorn adv_lens.app.main:app --port 8000 --reload
 ```
 
 ### Ingest a brochure
@@ -361,7 +396,12 @@ ADR, or a callout in the user manual.
   `human_reviews` on `trace_id` + `report_hash` directly.
 - **Demo GIF / video** not yet recorded — the live HTML/PDF redline
   artifact at `docs/examples/sample-report.{html,pdf}` is the standing
-  visual-output proof until the GIF lands.
+  visual-output proof until the GIF lands. Recording target is now the
+  reviewer UI flow (list view → detail page → decision submit) per the
+  updated [demo-playbook.md](docs/demo-playbook.md).
+- **No browser-side authentication.** The reviewer UI is local-only
+  by design (single-CCO dev tool); a real RIA pilot would add SSO +
+  per-firm tenancy. ADR 0016 § Context spells this out.
 
 ## Roadmap
 

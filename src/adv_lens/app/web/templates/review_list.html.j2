@@ -19,10 +19,14 @@
     <li><strong>Score</strong> through a LangGraph pipeline (segmenter,
         three Pydantic-typed extractors, peer retrieval, Opus redline
         writer). ~30-90s, ~$1 of Anthropic spend per run.</li>
-    <li><strong>Decide</strong> &mdash; reviewer reads the redline here
-        and records approve / revise / reject. The decision writes one row
-        to <code>human_reviews</code>, pinned to the report's SHA-256
-        so a regenerated report won't satisfy the same approval.</li>
+    <li><strong>Decide</strong> &mdash; reviewer reads the
+        <strong>redline</strong> (a scored compliance assessment with
+        categorized findings, severity ratings, and recommendations &mdash;
+        borrowed from legal review where an attorney marks up a document
+        in red ink) and records approve / revise / reject. The decision
+        writes one row to <code>human_reviews</code>, pinned to the
+        report's SHA-256 so a regenerated report won't satisfy the same
+        approval.</li>
   </ol>
   <p class="intro-links">
     <a href="https://github.com/rscolling/adv-lens#readme">README</a>
@@ -125,7 +129,10 @@
 </p>
 
 <h2 style="margin:1.4em 0 0.2em;font-size:18px">Pipeline runs</h2>
-<p class="muted" style="margin:0 0 0.6em">Click a row to open the redline + record a decision.</p>
+<p class="muted" style="margin:0 0 0.6em">
+  Click a row to open the redline alongside a reviewer decision form.
+  The <strong>headline</strong> column below previews the redline's one-paragraph summary.
+</p>
 
 <div class="panel" style="padding:0">
   {% if rows %}

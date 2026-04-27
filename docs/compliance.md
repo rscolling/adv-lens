@@ -120,12 +120,15 @@ The terminal node of every pipeline invocation is `hitl_gate`. It is
 2. sets `state.review_status = "pending_review"`,
 3. returns control without writing any decision row of its own.
 
-A CCO acts via `POST /report/decision`, which writes one row to the
-`human_reviews` table with `decision`, `reviewer`, `rationale`, the
-exact `report_hash` the CCO read, and a UTC timestamp. Decisions
-options are `approved`, `rejected`, `revise_requested`. Re-posts
-deliberately create new rows (the audit semantic is "the reviewer
-acted twice"), not updates.
+A CCO acts via the reviewer UI at `/review/{trace_id}` (server-rendered
+form; ADR 0016) or via `POST /report/decision` directly. Both paths
+write one row to the `human_reviews` table with `decision`, `reviewer`,
+`rationale`, the exact `report_hash` the CCO read, and a UTC timestamp.
+Decision options are `approved`, `rejected`, `revise_requested`.
+Re-posts deliberately create new rows (the audit semantic is "the
+reviewer acted twice"), not updates. The UI is a presentation layer
+on top of the same write path; it does not maintain a separate audit
+log or apply any transformation to the row before commit.
 
 ### 5.2 Why a hash
 
@@ -144,6 +147,21 @@ moved and the firm needs a fresh review.
 `ENABLE_HITL=false` makes the gate auto-approve — intended for batch
 backfills and integration tests, not production. The user manual § 7.5
 flags this as a configuration to inspect during audit prep.
+
+### 5.4 Pre-file self-review (draft-upload path)
+
+The reviewer UI accepts uploaded draft brochures (PDFs that have not
+yet been filed with the SEC) via `POST /review/runs/upload`. The
+upload bytes are written to the same on-disk cache the IAPD fetcher
+populates, keyed on a synthetic numeric CRD with a `99` prefix. From
+the audit trail's perspective these runs are indistinguishable from
+filed runs — same `pipeline_runs` row shape, same `llm_calls` rows,
+same HITL gate, same `human_reviews` row pinned to `report_hash`. The
+synthetic-CRD prefix makes drafts trivially distinguishable in
+queries when an examiner asks (e.g. *"show me only filed-brochure
+reviews from the last quarter"*: `WHERE brochure_crd NOT LIKE '99%'`).
+Bytes never leave the local machine until and unless the operator
+explicitly chooses to share them.
 
 ## 6. Audit trail design
 

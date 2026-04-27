@@ -2,7 +2,7 @@
 title: "ADV-Lens — User Manual"
 subtitle: "A printable desk reference for compliance officers, M&A diligence teams, and the engineers who run the system"
 author: "Robert Colling"
-date: "Generated 2026-04-26 from main"
+date: "Generated 2026-04-27 from main"
 ---
 
 # 1. What this is, in plain English
@@ -442,12 +442,107 @@ cp .env.example .env
 docker compose up -d
 # visit http://localhost:3000 to provision Langfuse, paste back the
 # LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY
-uv run python -m adv_lens.app.main  # or: docker compose up app
+uv run python -m adv_lens.app.web.seed   # one-shot: seed dashboard demo rows
+uv run uvicorn adv_lens.app.main:app --reload
 ```
 
-Health check: `GET http://localhost:8000/healthz`
+**Open <http://localhost:8000/review> in a browser** — that's the
+reviewer dashboard. Health check: `GET http://localhost:8000/healthz`.
+FastAPI auto-docs: `GET http://localhost:8000/docs`.
 
-## 6.3 One-shot CLI (synchronous; useful for evals and debugging)
+**Windows / PowerShell users.** The bash-style ``VAR=value cmd``
+prefix doesn't work; use ``$env:VAR = "value"`` on its own line.
+Example for sqlite-only quickstart (no Docker):
+
+```powershell
+$env:POSTGRES_DSN = "sqlite:///./data/adv_lens_dev.db"
+uv run python -m adv_lens.app.web.seed
+uv run uvicorn adv_lens.app.main:app --port 8000 --reload
+```
+
+## 6.3 The reviewer dashboard at `/review`
+
+The intended day-to-day surface for a CCO or analyst. Server-rendered
+(FastAPI + Jinja2 + HTMX), no SPA build step, no client-side state.
+Ships in `src/adv_lens/app/web/` and is mounted on the same FastAPI
+app the JSON endpoints below run on.
+
+### 6.3.1 What the page shows
+
+- **Intro panel** — one-paragraph elevator pitch + 3-step workflow
+  strip (fetch / score / decide) + deep links to README, architecture,
+  compliance, ADR 0010 (HITL design), and `/docs` (the FastAPI auto-
+  docs for the JSON API).
+- **Score-a-brochure form** — two side-by-side panels:
+  - **Filed brochure** — CRD + optional brochure version ID. Submits
+    to `POST /review/runs`, which inserts a `pipeline_runs` row in
+    `queued` status and schedules the runner. Pulls the brochure from
+    SEC IAPD by CRD; for benchmarking, M&A diligence, or compliance
+    review of a competitor.
+  - **Draft brochure (pre-file)** — file picker + optional firm label.
+    Submits to `POST /review/runs/upload`. Validates `%PDF` magic bytes,
+    size (≤25 MB), non-empty body. Computes SHA-256, fabricates a
+    synthetic numeric CRD (`99` + 10 hash-derived digits — the prefix
+    marks it as not-a-real-CRD), and writes the bytes to the cache
+    path that `fetch_brochure_node` would otherwise populate. The
+    pipeline then runs unchanged: `iapd.fetch_brochure` checks
+    `path.exists()` first and never hits SEC IAPD for drafts.
+    For a CCO scoring this year's amendment before filing.
+  Both forms show a yellow chip warning when `ANTHROPIC_API_KEY` is
+  empty, since runs would otherwise fail silently.
+- **Pipeline runs table** — every row corresponds to one
+  `pipeline_runs` row. Columns: trace ID, CRD (with version), status
+  pill (queued / running / complete / failed), score (band-coloured),
+  finding count, headline (truncated, hover for full), created
+  timestamp.
+
+### 6.3.2 The detail page
+
+Clicking a row opens `/review/{trace_id}`:
+
+- A back link (``← All runs``) at the top.
+- Heading: ``CRD <number>`` with the score pill, status, and trace ID.
+- **Left pane:** an iframe loading the full `RedlineReport` HTML at
+  `/review/{trace_id}/redline.html`. Same bytes
+  `render_redline_html` produces for the email/PDF path — score gauge,
+  category breakdown table, severity-coloured finding cards.
+- **Right pane:** a decision form (radio buttons: Approve / Request
+  revision / Reject + reviewer email + rationale). Submits via HTMX
+  to `POST /review/{trace_id}/decide`, which writes a row to
+  `human_reviews` and returns the updated decisions panel as a partial
+  — the page does not reload.
+- Below the form: a decisions history panel listing all prior
+  decisions for this trace_id, oldest first, with the new row briefly
+  highlighted after submission.
+
+### 6.3.3 Seed CLI for demo data
+
+A fresh DB starts empty. The seed CLI inserts two demo rows so the
+dashboard is non-empty on first visit:
+
+```bash
+uv run python -m adv_lens.app.web.seed
+# Seeds:
+# - brown-advisory-rescued (filed run, real CRD 110181)
+# - draft-brown-advisory-self-review (synthetic 99-prefixed CRD,
+#   same brochure bytes via the upload code path)
+```
+
+Idempotent — re-running with the same trace_id replaces the existing
+row's status/result, so a fresher `sample-state.json` overrides
+cleanly. Pass `--no-draft` to skip the draft companion. The draft
+seed no-ops gracefully when the cached brochure PDF is missing
+(fresh checkout); fetch a real brochure first to enable it.
+
+### 6.3.4 Why server-rendered, not React/Next
+
+ADR 0016 has the full rationale. Short version: this is a list view,
+an iframed report, two simple intake forms, and a decision form with
+three radio buttons. A SPA would add a build step, hydration, and a
+separate deploy story for zero user-facing benefit. Jinja2 is already
+a dep (the redline renderer uses it), and HTMX is one CDN script tag.
+
+## 6.4 One-shot CLI (synchronous; useful for evals and debugging)
 
 ```bash
 # Fetch + segment only (no LLM cost)
@@ -462,7 +557,7 @@ uv run python -m adv_lens.app.graph.cli 108000 --brochure-version 987654
 
 CLI prints the final `ADVState` as JSON. Pipe to `jq` for inspection.
 
-## 6.4 HTTP (asynchronous; production shape)
+## 6.5 HTTP (asynchronous; production shape)
 
 ```bash
 # Submit
@@ -482,7 +577,11 @@ The status walks `queued → running → complete | failed`. Polling
 cadence: 5-15 seconds is plenty; a typical end-to-end run is 30-90 s
 on a real brochure.
 
-## 6.5 Approving or rejecting a report (HITL)
+## 6.6 Approving or rejecting a report (HITL)
+
+The reviewer UI at `/review/{trace_id}` (§ 6.3.2) is the intended
+path: open the row, fill the form, the decision row writes itself.
+The JSON endpoint stays available for scripted / operator use.
 
 When `result.review_status == "pending_review"`, the CCO acts:
 
@@ -506,7 +605,7 @@ curl http://localhost:8000/report/decision/advlens-abc123
 
 Decision options: `approved`, `rejected`, `revise_requested`.
 
-## 6.6 The audit trail
+## 6.7 The audit trail
 
 Three Postgres tables, queryable at any time:
 
@@ -558,9 +657,11 @@ system.
 
 The `hitl_gate` node runs at the end of every pipeline. It does **not**
 publish the report. It marks the report as `pending_review` and computes
-a `report_hash` (SHA-256 of the canonical RedlineReport JSON). The CCO
-acts via `POST /report/decision`, which writes a row to `human_reviews`
-keyed on the hash.
+a `report_hash` (SHA-256 of the canonical RedlineReport JSON). A CCO
+records a decision either through the reviewer UI at
+`/review/{trace_id}` (§ 6.3.2) or through `POST /report/decision`
+directly; both paths write the same row to `human_reviews` keyed on
+the hash.
 
 A re-run of the pipeline against the same CRD produces a new `trace_id`
 but a `report_hash` that may or may not match the prior approval. This
@@ -572,7 +673,7 @@ not to a moving target.
 Every LLM call and every human decision lands in Postgres with a
 trace ID that joins back to the pipeline run. The audit posture is
 designed to answer: *"Show me how this finding was produced and who
-signed off on it."* See § 6.6 for query examples.
+signed off on it."* See § 6.7 for query examples.
 
 ## 7.4 Regulatory posture
 
@@ -759,7 +860,7 @@ operational polish** (Weeks 4-6). In rough priority order:
 - **Visual sample of input data** in this manual (see § 3 callout).
 - **Live IAPD run** — produces the real `docs/examples/sample-report.json`
   that updates § 4.2 in this manual.
-- **Audit-trail bundle export** (see § 6.6 callout).
+- **Audit-trail bundle export** (see § 6.7 callout).
 - **Output bundle layout** — design once for the CLI and HTTP endpoint:
   per-run output directory containing the cached PDF, the segmented
   sections, the extraction JSONs, the RedlineReport, and the audit
@@ -794,6 +895,8 @@ operational polish** (Weeks 4-6). In rough priority order:
 
 ## 10.1 HTTP endpoints
 
+**JSON / API (machine-driven):**
+
 | Method | Path | Purpose |
 |---|---|---|
 | GET | `/healthz` | Liveness |
@@ -802,6 +905,19 @@ operational polish** (Weeks 4-6). In rough priority order:
 | GET | `/pipeline/run/{trace_id}` | Poll pipeline state |
 | POST | `/report/decision` | Write a CCO decision row |
 | GET | `/report/decision/{trace_id}` | Read decision history |
+| GET | `/docs` | FastAPI auto-docs (Swagger UI) |
+
+**Reviewer UI (browser-driven):**
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/` | Redirect to `/review` |
+| GET | `/review` | Dashboard: list of pipeline runs + score-a-brochure forms |
+| GET | `/review/{trace_id}` | Detail page: redline iframe + decision form + history |
+| GET | `/review/{trace_id}/redline.html` | Standalone redline HTML (iframe target) |
+| POST | `/review/runs` | Schedule a run from form data (filed, by CRD) |
+| POST | `/review/runs/upload` | Schedule a run from an uploaded draft PDF |
+| POST | `/review/{trace_id}/decide` | HTMX decision submit (returns panel partial) |
 
 ## 10.2 CLI commands
 
@@ -814,6 +930,7 @@ operational polish** (Weeks 4-6). In rough priority order:
 | `python -m adv_lens.app.main` | Start the FastAPI app |
 | `python -m adv_lens.app.jobs.reaper [--dry-run]` | Sweep stuck pipeline_runs rows |
 | `python -m adv_lens.redline.cli <report.json> [--pdf]` | Render a saved RedlineReport to HTML / PDF |
+| `python -m adv_lens.app.web.seed [--no-draft]` | Seed dashboard demo rows from `docs/examples/sample-state.json` |
 | `python -m eval.runner [<section>]` | Run the eval harness |
 
 ## 10.3 Environment variables
@@ -850,6 +967,10 @@ src/adv_lens/
     storage/
       audit.py              # HumanReview, llm_calls
       db.py                 # session + engine
+    web/                    # Reviewer UI (ADR 0016)
+      routes.py             # /review, /review/{id}, /review/runs[/upload]
+      seed.py               # Demo-row seeding CLI
+      templates/            # Jinja2: base, list, detail, decisions panel
   extractors/
     fee.py                  # Fee extractor
     disciplinary.py         # Disciplinary extractor
@@ -875,7 +996,7 @@ docs/
   parking-lot.md            # Captured ideas
   adr/                      # 11 ADRs
 
-tests/                      # 221 pytest tests
+tests/                      # 292 pytest tests
 ```
 
 ## 10.5 ADR index
@@ -883,8 +1004,8 @@ tests/                      # 221 pytest tests
 | # | Title |
 |---|---|
 | 0001 | Stack choices |
-| 0002 | Data sources (IAPD/IARD) |
-| 0003 | Segmenter strategy |
+| 0002 | Data sources (IAPD/IARD) — amended by 0015 |
+| 0003 | Segmenter strategy — amended by 0014 |
 | 0004 | Peer corpus indexing |
 | 0005 | Extractor pattern |
 | 0006 | Parallel state composition |
@@ -895,12 +1016,15 @@ tests/                      # 221 pytest tests
 | 0011 | Async pipeline worker |
 | 0012 | On-prem branch scope (pending) |
 | 0013 | Peer auto-discovery from IARD (pending) |
+| 0014 | Segmenter limits on multi-program / bundled-Items brochures |
+| 0015 | SEC IAPD URL + User-Agent fragility |
+| 0016 | Server-rendered review UI (FastAPI + Jinja + HTMX) |
 
 Each ADR follows the Context / Decision / Consequences format and is one
 file under `docs/adr/`.
 
 ---
 
-*End of manual. Generated 2026-04-26 from `main`. The live source is
+*End of manual. Generated 2026-04-27 from `main`. The live source is
 `docs/user-manual.md`; this PDF is regenerated by
 `docs/build-pdf.sh`.*
