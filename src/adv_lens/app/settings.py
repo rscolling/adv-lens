@@ -71,9 +71,7 @@ class Settings(BaseSettings):
     # guidance is "descriptive UA with contact info". The polite-bot
     # hybrid below mirrors Googlebot's pattern: browser-shaped prefix to
     # pass the filter, plus our identification + contact for log-readers.
-    sec_user_agent: str = (
-        "Mozilla/5.0 (compatible; ADV-Lens/0.1; +mailto:robert.colling@gmail.com)"
-    )
+    sec_user_agent: str = "Mozilla/5.0 (compatible; ADV-Lens/0.1; +mailto:robert.colling@gmail.com)"
     sec_rate_limit_rps: float = 5.0
     sec_request_timeout_s: float = 30.0
     sec_max_retries: int = 3

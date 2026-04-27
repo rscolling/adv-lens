@@ -23,9 +23,13 @@ from adv_lens.redline.render import render_redline_html, render_redline_pdf
 
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="adv-lens-redline-render")
-    p.add_argument("source", type=Path, help="Path to RedlineReport JSON or wrapped sample-report JSON")
     p.add_argument(
-        "--out", type=Path, default=None,
+        "source", type=Path, help="Path to RedlineReport JSON or wrapped sample-report JSON"
+    )
+    p.add_argument(
+        "--out",
+        type=Path,
+        default=None,
         help="Output HTML path (default: <source>.html next to the source)",
     )
     p.add_argument("--pdf", action="store_true", help="Also render PDF via headless Chrome")

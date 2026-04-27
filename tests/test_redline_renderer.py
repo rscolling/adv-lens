@@ -169,15 +169,26 @@ def test_cli_renders_wrapped_sample(tmp_path: Path) -> None:
     from adv_lens.redline.cli import main
 
     src = tmp_path / "wrapped.json"
-    report = _make_report(findings=[
-        Finding(id="F-001", category="compliance_program", severity="info", item_reference=9,
-                summary="ok", detail="d", recommendation="r"),
-    ])
+    report = _make_report(
+        findings=[
+            Finding(
+                id="F-001",
+                category="compliance_program",
+                severity="info",
+                item_reference=9,
+                summary="ok",
+                detail="d",
+                recommendation="r",
+            ),
+        ]
+    )
     src.write_text(
-        json.dumps({
-            "meta": {"trace_id": "t-1"},
-            "redline": report.model_dump(mode="json"),
-        }),
+        json.dumps(
+            {
+                "meta": {"trace_id": "t-1"},
+                "redline": report.model_dump(mode="json"),
+            }
+        ),
         encoding="utf-8",
     )
     out = tmp_path / "wrapped.html"

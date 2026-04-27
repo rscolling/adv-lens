@@ -273,9 +273,9 @@ def _parse_current_brochures(crd: str, payload: dict) -> list[BrochureRef]:
     brochures_raw = doc.get("brochures") or doc.get("Brochures") or []
     # Current shape: dict with brochuredetails. Legacy shape: list of dicts.
     if isinstance(brochures_raw, dict):
-        brochure_entries = brochures_raw.get("brochuredetails") or brochures_raw.get(
-            "brochureDetails"
-        ) or []
+        brochure_entries = (
+            brochures_raw.get("brochuredetails") or brochures_raw.get("brochureDetails") or []
+        )
     else:
         brochure_entries = brochures_raw
 
@@ -283,11 +283,7 @@ def _parse_current_brochures(crd: str, payload: dict) -> list[BrochureRef]:
     for b in brochure_entries:
         if not isinstance(b, dict):
             continue
-        vid_raw = (
-            b.get("brochureVersionID")
-            or b.get("brochureVersionId")
-            or b.get("BRCHR_VRSN_ID")
-        )
+        vid_raw = b.get("brochureVersionID") or b.get("brochureVersionId") or b.get("BRCHR_VRSN_ID")
         vid = str(vid_raw).strip() if vid_raw is not None else ""
         if not vid.isdigit():
             continue

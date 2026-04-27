@@ -167,9 +167,7 @@ async def rescue_missing_items(
             brochure_crd=brochure_crd,
         )
     except LLMError as e:
-        logger.warning(
-            "segmenter_llm_fallback: rescue call failed (regex result kept): %s", e
-        )
+        logger.warning("segmenter_llm_fallback: rescue call failed (regex result kept): %s", e)
         new_warnings = [
             *segmented.warnings,
             f"LLM rescue call failed for Items {needed}: {type(e).__name__}",
@@ -189,7 +187,7 @@ async def rescue_missing_items(
                 span.item_number,
             )
             continue
-        body = text[span.char_start:span.char_end]
+        body = text[span.char_start : span.char_end]
         if len(body.strip()) < RESCUE_THRESHOLD_CHARS // 4:
             # Even the LLM couldn't find substantive content — don't
             # paper over with another tiny body.
@@ -223,16 +221,22 @@ async def rescue_missing_items(
         merged_sections.append(rescued[n])
     merged_sections.sort(key=lambda s: int(s.item_number))
 
-    rescued_items = sorted(int(s.item_number) for s in merged_sections
-                           if int(s.item_number) in needed
-                           and (int(s.item_number) not in {int(o.item_number) for o in segmented.sections}
-                                or len(s.body) >= RESCUE_THRESHOLD_CHARS))
+    rescued_items = sorted(
+        int(s.item_number)
+        for s in merged_sections
+        if int(s.item_number) in needed
+        and (
+            int(s.item_number) not in {int(o.item_number) for o in segmented.sections}
+            or len(s.body) >= RESCUE_THRESHOLD_CHARS
+        )
+    )
     new_warnings = [
         *segmented.warnings,
         f"LLM rescue replaced/added Items {rescued_items} (regex bodies were <{RESCUE_THRESHOLD_CHARS} chars)",
     ]
     new_missing = [
-        i for i in segmented.missing_items
+        i
+        for i in segmented.missing_items
         if int(i) not in {int(s.item_number) for s in merged_sections}
     ]
     return segmented.model_copy(

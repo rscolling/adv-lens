@@ -4,6 +4,7 @@ Output: docs/images/demo-storyboard.png
 
 Run with: uv run python scripts/build_demo_storyboard.py
 """
+
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -21,11 +22,11 @@ def make_terminal_panel(width: int, height: int, lines: list[tuple[str, str]]) -
         title_font = ImageFont.load_default()
         font = ImageFont.load_default()
     palette = {
-        "prompt":  "#a6e3a1",
-        "out":     "#cdd6f4",
+        "prompt": "#a6e3a1",
+        "out": "#cdd6f4",
         "comment": "#7f849c",
-        "json":    "#f9e2af",
-        "title":   "#89b4fa",
+        "json": "#f9e2af",
+        "title": "#89b4fa",
     }
     y = 16
     for tag, text in lines:
@@ -86,12 +87,12 @@ def main() -> None:
         ("comment", "# CCO posts decision -> writes audit row"),
         ("prompt", "$ curl -X POST .../report/decision" + LINE_CONTINUATION),
         ("prompt", "      -H 'content-type: application/json'" + LINE_CONTINUATION),
-        ("prompt", "      -d '{\"trace_id\":\"brown-advisory-rescued\","),
-        ("prompt", "            \"brochure_crd\":\"110181\","),
-        ("prompt", "            \"report_hash\":\"<from state>\","),
-        ("prompt", "            \"reviewer\":\"jane.cco@firm.example\","),
-        ("prompt", "            \"decision\":\"revise_requested\","),
-        ("prompt", "            \"rationale\":\"Confirm Items 11/12 spans\"}'"),
+        ("prompt", '      -d \'{"trace_id":"brown-advisory-rescued",'),
+        ("prompt", '            "brochure_crd":"110181",'),
+        ("prompt", '            "report_hash":"<from state>",'),
+        ("prompt", '            "reviewer":"jane.cco@firm.example",'),
+        ("prompt", '            "decision":"revise_requested",'),
+        ("prompt", '            "rationale":"Confirm Items 11/12 spans"}\''),
         ("json", '{"id": 1, "decision": "revise_requested",'),
         ("json", ' "report_hash": "9a7c...",'),
         ("json", ' "created_at": "2026-04-26T..."}'),
@@ -126,9 +127,7 @@ def main() -> None:
         for row in range(2):
             x = margin + col * (pw + gap)
             y = top + row * (ph + gap)
-            ImageDraw.Draw(canvas).rectangle(
-                [x, y, x + pw, y + ph], outline="#cccccc", width=2
-            )
+            ImageDraw.Draw(canvas).rectangle([x, y, x + pw, y + ph], outline="#cccccc", width=2)
 
     out_path = Path("docs/images/demo-storyboard.png")
     out_path.parent.mkdir(parents=True, exist_ok=True)

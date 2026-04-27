@@ -69,9 +69,7 @@ def seed_sample(sample_path: Path = _DEFAULT_SAMPLE) -> str:
 
     now = datetime.now(UTC)
     with Session(engine) as session:
-        existing = session.exec(
-            select(PipelineRun).where(PipelineRun.trace_id == trace_id)
-        ).first()
+        existing = session.exec(select(PipelineRun).where(PipelineRun.trace_id == trace_id)).first()
         if existing is None:
             row = PipelineRun(
                 trace_id=trace_id,

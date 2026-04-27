@@ -139,9 +139,7 @@ def test_review_list_shows_seeded_run(client: TestClient, in_memory_session: Ses
     assert "pill-complete" in r.text
 
 
-def test_review_list_score_band_classes(
-    client: TestClient, in_memory_session: Session
-) -> None:
+def test_review_list_score_band_classes(client: TestClient, in_memory_session: Session) -> None:
     _seed_run(in_memory_session, trace_id="hi", redline_score=92)
     _seed_run(in_memory_session, trace_id="mid", redline_score=68)
     _seed_run(in_memory_session, trace_id="lo", redline_score=42)
@@ -258,9 +256,7 @@ def test_decide_writes_audit_row_and_returns_panel(
     assert rows[0].report_hash == "c" * 64
 
 
-def test_decide_rejects_invalid_decision(
-    client: TestClient, in_memory_session: Session
-) -> None:
+def test_decide_rejects_invalid_decision(client: TestClient, in_memory_session: Session) -> None:
     _seed_run(in_memory_session, trace_id="bad-d", report_hash="d" * 64)
     r = client.post(
         "/review/bad-d/decide",
@@ -274,9 +270,7 @@ def test_decide_rejects_invalid_decision(
     assert r.status_code == 400
 
 
-def test_decide_rejects_short_report_hash(
-    client: TestClient, in_memory_session: Session
-) -> None:
+def test_decide_rejects_short_report_hash(client: TestClient, in_memory_session: Session) -> None:
     _seed_run(in_memory_session, trace_id="short-hash", report_hash="e" * 64)
     r = client.post(
         "/review/short-hash/decide",
@@ -396,9 +390,7 @@ def test_run_from_ui_rejects_non_numeric_version_id(
     assert rows == []
 
 
-def test_run_from_ui_strips_whitespace(
-    client: TestClient, in_memory_session: Session
-) -> None:
+def test_run_from_ui_strips_whitespace(client: TestClient, in_memory_session: Session) -> None:
     r = client.post(
         "/review/runs",
         data={"crd": "  110181  ", "brochure_version_id": "  1037550 "},
@@ -412,9 +404,7 @@ def test_run_from_ui_strips_whitespace(
     assert rows[0].brochure_version_id == "1037550"
 
 
-def test_review_list_shows_queued_flash(
-    client: TestClient, in_memory_session: Session
-) -> None:
+def test_review_list_shows_queued_flash(client: TestClient, in_memory_session: Session) -> None:
     r = client.get("/review?queued=advlens-test-flash")
     assert r.status_code == 200
     assert "advlens-test-flash" in r.text
@@ -481,7 +471,9 @@ def test_upload_creates_draft_row_and_writes_cache(
 
 
 def test_upload_rejects_non_pdf(
-    client: TestClient, in_memory_session: Session, tmp_path: Path,
+    client: TestClient,
+    in_memory_session: Session,
+    tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from adv_lens.app import settings as settings_module
@@ -503,7 +495,9 @@ def test_upload_rejects_non_pdf(
 
 
 def test_upload_rejects_empty_file(
-    client: TestClient, in_memory_session: Session, tmp_path: Path,
+    client: TestClient,
+    in_memory_session: Session,
+    tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from adv_lens.app import settings as settings_module
@@ -524,7 +518,9 @@ def test_upload_rejects_empty_file(
 
 
 def test_upload_rejects_oversize_file(
-    client: TestClient, in_memory_session: Session, tmp_path: Path,
+    client: TestClient,
+    in_memory_session: Session,
+    tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from adv_lens.app import settings as settings_module
@@ -541,7 +537,10 @@ def test_upload_rejects_oversize_file(
         follow_redirects=False,
     )
     assert r.status_code == 303
-    assert "too+large" in r.headers["location"].lower() or "too%20large" in r.headers["location"].lower()
+    assert (
+        "too+large" in r.headers["location"].lower()
+        or "too%20large" in r.headers["location"].lower()
+    )
     assert in_memory_session.exec(select(PipelineRun)).all() == []
 
 
@@ -570,11 +569,13 @@ def test_upload_synthetic_crd_is_deterministic(
     rows = in_memory_session.exec(select(PipelineRun)).all()
     assert len(rows) == 2  # two rows...
     assert rows[0].brochure_crd == rows[1].brochure_crd  # ...same synthetic CRD
-    assert rows[0].trace_id != rows[1].trace_id          # ...distinct trace IDs
+    assert rows[0].trace_id != rows[1].trace_id  # ...distinct trace IDs
 
 
 def test_upload_without_firm_label_falls_back_to_hash_trace(
-    client: TestClient, in_memory_session: Session, tmp_path: Path,
+    client: TestClient,
+    in_memory_session: Session,
+    tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from adv_lens.app import settings as settings_module
@@ -635,17 +636,13 @@ def test_seed_loads_sample_state_into_pipeline_runs(
         expected = json.load(f)
     assert trace_id == expected["trace_id"]
 
-    rows = in_memory_session.exec(
-        select(PipelineRun).where(PipelineRun.trace_id == trace_id)
-    ).all()
+    rows = in_memory_session.exec(select(PipelineRun).where(PipelineRun.trace_id == trace_id)).all()
     assert len(rows) == 1
     assert rows[0].status == "complete"
     assert rows[0].brochure_crd == str(expected["brochure_crd"])
 
 
-def test_seed_is_idempotent(
-    in_memory_session: Session, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_seed_is_idempotent(in_memory_session: Session, monkeypatch: pytest.MonkeyPatch) -> None:
     if not _SAMPLE_STATE.exists():
         pytest.skip(f"sample state not found at {_SAMPLE_STATE}")
 
@@ -657,9 +654,7 @@ def test_seed_is_idempotent(
 
     with _SAMPLE_STATE.open(encoding="utf-8") as f:
         trace_id = json.load(f)["trace_id"]
-    rows = in_memory_session.exec(
-        select(PipelineRun).where(PipelineRun.trace_id == trace_id)
-    ).all()
+    rows = in_memory_session.exec(select(PipelineRun).where(PipelineRun.trace_id == trace_id)).all()
     assert len(rows) == 1  # not duplicated
 
 
@@ -677,8 +672,7 @@ def test_seed_draft_creates_synthetic_row(
 
     # Stage a fake PDF at the canonical cache path under tmp_path.
     src_pdf = (
-        tmp_path / "brochures" / str(filed["brochure_crd"])
-        / f"{filed['brochure_version_id']}.pdf"
+        tmp_path / "brochures" / str(filed["brochure_crd"]) / f"{filed['brochure_version_id']}.pdf"
     )
     src_pdf.parent.mkdir(parents=True, exist_ok=True)
     src_pdf.write_bytes(b"%PDF-1.4 stub\n")
@@ -693,9 +687,7 @@ def test_seed_draft_creates_synthetic_row(
     trace_id = seed_module.seed_draft_from_filed(_SAMPLE_STATE)
     assert trace_id == "draft-brown-advisory-self-review"
 
-    rows = in_memory_session.exec(
-        select(PipelineRun).where(PipelineRun.trace_id == trace_id)
-    ).all()
+    rows = in_memory_session.exec(select(PipelineRun).where(PipelineRun.trace_id == trace_id)).all()
     assert len(rows) == 1
     row = rows[0]
     assert row.brochure_crd.startswith("99")
@@ -748,8 +740,7 @@ def test_seed_draft_is_idempotent(
     with _SAMPLE_STATE.open(encoding="utf-8") as f:
         filed = json.load(f)
     src_pdf = (
-        tmp_path / "brochures" / str(filed["brochure_crd"])
-        / f"{filed['brochure_version_id']}.pdf"
+        tmp_path / "brochures" / str(filed["brochure_crd"]) / f"{filed['brochure_version_id']}.pdf"
     )
     src_pdf.parent.mkdir(parents=True, exist_ok=True)
     src_pdf.write_bytes(b"%PDF-1.4 stub\n")

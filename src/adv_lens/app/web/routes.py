@@ -269,16 +269,12 @@ async def schedule_run_from_upload(
 
 @router.get("/review/{trace_id}", response_class=HTMLResponse)
 def review_detail(request: Request, trace_id: str, session: SessionDep) -> HTMLResponse:
-    run = session.exec(
-        select(PipelineRun).where(PipelineRun.trace_id == trace_id)
-    ).first()
+    run = session.exec(select(PipelineRun).where(PipelineRun.trace_id == trace_id)).first()
     if run is None:
         raise HTTPException(status_code=404, detail=f"trace_id {trace_id!r} not found")
 
     decisions = session.exec(
-        select(HumanReview)
-        .where(HumanReview.trace_id == trace_id)
-        .order_by(HumanReview.ts)  # type: ignore[arg-type]
+        select(HumanReview).where(HumanReview.trace_id == trace_id).order_by(HumanReview.ts)  # type: ignore[arg-type]
     ).all()
 
     report_hash = _report_hash_from_run(run)
@@ -304,9 +300,7 @@ def review_redline_iframe(trace_id: str, session: SessionDep) -> HTMLResponse:
     Reuses ``render_redline_html`` unchanged — same bytes the email/PDF path
     would produce.
     """
-    run = session.exec(
-        select(PipelineRun).where(PipelineRun.trace_id == trace_id)
-    ).first()
+    run = session.exec(select(PipelineRun).where(PipelineRun.trace_id == trace_id)).first()
     if run is None:
         raise HTTPException(status_code=404, detail=f"trace_id {trace_id!r} not found")
 
@@ -355,9 +349,7 @@ def review_decide(
     if len(report_hash) != 64 or any(c not in "0123456789abcdef" for c in report_hash):
         raise HTTPException(status_code=400, detail="report_hash must be 64-hex chars")
 
-    run = session.exec(
-        select(PipelineRun).where(PipelineRun.trace_id == trace_id)
-    ).first()
+    run = session.exec(select(PipelineRun).where(PipelineRun.trace_id == trace_id)).first()
     if run is None:
         raise HTTPException(status_code=404, detail=f"trace_id {trace_id!r} not found")
 
@@ -374,9 +366,7 @@ def review_decide(
 
     # Re-query the full decision history for the panel render
     decisions = session.exec(
-        select(HumanReview)
-        .where(HumanReview.trace_id == trace_id)
-        .order_by(HumanReview.ts)  # type: ignore[arg-type]
+        select(HumanReview).where(HumanReview.trace_id == trace_id).order_by(HumanReview.ts)  # type: ignore[arg-type]
     ).all()
 
     return templates.TemplateResponse(

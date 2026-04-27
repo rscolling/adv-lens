@@ -63,17 +63,17 @@ def _score_bg_bottom(score: int) -> str:
 
 _SEV_COLOURS = {
     "critical": "#7f1d1d",
-    "high":     "#b32e2e",
-    "medium":   "#cc6e2a",
-    "low":      "#a07f1f",
-    "info":     "#5b6770",
+    "high": "#b32e2e",
+    "medium": "#cc6e2a",
+    "low": "#a07f1f",
+    "info": "#5b6770",
 }
 _SEV_BACKGROUNDS = {
     "critical": "#fde2e2",
-    "high":     "#fce8e8",
-    "medium":   "#fdebd5",
-    "low":      "#fdf3d4",
-    "info":     "#eef0f3",
+    "high": "#fce8e8",
+    "medium": "#fdebd5",
+    "low": "#fdf3d4",
+    "info": "#eef0f3",
 }
 
 
@@ -126,12 +126,9 @@ def render_redline_pdf(
     chrome = chrome_path or _find_chrome()
     if chrome is None:
         raise RuntimeError(
-            "No Chrome/Edge binary found for PDF rendering. "
-            "Install Chrome or pass chrome_path=..."
+            "No Chrome/Edge binary found for PDF rendering. Install Chrome or pass chrome_path=..."
         )
-    with tempfile.NamedTemporaryFile(
-        mode="w", suffix=".html", encoding="utf-8", delete=False
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".html", encoding="utf-8", delete=False) as f:
         tmp_html = Path(f.name)
         f.write(html)
     try:
@@ -156,8 +153,7 @@ def render_redline_pdf(
         )
         if not out_path.exists():
             raise RuntimeError(
-                f"Chrome did not produce PDF at {out_path}. "
-                f"stderr: {result.stderr[:500]}"
+                f"Chrome did not produce PDF at {out_path}. stderr: {result.stderr[:500]}"
             )
     finally:
         with contextlib.suppress(OSError):

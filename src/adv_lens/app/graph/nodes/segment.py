@@ -77,9 +77,7 @@ async def segment_brochure_node(
 
 def _needs_rescue(segmented) -> bool:
     found = {int(s.item_number): s for s in segmented.sections}
-    return any(
-        n not in found or len(found[n].body) < RESCUE_THRESHOLD_CHARS for n in RESCUE_ITEMS
-    )
+    return any(n not in found or len(found[n].body) < RESCUE_THRESHOLD_CHARS for n in RESCUE_ITEMS)
 
 
 def _maybe_make_llm_client() -> LLMClient | None:

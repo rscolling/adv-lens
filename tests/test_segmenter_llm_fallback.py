@@ -114,8 +114,18 @@ async def test_rescue_merges_spans_into_segmentation() -> None:
         _section(9, 5_000, start=200),
     )
     spans = [
-        {"item_number": 5, "char_start": 10_000, "char_end": 14_000, "title": "Fees and Compensation"},
-        {"item_number": 10, "char_start": 14_017, "char_end": len(text), "title": "Other Activities"},
+        {
+            "item_number": 5,
+            "char_start": 10_000,
+            "char_end": 14_000,
+            "title": "Fees and Compensation",
+        },
+        {
+            "item_number": 10,
+            "char_start": 14_017,
+            "char_end": len(text),
+            "title": "Other Activities",
+        },
         {"item_number": 11, "char_start": 14_017, "char_end": len(text), "title": "Code of Ethics"},
         {"item_number": 12, "char_start": 14_017, "char_end": len(text), "title": "Brokerage"},
     ]
