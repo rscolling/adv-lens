@@ -37,15 +37,22 @@ dependencies = [
 
     # ADV parsing
     "pypdf>=5.1",
-    "sec-parser>=0.58",
+    # sec-parser was originally listed as a fallback path; ADR 0003
+    # documents why the heuristic segmenter took over and sec-parser
+    # was never imported. Dropping it (a) removes a transitive lxml
+    # 5.4.0 CVE we couldn't otherwise dodge (sec-parser pins lxml<6)
+    # and (b) shrinks the dep graph.
     "llama-parse>=0.5",
 ]
 
 [dependency-groups]
 dev = [
+    "mypy>=1.13",
+    "pip-audit>=2.7",
     "pypdfium2>=5.7.1",
     "pytest>=8.3",
     "pytest-asyncio>=0.24",
+    "pytest-cov>=6.0",
     "ruff>=0.8",
 ]
 
@@ -68,3 +75,51 @@ ignore = ["E501"]
 asyncio_mode = "auto"
 testpaths = ["tests"]
 pythonpath = ["src"]
+
+[tool.coverage.run]
+source = ["src/adv_lens", "eval"]
+branch = true
+omit = [
+    "*/__pycache__/*",
+    "*/cli.py",
+    "scripts/*",
+]
+
+[tool.coverage.report]
+skip_covered = true
+show_missing = true
+precision = 1
+exclude_also = [
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+]
+
+[tool.mypy]
+# Tests are deliberately omitted: they pass invalid literals on purpose
+# to validate schema rejection paths, and use ad-hoc fakes for AuditSink
+# that confuse the type-narrower. Strict typing applies to src/ only.
+python_version = "3.12"
+files = ["src/adv_lens"]
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = false
+no_implicit_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "instructor.*",
+    "langgraph.*",
+    "langfuse.*",
+    "qdrant_client.*",
+    "sentence_transformers.*",
+    "rank_bm25.*",
+    "sec_parser.*",
+    "llama_parse.*",
+    "pypdf.*",
+    "pypdfium2.*",
+    "sqlmodel.*",
+]
+ignore_missing_imports = true

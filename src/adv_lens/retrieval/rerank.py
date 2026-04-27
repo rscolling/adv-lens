@@ -48,7 +48,8 @@ class CrossEncoderReranker:
         if not docs:
             return []
         self._load()
-        scores = self._model.predict([(query, d) for d in docs])  # type: ignore[union-attr]
+        assert self._model is not None  # _load() populated it
+        scores = self._model.predict([(query, d) for d in docs])
         # CrossEncoder returns a numpy array.
         return [float(s) for s in scores]
 

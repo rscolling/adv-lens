@@ -23,7 +23,7 @@ import hashlib
 import logging
 import uuid
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 
 from pydantic import BaseModel, Field
 from qdrant_client import QdrantClient
@@ -179,7 +179,7 @@ class PeerStore:
         dense_vectors = self._embedder.embed(bodies)
         sparse_vectors: list[qm.SparseVector] | list[None]
         if self._sparse is not None:
-            sparse_vectors = self._sparse.encode_documents(bodies)  # type: ignore[assignment]
+            sparse_vectors = self._sparse.encode_documents(bodies)
         else:
             sparse_vectors = [None] * len(meaningful)
 
@@ -282,11 +282,16 @@ class PeerStore:
             must_not.append(qm.FieldCondition(key="crd", match=qm.MatchValue(value=exclude_crd)))
         if not (must or must_not):
             return None
-        return qm.Filter(must=must or None, must_not=must_not or None)
+        # Cast through Any: qdrant's Filter signature uses a verbose union
+        # of all FieldCondition variants; we only build FieldConditions.
+        return qm.Filter(
+            must=cast(Any, must) if must else None,
+            must_not=cast(Any, must_not) if must_not else None,
+        )
 
     def _query_dense(self, query_text: str, flt: qm.Filter | None, *, limit: int) -> list:
         if hasattr(self._embedder, "embed_query"):
-            vector = self._embedder.embed_query(query_text)  # type: ignore[attr-defined]
+            vector = self._embedder.embed_query(query_text)
         else:
             vector = self._embedder.embed([query_text])[0]
         result = self._client.query_points(
@@ -302,7 +307,7 @@ class PeerStore:
     def _query_hybrid(self, query_text: str, flt: qm.Filter | None) -> list:
         assert self._sparse is not None  # guarded by caller
         if hasattr(self._embedder, "embed_query"):
-            dense_vec = self._embedder.embed_query(query_text)  # type: ignore[attr-defined]
+            dense_vec = self._embedder.embed_query(query_text)
         else:
             dense_vec = self._embedder.embed([query_text])[0]
         sparse_vec = self._sparse.encode_query(query_text)

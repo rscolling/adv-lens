@@ -11,7 +11,7 @@ uses ``make_llm_client()`` which wires the real Anthropic SDK.
 from __future__ import annotations
 
 import logging
-from typing import TypeVar
+from typing import Any, TypeVar
 
 from pydantic import BaseModel
 
@@ -52,10 +52,12 @@ class LLMClient:
     ) -> None:
         self._audit = audit_sink
         self._settings = settings
-        self._instructor = None  # lazy
-        self._anthropic = None  # exposed for tests to swap
+        # typed Any to keep anthropic + instructor off the unit-test
+        # import path when tests substitute fakes.
+        self._instructor: Any = None  # lazy
+        self._anthropic: Any = None  # exposed for tests to swap
 
-    def _get_instructor(self):
+    def _get_instructor(self) -> Any:
         if self._instructor is not None:
             return self._instructor
         # Lazy imports — Instructor + Anthropic stay off the unit-test

@@ -22,7 +22,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader
 
 from adv_lens.extractors.schemas import RedlineReport
 
@@ -92,9 +92,14 @@ def render_redline_html(
     generated_at: datetime | None = None,
 ) -> str:
     """Render a `RedlineReport` to a standalone HTML string."""
+    # autoescape=True (not select_autoescape) because the template file is
+    # ``report.html.j2`` and select_autoescape's default extension matcher
+    # checks only the *last* extension (``j2``), which would silently leave
+    # the template un-escaped. The renderer only emits HTML, so unconditional
+    # autoescape is correct here. See test_render_html_escapes_user_content.
     env = Environment(
         loader=FileSystemLoader(str(_TEMPLATE_DIR)),
-        autoescape=select_autoescape(["html"]),
+        autoescape=True,
     )
     template = env.get_template(_TEMPLATE_NAME)
     when = generated_at or datetime.now(UTC)

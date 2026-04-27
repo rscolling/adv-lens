@@ -32,6 +32,11 @@ eval/results/*/
 .ruff_cache/
 .mypy_cache/
 
+# Coverage outputs (committed only as CI artifact)
+.coverage
+coverage.xml
+htmlcov/
+
 # Editors
 .idea/
 .vscode/

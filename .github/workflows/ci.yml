@@ -18,6 +18,17 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ruff format --check .
 
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          version: "0.10.6"
+      - run: uv python install 3.12
+      - run: uv sync --all-groups
+      - run: uv run mypy
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +38,32 @@ jobs:
           version: "0.10.6"
       - run: uv python install 3.12
       - run: uv sync --all-groups
-      - run: uv run pytest -v
+      - name: Run tests with coverage
+        # Threshold set at 80% — current baseline is 86.6%, leaves ~6 pts
+        # of headroom. Tighten over time as integration paths get covered.
+        run: uv run pytest -v --cov --cov-report=term --cov-report=xml --cov-fail-under=80
+      - name: Upload coverage XML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          retention-days: 30
+
+  audit:
+    runs-on: ubuntu-latest
+    # Non-blocking: dep CVEs surface here but don't gate merges.
+    # A failing audit posts in the PR checks but tests/lint stay
+    # the merge gates. Investigate and fix in a follow-up PR.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          version: "0.10.6"
+      - run: uv python install 3.12
+      - run: uv sync --all-groups
+      - run: uv run pip-audit --skip-editable
 
   eval:
     runs-on: ubuntu-latest

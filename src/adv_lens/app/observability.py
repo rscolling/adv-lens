@@ -93,7 +93,7 @@ def emit_generation_span(record: LLMCallRecord) -> None:
         observation = client.start_observation(
             name=record.node,
             as_type="generation",
-            trace_context=TraceContext(trace_id=lf_trace_id, parent_span_id=None),
+            trace_context=TraceContext(trace_id=lf_trace_id),
             model=record.model,
             input=record.prompt,
             output=record.response,

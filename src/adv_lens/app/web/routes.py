@@ -17,7 +17,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from sqlmodel import Session, select
+from sqlmodel import Session, col, select
 
 from adv_lens.app.graph.pipeline import new_trace_id
 from adv_lens.app.jobs.models import PipelineRun
@@ -92,9 +92,7 @@ def review_list(
     queued: str | None = None,
     error: str | None = None,
 ) -> HTMLResponse:
-    runs = session.exec(
-        select(PipelineRun).order_by(PipelineRun.created_at.desc())  # type: ignore[union-attr]
-    ).all()
+    runs = session.exec(select(PipelineRun).order_by(col(PipelineRun.created_at).desc())).all()
     rows = [_summary_for_run(r) for r in runs]
     return templates.TemplateResponse(
         request,
@@ -274,7 +272,7 @@ def review_detail(request: Request, trace_id: str, session: SessionDep) -> HTMLR
         raise HTTPException(status_code=404, detail=f"trace_id {trace_id!r} not found")
 
     decisions = session.exec(
-        select(HumanReview).where(HumanReview.trace_id == trace_id).order_by(HumanReview.ts)  # type: ignore[arg-type]
+        select(HumanReview).where(HumanReview.trace_id == trace_id).order_by(col(HumanReview.ts))
     ).all()
 
     report_hash = _report_hash_from_run(run)
@@ -366,7 +364,7 @@ def review_decide(
 
     # Re-query the full decision history for the panel render
     decisions = session.exec(
-        select(HumanReview).where(HumanReview.trace_id == trace_id).order_by(HumanReview.ts)  # type: ignore[arg-type]
+        select(HumanReview).where(HumanReview.trace_id == trace_id).order_by(col(HumanReview.ts))
     ).all()
 
     return templates.TemplateResponse(

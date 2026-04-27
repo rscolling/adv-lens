@@ -68,9 +68,8 @@ class BgeSmallEnEmbedder:
         if not texts:
             return []
         self._load()
-        vectors = self._model.encode(  # type: ignore[union-attr]
-            texts, normalize_embeddings=True, convert_to_numpy=True
-        )
+        assert self._model is not None  # _load() populated it
+        vectors = self._model.encode(texts, normalize_embeddings=True, convert_to_numpy=True)
         return [v.tolist() for v in vectors]
 
     def embed_query(self, text: str) -> list[float]:

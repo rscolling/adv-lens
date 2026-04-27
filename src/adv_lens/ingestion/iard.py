@@ -21,7 +21,7 @@ import logging
 from collections.abc import Iterator
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from adv_lens.ingestion.models import AdvPart1Row
 
@@ -156,7 +156,7 @@ def _parse_yesno(v: Any) -> bool | None:
     return None
 
 
-def _parse_regulated_by(v: Any) -> str:
+def _parse_regulated_by(v: Any) -> Literal["SEC", "State", "Both", "Unknown"]:
     if not v:
         return "Unknown"
     s = str(v).strip().lower()

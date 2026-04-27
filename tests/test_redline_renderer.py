@@ -48,6 +48,31 @@ def test_render_html_includes_crd_and_score() -> None:
     html = render_redline_html(_make_report(overall=72))
     assert "CRD 110181" in html
     assert ">72<" in html  # score in the gauge
+
+
+def test_render_html_escapes_user_content() -> None:
+    """LLM-supplied finding text must be HTML-escaped, not rendered as live HTML.
+
+    Regression for a select_autoescape() misconfiguration: the template file
+    is ``report.html.j2`` and select_autoescape's default extension matcher
+    checks only the last extension (``j2``), which would silently leave the
+    template unescaped. If a brochure contains reflected HTML/JS that the
+    LLM echoes into a finding, autoescape must catch it.
+    """
+    payload = "<script>alert('xss')</script>"
+    finding = Finding(
+        id="F-001",
+        category="fee_structure",
+        severity="info",
+        summary=payload,
+        detail=f"Detail with {payload}",
+        recommendation="Escape me too: " + payload,
+        sec_reference="Item 5",
+    )
+    html = render_redline_html(_make_report(findings=[finding], notes=payload))
+    # Live <script> must NOT appear; escaped form must appear instead.
+    assert "<script>alert" not in html
+    assert "&lt;script&gt;alert" in html
     assert "Test headline." in html
 
 

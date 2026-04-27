@@ -82,9 +82,9 @@ class PostgresAuditSink:
         from adv_lens.app.settings import settings
 
         self._dsn = dsn or settings.postgres_dsn
-        self._engine = None  # lazy
+        self._engine: Any = None  # lazy; typed Any to avoid pulling sqlalchemy.engine at import
 
-    def _get_engine(self):
+    def _get_engine(self) -> Any:
         if self._engine is None:
             from sqlmodel import create_engine
 

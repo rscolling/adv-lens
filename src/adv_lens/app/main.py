@@ -3,7 +3,7 @@ from typing import Annotated, Literal
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from pydantic import BaseModel, Field
-from sqlmodel import Session, select
+from sqlmodel import Session, col, select
 
 from adv_lens import __version__
 from adv_lens.app.graph.pipeline import new_trace_id
@@ -233,6 +233,6 @@ def list_decisions(trace_id: str, session: SessionDep) -> list[HumanReview]:
     audit trail keeps every step.
     """
     rows = session.exec(
-        select(HumanReview).where(HumanReview.trace_id == trace_id).order_by(HumanReview.ts)
+        select(HumanReview).where(HumanReview.trace_id == trace_id).order_by(col(HumanReview.ts))
     ).all()
     return list(rows)
