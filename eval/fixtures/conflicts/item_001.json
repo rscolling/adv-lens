@@ -1,0 +1,42 @@
+{
+  "id": "conflicts-001",
+  "brochure_crd": "999007",
+  "section_id": "items-10-11-12",
+  "section_type": "conflicts",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-25",
+  "labeled_at": "2026-04-25T00:00:00Z",
+  "notes": "Synthetic: clean independent RIA with no affiliations, no soft dollars, no directed brokerage. Standard Code of Ethics with preclearance + reporting.",
+  "inputs": {
+    "item_10_body": "Item 10 — Other Financial Industry Activities and Affiliations\n\nNeither the firm nor any of its management persons is registered, or has an application pending to register, as a broker-dealer or as a registered representative of a broker-dealer.\n\nNeither the firm nor any of its management persons is registered, or has an application pending to register, as a futures commission merchant, commodity pool operator, commodity trading advisor, or an associated person of the foregoing.\n\nThe firm has no related persons that are broker-dealers, investment companies, other investment advisers, banking institutions, insurance companies or agencies, or sponsors of limited partnerships. The firm does not recommend or select other investment advisers for clients.",
+    "item_11_body": "Item 11 — Code of Ethics, Participation or Interest in Client Transactions and Personal Trading\n\nThe firm has adopted a Code of Ethics in accordance with Rule 204A-1 under the Investment Advisers Act. The Code requires all supervised persons to (i) submit quarterly transaction reports and annual holdings reports, (ii) pre-clear personal trades in any reportable security with the Chief Compliance Officer, and (iii) abide by a 24-hour blackout window around any client trade in the same security.\n\nThe firm and its supervised persons may from time to time invest in the same securities recommended to clients. Such trades are governed by the personal-trading policies described above. The firm does not recommend any security in which it or a related person has a material financial interest.\n\nA copy of the Code of Ethics is available to any client or prospective client upon request.",
+    "item_12_body": "Item 12 — Brokerage Practices\n\nThe firm recommends that clients establish brokerage and custody accounts with one of two unaffiliated qualified custodians. The firm selects custodians based on a periodic best-execution review.\n\nThe firm does not enter into soft-dollar arrangements with any broker-dealer and receives no research, products, or services from broker-dealers in exchange for client commissions.\n\nThe firm does not direct brokerage to any broker in exchange for client referrals. Clients may direct brokerage to a specific broker-dealer; however, doing so may result in less favorable execution and higher costs and the firm will not be able to negotiate commissions or aggregate orders for those accounts.\n\nThe firm aggregates orders for the same security across multiple client accounts when it believes doing so will result in more favorable execution."
+  },
+  "expected": {
+    "item_10_affiliations": {
+      "affiliated_broker_dealer": false,
+      "affiliated_investment_adviser": false,
+      "affiliated_investment_company": false,
+      "affiliated_insurance": false,
+      "affiliated_bank": false,
+      "uses_other_investment_advisers": false,
+      "affiliations": []
+    },
+    "item_11_code_of_ethics": {
+      "has_code_of_ethics": true,
+      "recommends_securities_with_material_interest": false,
+      "personal_trading_in_recommended_securities": true,
+      "requires_personal_trade_preclearance": true,
+      "requires_personal_trade_reporting": true
+    },
+    "item_12_brokerage": {
+      "accepts_soft_dollars": false,
+      "soft_dollar_within_28e_safe_harbor": null,
+      "accepts_directed_brokerage": true,
+      "requires_directed_brokerage": false,
+      "brokerage_for_referrals": false,
+      "aggregates_orders": true
+    },
+    "extraction_warnings": []
+  }
+}

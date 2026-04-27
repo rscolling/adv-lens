@@ -1,0 +1,42 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Local data
+data/
+*.pdf
+!docs/**/*.pdf
+qdrant_storage/
+postgres_data/
+.langfuse/
+
+# Eval runtime artifacts (committed only when scored in CI)
+eval/fixtures/**/raw/
+eval/results/*/
+!eval/results/.gitkeep
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

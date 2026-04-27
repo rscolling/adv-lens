@@ -1,0 +1,47 @@
+{
+  "id": "disciplinary-005",
+  "brochure_crd": "999013",
+  "section_id": "item-9",
+  "section_type": "disciplinary",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-25",
+  "labeled_at": "2026-04-25T00:00:00Z",
+  "notes": "Realism-style: state administrative sanction against firm + criminal disclosure against a single principal in their personal capacity (DUI, arguably immaterial). Tests party-type discrimination ('firm' vs 'principal'), criminal vs state_administrative typing, the 'is_material' flag when the firm explicitly characterises one event as not material, and the BrokerCheck cross-reference language.",
+  "inputs": {
+    "section_body": "Item 9 — Disciplinary Information\n\nA. State Administrative Action.\n\nIn August 2021, the firm entered into a Consent Order with the Massachusetts Securities Division resolving allegations that the firm's chief compliance officer at the time had failed to maintain certain books and records in the form and for the periods required under Massachusetts state regulations. The firm neither admitted nor denied the findings of the Consent Order. The firm consented to a censure, a $35,000 administrative fine, and an undertaking to engage an independent compliance consultant to review and recommend enhancements to the firm's books-and-records procedures. The undertaking was completed in February 2022 and the consultant's recommendations have been fully implemented. The chief compliance officer who was the subject of the underlying allegations is no longer employed by the firm.\n\nB. Disclosure Concerning Mr. Jonathan A. Reed (Managing Member).\n\nIn November 2019, Mr. Jonathan A. Reed, a Managing Member of the firm, was arrested in Connecticut and subsequently entered a plea of nolo contendere to a misdemeanor charge of operating a motor vehicle while intoxicated, first offense. Mr. Reed was sentenced to a fine, mandatory alcohol-education program, and a 90-day suspension of his driver's license, all of which have been completed. The firm believes this matter is not material to any client's evaluation of the firm or its advisory services because (i) the conduct was personal in nature and unrelated to the firm or to Mr. Reed's role as an investment adviser, (ii) the matter does not involve any allegation of dishonesty, breach of trust, or any investment-related misconduct, and (iii) the matter did not result in any disciplinary action by the SEC, FINRA, or any state securities regulator. The firm discloses this matter for the sake of completeness and transparency.\n\nClients and prospective clients are encouraged to review the disciplinary history of any investment adviser representative of the firm on the SEC's Investment Adviser Public Disclosure (IAPD) website at adviserinfo.sec.gov, or on FINRA's BrokerCheck website at brokercheck.finra.org."
+  },
+  "expected": {
+    "has_disciplinary_history": true,
+    "events": [
+      {
+        "event_type": "state_administrative",
+        "event_date": null,
+        "event_year": 2021,
+        "authority": "Massachusetts Securities Division",
+        "involved_party_type": "firm",
+        "involved_party_name": null,
+        "allegation": "Failure to maintain certain books and records in the form and for the periods required under Massachusetts state regulations.",
+        "resolution": "consent_order",
+        "sanction_monetary_usd": 35000,
+        "sanction_suspension_days": null,
+        "sanction_other": ["censure", "undertaking", "compliance review"],
+        "is_material": null
+      },
+      {
+        "event_type": "criminal",
+        "event_date": null,
+        "event_year": 2019,
+        "authority": null,
+        "involved_party_type": "principal",
+        "involved_party_name": "Jonathan A. Reed",
+        "allegation": "Misdemeanor operating-while-intoxicated charge (first offense); personal conduct unrelated to advisory services.",
+        "resolution": "convicted",
+        "sanction_monetary_usd": null,
+        "sanction_suspension_days": 90,
+        "sanction_other": [],
+        "is_material": false
+      }
+    ],
+    "extraction_warnings": []
+  }
+}

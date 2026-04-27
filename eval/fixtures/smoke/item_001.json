@@ -1,0 +1,13 @@
+{
+  "id": "smoke-001",
+  "brochure_crd": "SMOKE",
+  "section_id": "smoke.harness",
+  "section_type": "smoke",
+  "expected": {
+    "note": "Smoke fixture — exercises the harness end-to-end so CI is green from day 1. Real fixtures land in week 2."
+  },
+  "source_url": null,
+  "labeled_by": "RSC 2026-04-24",
+  "labeled_at": "2026-04-24T00:00:00Z",
+  "notes": "Do not delete — removing this leaves the runner with zero fixtures and CI red."
+}

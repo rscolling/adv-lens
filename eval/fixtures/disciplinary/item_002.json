@@ -1,0 +1,33 @@
+{
+  "id": "disciplinary-002",
+  "brochure_crd": "999005",
+  "section_id": "item-9",
+  "section_type": "disciplinary",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-24",
+  "labeled_at": "2026-04-24T00:00:00Z",
+  "notes": "Synthetic: single SEC administrative consent settlement against the firm. 'Without admitting or denying' phrasing maps to settled+consent_order.",
+  "inputs": {
+    "section_body": "Item 9 — Disciplinary Information\n\nIn September 2022, the firm entered into a settled administrative proceeding with the U.S. Securities and Exchange Commission relating to its compliance program for the SEC Marketing Rule. Without admitting or denying the findings, the firm consented to the entry of an order finding that, between November 2022 and June 2023, the firm published certain testimonials on its public website without making the disclosures required by Rule 206(4)-1.\n\nIn settlement, the firm agreed to (i) a censure, (ii) a cease-and-desist order, and (iii) a civil monetary penalty of $150,000. The firm has since updated its marketing review procedures to address the issues identified.\n\nThere are no other disciplinary events to disclose with respect to the firm or its management persons."
+  },
+  "expected": {
+    "has_disciplinary_history": true,
+    "events": [
+      {
+        "event_type": "sec_administrative",
+        "event_date": null,
+        "event_year": 2022,
+        "authority": "U.S. Securities and Exchange Commission",
+        "involved_party_type": "firm",
+        "involved_party_name": null,
+        "allegation": "Published client testimonials on the firm's public website without the disclosures required by SEC Marketing Rule 206(4)-1.",
+        "resolution": "settled",
+        "sanction_monetary_usd": 150000,
+        "sanction_suspension_days": null,
+        "sanction_other": ["censure", "cease and desist"],
+        "is_material": null
+      }
+    ],
+    "extraction_warnings": []
+  }
+}

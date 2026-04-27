@@ -1,0 +1,42 @@
+{
+  "id": "conflicts-003",
+  "brochure_crd": "999009",
+  "section_id": "items-10-11-12",
+  "section_type": "conflicts",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-25",
+  "labeled_at": "2026-04-25T00:00:00Z",
+  "notes": "Synthetic: wrap-program sponsor that requires directed brokerage to its custodian. Uses third-party sub-advisers. Brokerage-for-referrals disclosed. No soft dollars.",
+  "inputs": {
+    "item_10_body": "Item 10 — Other Financial Industry Activities and Affiliations\n\nThe firm is not registered as a broker-dealer, futures commission merchant, commodity pool operator, or commodity trading advisor.\n\nThe firm has no affiliated broker-dealer, investment company, insurance agency, or banking institution. The firm is not part of a holding-company structure.\n\nThe firm engages third-party investment advisers as sub-advisers for portions of certain client portfolios. Sub-advisers are selected and monitored by the firm pursuant to a written due-diligence process. Sub-adviser fees are paid by the firm out of the wrap fee charged to the client and are not a separate charge.",
+    "item_11_body": "Item 11 — Code of Ethics, Participation or Interest in Client Transactions and Personal Trading\n\nThe firm has adopted a written Code of Ethics. Supervised persons are required to file an annual holdings report and quarterly transaction reports.\n\nThe firm does not require pre-clearance of personal trades, except for transactions in initial public offerings and limited offerings, which require pre-approval by the Chief Compliance Officer.\n\nThe firm does not recommend securities in which it or any related person has a material financial interest. Supervised persons may invest in the same securities recommended to clients.",
+    "item_12_body": "Item 12 — Brokerage Practices\n\nAll wrap-program client accounts are required to be held in custody at Synthetic Trust Company, the wrap program's designated qualified custodian, and all trades for those accounts are required to be executed through Synthetic Brokerage Services, the wrap program's designated executing broker-dealer. Clients should understand that this requirement may result in less favorable execution than if the firm were free to select another broker-dealer.\n\nThe firm receives client referrals from Synthetic Trust Company and, in evaluating broker-dealers for non-wrap accounts, the firm considers these referrals as one factor. This presents a conflict of interest that the firm addresses through disclosure and through its best-execution policies.\n\nThe firm does not enter into soft-dollar arrangements and does not aggregate client orders, as wrap accounts are individually executed by the designated broker."
+  },
+  "expected": {
+    "item_10_affiliations": {
+      "affiliated_broker_dealer": false,
+      "affiliated_investment_adviser": false,
+      "affiliated_investment_company": false,
+      "affiliated_insurance": false,
+      "affiliated_bank": false,
+      "uses_other_investment_advisers": true,
+      "affiliations": []
+    },
+    "item_11_code_of_ethics": {
+      "has_code_of_ethics": true,
+      "recommends_securities_with_material_interest": false,
+      "personal_trading_in_recommended_securities": true,
+      "requires_personal_trade_preclearance": false,
+      "requires_personal_trade_reporting": true
+    },
+    "item_12_brokerage": {
+      "accepts_soft_dollars": false,
+      "soft_dollar_within_28e_safe_harbor": null,
+      "accepts_directed_brokerage": false,
+      "requires_directed_brokerage": true,
+      "brokerage_for_referrals": true,
+      "aggregates_orders": false
+    },
+    "extraction_warnings": []
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "disciplinary-003",
+  "brochure_crd": "999006",
+  "section_id": "item-9",
+  "section_type": "disciplinary",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-24",
+  "labeled_at": "2026-04-24T00:00:00Z",
+  "notes": "Synthetic: two events, one historical FINRA matter against a named principal, one open civil suit against the firm. Tests SRO + civil_judicial + multi-event.",
+  "inputs": {
+    "section_body": "Item 9 — Disciplinary Information\n\n1. FINRA matter (2018). Mr. Daniel Chen, a managing principal of the firm, was the subject of a FINRA Letter of Acceptance, Waiver and Consent dated June 2018, related to his prior employment with another broker-dealer. Without admitting or denying the findings, Mr. Chen consented to a 30-day suspension from association with any FINRA member in any capacity and a $25,000 fine for failing to timely amend his Form U4. The suspension has been served in full and the fine has been paid. The firm believes this matter is not material to a client's evaluation of the firm or its services.\n\n2. Civil litigation (pending). In March 2025, a former client filed a civil complaint against the firm in the U.S. District Court for the Southern District of New York alleging breach of fiduciary duty in connection with the management of a discretionary advisory account. The matter is in early discovery and the firm intends to vigorously defend itself. No findings of liability have been entered."
+  },
+  "expected": {
+    "has_disciplinary_history": true,
+    "events": [
+      {
+        "event_type": "sro",
+        "event_date": null,
+        "event_year": 2018,
+        "authority": "FINRA",
+        "involved_party_type": "principal",
+        "involved_party_name": "Daniel Chen",
+        "allegation": "Failed to timely amend his Form U4 during prior employment with another broker-dealer.",
+        "resolution": "consent_order",
+        "sanction_monetary_usd": 25000,
+        "sanction_suspension_days": 30,
+        "sanction_other": [],
+        "is_material": false
+      },
+      {
+        "event_type": "civil_judicial",
+        "event_date": null,
+        "event_year": 2025,
+        "authority": "U.S. District Court for the Southern District of New York",
+        "involved_party_type": "firm",
+        "involved_party_name": null,
+        "allegation": "Former client alleges breach of fiduciary duty in the management of a discretionary advisory account.",
+        "resolution": "pending",
+        "sanction_monetary_usd": null,
+        "sanction_suspension_days": null,
+        "sanction_other": [],
+        "is_material": null
+      }
+    ],
+    "extraction_warnings": []
+  }
+}

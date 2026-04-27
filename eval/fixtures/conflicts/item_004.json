@@ -1,0 +1,42 @@
+{
+  "id": "conflicts-004",
+  "brochure_crd": "999014",
+  "section_id": "items-10-11-12",
+  "section_type": "conflicts",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-25",
+  "labeled_at": "2026-04-25T00:00:00Z",
+  "notes": "Realism-style: dually-registered IAR shop with affiliated B/D, affiliated insurance, soft-dollar within 28(e), brokerage-for-referrals, and client-directed brokerage permitted (not required). Long Item-12 prose enumerating soft-dollar services received. Tests boolean discrimination across many close-but-distinct fields and the controlled-vocab affiliations list.",
+  "inputs": {
+    "item_10_body": "Item 10 — Other Financial Industry Activities and Affiliations\n\nAffiliated Broker-Dealer. The firm is under common ownership with Meridian Capital Securities LLC, a broker-dealer registered with the Securities and Exchange Commission and a member of the Financial Industry Regulatory Authority and the Securities Investor Protection Corporation (\"Meridian Securities\"). Many of the firm's investment adviser representatives are also registered representatives of Meridian Securities. When acting in their capacity as registered representatives of Meridian Securities, such persons may receive compensation in the form of commissions, 12b-1 fees, or other forms of compensation tied to the sale of securities and other investment products. This presents a conflict of interest in that supervised persons may have a financial incentive to recommend products that pay higher compensation. The firm addresses this conflict through (i) disclosure to clients in this brochure and at the time of any product recommendation, (ii) supervisory review of all transactions effected through Meridian Securities, and (iii) the application of the firm's fiduciary duty to act in clients' best interest at all times when providing advisory services.\n\nAffiliated Insurance Agency. The firm is affiliated through common ownership with Meridian Insurance Services LLC, a licensed insurance agency. Certain supervised persons of the firm are also licensed insurance agents of Meridian Insurance Services and, in that capacity, may receive commissions, override commissions, and renewal commissions on insurance products sold to clients. The conflicts of interest described above with respect to Meridian Securities apply equally to insurance product recommendations by supervised persons in their capacity as agents of Meridian Insurance Services.\n\nThe firm has no affiliations with any registered investment company, banking institution, or other investment adviser. The firm does not select or recommend other investment advisers for its clients.",
+    "item_11_body": "Item 11 — Code of Ethics, Participation or Interest in Client Transactions and Personal Trading\n\nThe firm has adopted a written Code of Ethics in compliance with Rule 204A-1 under the Investment Advisers Act of 1940. The Code is designed to set forth high ethical standards of business conduct and to comply with applicable federal securities laws, including the requirement that the firm and its supervised persons place the interest of clients first.\n\nKey elements of the Code include:\n\n- Standards of Conduct. All supervised persons must act with honesty, integrity, and in a professional manner.\n- Personal Securities Trading. All access persons are required to: (i) submit an initial holdings report within 10 days of becoming an access person; (ii) submit annual holdings reports; (iii) submit quarterly transaction reports; and (iv) obtain pre-clearance from the Chief Compliance Officer for any personal transaction in any reportable security other than transactions in shares of open-end mutual funds, exchange-traded funds, money market instruments, and direct obligations of the U.S. government.\n- Restricted Securities. The firm maintains a restricted securities list for which personal trading is prohibited. The list is updated daily and includes any security currently the subject of a pending or recent client transaction.\n\nThe firm and its supervised persons may, from time to time, recommend or invest client assets in securities in which the firm or its related persons have a material financial interest, including securities issued by Meridian Capital Securities and securities issued by other Meridian-affiliated entities. Any such recommendation or investment is reviewed in advance by the Chief Compliance Officer and is subject to the standards of the Code of Ethics. A copy of the firm's Code of Ethics is available to any client or prospective client upon written request.",
+    "item_12_body": "Item 12 — Brokerage Practices\n\nSelection and Recommendation of Broker-Dealers. The firm has discretionary authority to determine, without obtaining specific client consent, the broker-dealer to be used and the commission rates paid for transactions effected for client accounts. In selecting broker-dealers, the firm seeks best execution, taking into consideration a number of factors including but not limited to commission rates, execution quality, financial responsibility of the broker-dealer, the value of any research or brokerage services provided, and responsiveness to the firm and its clients.\n\nResearch and Other Soft-Dollar Benefits. The firm receives research and other brokerage services from certain broker-dealers in exchange for commissions paid by client accounts. All such soft-dollar arrangements fall within the safe harbor provided by Section 28(e) of the Securities Exchange Act of 1934. Research and brokerage services received include: (i) third-party investment research reports; (ii) economic research and forecasts; (iii) industry and company research databases; (iv) trading software and analytics; (v) electronic market data feeds; and (vi) attendance at industry conferences and educational seminars. The firm believes that the receipt of such research and brokerage services benefits all of the firm's clients.\n\nClient Referrals. Certain broker-dealers refer clients to the firm. In selecting broker-dealers for client transactions, the firm may consider client referrals as one factor among many. This presents a potential conflict of interest, which the firm addresses through (i) disclosure in this brochure and (ii) the firm's overall best-execution obligations.\n\nDirected Brokerage. Clients may direct the firm in writing to use a particular broker-dealer for transactions in their account. Clients who direct brokerage should understand that they may not receive the same quality of execution that the firm could obtain in the absence of such direction, that they will not be able to participate in aggregated orders, and that the firm cannot negotiate commissions or commission rates on their behalf.\n\nAggregation of Client Orders. The firm aggregates client orders for the purchase or sale of the same security when consistent with its duty of best execution and its trade-allocation policy. Allocations among participating client accounts are made on a pro-rata basis based on the size of the order placed for each account, subject to certain exceptions for accounts with specific investment restrictions or de minimis allocations."
+  },
+  "expected": {
+    "item_10_affiliations": {
+      "affiliated_broker_dealer": true,
+      "affiliated_investment_adviser": false,
+      "affiliated_investment_company": false,
+      "affiliated_insurance": true,
+      "affiliated_bank": false,
+      "uses_other_investment_advisers": false,
+      "affiliations": ["broker-dealer", "insurance agency"]
+    },
+    "item_11_code_of_ethics": {
+      "has_code_of_ethics": true,
+      "recommends_securities_with_material_interest": true,
+      "personal_trading_in_recommended_securities": true,
+      "requires_personal_trade_preclearance": true,
+      "requires_personal_trade_reporting": true
+    },
+    "item_12_brokerage": {
+      "accepts_soft_dollars": true,
+      "soft_dollar_within_28e_safe_harbor": true,
+      "accepts_directed_brokerage": true,
+      "requires_directed_brokerage": false,
+      "brokerage_for_referrals": true,
+      "aggregates_orders": true
+    },
+    "extraction_warnings": []
+  }
+}

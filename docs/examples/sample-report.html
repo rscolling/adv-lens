@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ADV-Lens Redline — CRD 110181</title>
+<style>
+  @page { size: Letter; margin: 0.6in; }
+  html { font-size: 11pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+         line-height: 1.4; color: #111; margin: 0; }
+  header { padding: 0 0 0.8em 0; border-bottom: 2px solid #1f2933; margin-bottom: 1em; }
+  header .product { font-size: 9pt; color: #777; letter-spacing: 0.06em; text-transform: uppercase; }
+  header h1 { font-size: 18pt; margin: 0.2em 0; }
+  header .sub { font-size: 10pt; color: #555; }
+  .scorebar { display: flex; align-items: stretch; gap: 1em; margin: 1em 0 1.2em; }
+  .gauge {
+    flex: 0 0 auto; width: 130px; padding: 0.8em 0.4em; text-align: center;
+    border: 1px solid #ccc; border-radius: 6px;
+    background: linear-gradient(180deg, var(--gauge-bg-top) 0%, var(--gauge-bg-bottom) 100%);
+  }
+  .gauge .num { font-size: 36pt; font-weight: 700; line-height: 1; color: var(--gauge-fg); }
+  .gauge .lbl { font-size: 8pt; color: #555; margin-top: 0.3em; text-transform: uppercase; letter-spacing: 0.05em; }
+  .headline { flex: 1; padding: 0.5em 0.8em; background: #f7f7f9; border-left: 4px solid #1f2933; border-radius: 3px; }
+  .headline-label { font-size: 8pt; color: #777; text-transform: uppercase; letter-spacing: 0.05em; }
+  .headline-text { font-size: 10pt; margin-top: 0.2em; }
+  table { border-collapse: collapse; width: 100%; margin: 0.6em 0; font-size: 9.5pt; }
+  th, td { border: 1px solid #d0d0d0; padding: 0.35em 0.6em; text-align: left; vertical-align: top; }
+  th { background: #ececef; font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  h2 { font-size: 13pt; margin: 1.2em 0 0.4em; padding-bottom: 0.2em; border-bottom: 1px solid #ddd; }
+  h3 { font-size: 11pt; margin: 0.6em 0 0.2em; }
+  .findings .finding {
+    margin: 0.5em 0; padding: 0.6em 0.8em;
+    border-left: 4px solid var(--sev-color); background: var(--sev-bg); border-radius: 3px;
+    page-break-inside: avoid;
+  }
+  .finding .row1 { display: flex; gap: 0.6em; align-items: baseline; }
+  .finding .id { font-weight: 700; font-family: "SF Mono", Consolas, "Liberation Mono", monospace; font-size: 10pt; }
+  .finding .sev {
+    font-size: 8pt; font-weight: 700; padding: 0.1em 0.5em; border-radius: 3px;
+    color: white; background: var(--sev-color); text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .finding .ref { font-size: 9pt; color: #555; }
+  .finding .summary { font-weight: 600; margin: 0.2em 0; font-size: 10.5pt; }
+  .finding .detail { font-size: 9.5pt; margin: 0.3em 0; }
+  .finding .recommendation { font-size: 9.5pt; margin-top: 0.4em;
+    padding: 0.3em 0.5em; background: rgba(255,255,255,0.55); border-radius: 3px; }
+  .finding .recommendation::before { content: "Recommend: "; font-weight: 700; color: #444; }
+  .finding .sec-ref { font-size: 8.5pt; color: #666; margin-top: 0.3em; font-style: italic; }
+  footer { margin-top: 2em; padding-top: 0.8em; border-top: 1px solid #ccc;
+           font-size: 8.5pt; color: #777; }
+  footer code { font-family: "SF Mono", Consolas, monospace; font-size: 8pt; background: #f0f0f0;
+                padding: 0.05em 0.3em; border-radius: 2px; }
+  .empty { color: #888; font-style: italic; }
+  .notes { background: #fff8d8; border-left: 4px solid #d4a017;
+           padding: 0.5em 0.8em; margin: 1em 0; font-size: 9.5pt; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="product">ADV-Lens Compliance Redline</div>
+  <h1>CRD 110181 — Brochure 1037550</h1>
+  <div class="sub">Form ADV Part 2A scorecard, generated 2026-04-26 21:21 UTC</div>
+</header>
+
+<section class="scorebar">
+  
+  <div class="gauge"
+       style="
+         --gauge-fg: #c47f1f;
+         --gauge-bg-top: #fff5e0;
+         --gauge-bg-bottom: #fde6c2;
+       ">
+    <div class="num">68</div>
+    <div class="lbl">Overall Score</div>
+  </div>
+  <div class="headline">
+    <div class="headline-label">Headline</div>
+    <div class="headline-text">Brown Advisory (CRD 110181) brochure presents a clean disciplinary record and a competitive tiered fee structure, but the extracted text for Items 11 and 12 was misaligned and key disclosures (Code of Ethics, brokerage practices, performance fees, wrap economics) could not be verified from this extraction; scorecard generated without peer comparison and several findings are gated on a re-extraction of the source brochure.</div>
+  </div>
+</section>
+
+<h2>Category breakdown</h2>
+<table>
+  <thead><tr><th>Category</th><th class="num">Score</th><th>Rationale</th></tr></thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>Compliance</strong></td>
+      <td class="num" style="color: #c47f1f; font-weight: 700;">65</td>
+      <td>No disciplinary history is disclosed (positive). However, the extracted text for Items 11 (Code of Ethics / personal trading) and 12 (brokerage practices) was misaligned with their headers, leaving core compliance-program controls unverifiable from this extraction. Rule 204A-1 obligations and Item 12 soft-dollar/directed-brokerage posture must be confirmed before the CCO signs off. Score reflects a clean disciplinary record offset by audit gaps that are extraction-driven rather than substantive.</td>
+    </tr>
+  
+    <tr>
+      <td><strong>Transparency</strong></td>
+      <td class="num" style="color: #c47f1f; font-weight: 700;">60</td>
+      <td>The Private Client >$5M schedule is well-tiered and clearly stated. Several other programs are weaker: the <$5M schedule does not state rates above $5M; E&F and OCIO are disclosed only as maximum rates with no breakpoints; wrap-program compensation to the firm is not quantified in the extracted text; and model-delivery fee terms are absent. Performance-fee posture (Item 6) is also missing from the extraction.</td>
+    </tr>
+  
+    <tr>
+      <td><strong>Conflicts Handling</strong></td>
+      <td class="num" style="color: #c47f1f; font-weight: 700;">65</td>
+      <td>The extraction surfaces a standard but material proprietary-product conflict: the firm may recommend affiliated mutual funds, ETFs, CITs, and private funds in which it has a material financial interest. The affiliation footprint as extracted is relatively contained (no broker-dealer, insurance, or bank affiliate indicated). However, neither the Code of Ethics framework nor the Item 12 brokerage practices were captured, so the firm's mitigation posture for these conflicts cannot be scored from this extraction alone.</td>
+    </tr>
+  
+    <tr>
+      <td><strong>Fee Competitiveness</strong></td>
+      <td class="num" style="color: #a07f1f; font-weight: 700;">78</td>
+      <td>Headline rates are reasonable for the segments served: the Private Client schedule reaches 30 bps at $100M+, OCIO is capped at 30 bps, and E&F is capped at 75 bps. Fees are stated to be negotiable on the principal schedules. Without peer context this is an absolute, not relative, assessment.</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+<h2>Findings (11)</h2>
+
+<div class="findings">
+
+  <div class="finding"
+       style="--sev-color: #5b6770; --sev-bg: #eef0f3;">
+    <div class="row1">
+      <span class="id">F-001</span>
+      <span class="sev">info</span>
+      <span class="ref">Item 5</span>
+      <span class="ref">· fee structure</span>
+    </div>
+    <div class="summary">Tiered AUM fee schedule for Private Client Portfolios >$5M is competitive and uses standard breakpoints.</div>
+    <div class="detail">The Private Client Portfolios >$5M schedule begins at 100 bps on the first $5M and steps down through 75/50/35/30 bps, with a top breakpoint at $100M. Billing is quarterly and fees are stated to be negotiable. Structure appears consistent with industry norms for high-net-worth discretionary management.</div>
+    <div class="recommendation">No action required. Document the schedule in the firm's fee-comparison file for next annual review.</div>
+    <div class="sec-ref">Form ADV Part 2A Instructions, Item 5.A (fee schedule disclosure)</div>
+  </div>
+
+  <div class="finding"
+       style="--sev-color: #a07f1f; --sev-bg: #fdf3d4;">
+    <div class="row1">
+      <span class="id">F-002</span>
+      <span class="sev">low</span>
+      <span class="ref">Item 5</span>
+      <span class="ref">· fee structure</span>
+    </div>
+    <div class="summary">Private Client <$5M schedule is ambiguous: only the first $5M is tiered; no rate stated for assets above $5M.</div>
+    <div class="detail">The <$5M schedule shows 125 bps on the first $3M and 100 bps from $3M–$5M, but does not state a rate for assets above $5M. The extractor's working hypothesis is that this schedule applies only when the $5M minimum is waived. The brochure language as extracted may leave a sub-$5M client unclear about how growth above $5M would be billed.</div>
+    <div class="recommendation">Review the source brochure text to confirm whether the schedule rolls into the >$5M grid once a sub-minimum account crosses $5M. If ambiguous, escalate to disclosure counsel for a clarifying edit at the next amendment.</div>
+    <div class="sec-ref">Form ADV Part 2A Instructions, Item 5.A (plain-English fee description)</div>
+  </div>
+
+  <div class="finding"
+       style="--sev-color: #cc6e2a; --sev-bg: #fdebd5;">
+    <div class="row1">
+      <span class="id">F-003</span>
+      <span class="sev">medium</span>
+      <span class="ref">Item 5</span>
+      <span class="ref">· disclosure quality</span>
+    </div>
+    <div class="summary">Wrap program economics to Brown Advisory are not quantified in the extracted Item 5.</div>
+    <div class="detail">The brochure indicates the wrap sponsor pays Brown Advisory a portion of the wrap fee, but no rate, range, or schedule for that portion is disclosed in the extracted text. SEC plain-English expectations call for clients to understand how the adviser is compensated within wrap arrangements, including any range of compensation.</div>
+    <div class="recommendation">Confirm whether the full brochure (or a separate Wrap Appendix 1) discloses the compensation range. If not, escalate to disclosure counsel; if yes, capture the citation in the audit binder.</div>
+    <div class="sec-ref">Form ADV Part 2A Instructions, Item 5.A and Appendix 1 (Wrap Fee Program Brochure)</div>
+  </div>
+
+  <div class="finding"
+       style="--sev-color: #cc6e2a; --sev-bg: #fdebd5;">
+    <div class="row1">
+      <span class="id">F-004</span>
+      <span class="sev">medium</span>
+      <span class="ref">Item 5</span>
+      <span class="ref">· disclosure quality</span>
+    </div>
+    <div class="summary">Model delivery / non-discretionary SMA fee terms are not disclosed in the extracted Item 5.</div>
+    <div class="detail">Fee rate, billing frequency, and billing timing for compensation paid by unaffiliated managers/financial advisors under model delivery programs are not present in the extracted text. While model delivery compensation may be summarized at a high level in many brochures, the absence here warrants confirmation.</div>
+    <div class="recommendation">Verify against the full brochure whether model delivery fee terms are disclosed elsewhere. If absent, recommend an amendment.</div>
+    <div class="sec-ref">Form ADV Part 2A Instructions, Item 5.A</div>
+  </div>
+
+  <div class="finding"
+       style="--sev-color: #b32e2e; --sev-bg: #fce8e8;">
+    <div class="row1">
+      <span class="id">F-005</span>
+      <span class="sev">high</span>
+      <span class="ref">Item 6</span>
+      <span class="ref">· disclosure quality</span>
+    </div>
+    <div class="summary">Performance-fee posture is not captured in the extracted Item 5/Item 6 text.</div>
+    <div class="detail">The extractor flagged that performance fee disclosure is absent from the extracted text, leaving accepts_performance_fees null. Given the firm manages affiliated private funds and an OCIO program, side-by-side management of performance-fee and asset-based-fee accounts is plausible and would itself be a disclosable conflict under Item 6.</div>
+    <div class="recommendation">Pull the Item 6 section from the source brochure and reconcile. If performance fees are charged, ensure side-by-side conflicts and allocation policies are documented in the compliance file.</div>
+    <div class="sec-ref">Form ADV Part 2A Instructions, Item 6 (Performance-Based Fees and Side-By-Side Management)</div>
+  </div>
+
+  <div class="finding"
+       style="--sev-color: #5b6770; --sev-bg: #eef0f3;">
+    <div class="row1">
+      <span class="id">F-006</span>
+      <span class="sev">info</span>
+      <span class="ref">Item 9</span>
+      <span class="ref">· disciplinary</span>
+    </div>
+    <div class="summary">No disciplinary history disclosed.</div>
+    <div class="detail">The disciplinary extractor reports has_disciplinary_history = false with no events and no extraction warnings. On the face of the brochure, Item 9 reflects a clean disciplinary record.</div>
+    <div class="recommendation">No action required. As part of standard diligence, cross-check IAPD/BrokerCheck and the firm's CRD record at the next review cycle.</div>
+    <div class="sec-ref">Form ADV Part 2A Instructions, Item 9 (Disciplinary Information)</div>
+  </div>
+
+  <div class="finding"
+       style="--sev-color: #cc6e2a; --sev-bg: #fdebd5;">
+    <div class="row1">
+      <span class="id">F-007</span>
+      <span class="sev">medium</span>
+      <span class="ref">Item 11</span>
+      <span class="ref">· conflict of interest</span>
+    </div>
+    <div class="summary">Recommendation of affiliated funds in which the firm has a material financial interest is a disclosed conflict.</div>
+    <div class="detail">Item 11 extraction indicates the firm may recommend securities (proprietary mutual funds, ETFs, CITs, and private funds) in which it has a material financial interest via affiliated investment adviser and fund-complex relationships. This is a standard but material conflict that requires mitigation (fee offsets, disclosure, suitability review).</div>
+    <div class="recommendation">Confirm in the compliance file that (i) clients receive disclosure of the affiliated-fund conflict, (ii) any double-layer fee is offset or waived where applicable, and (iii) the suitability process documents why an affiliated fund was selected over a non-affiliated alternative.</div>
+    <div class="sec-ref">Form ADV Part 2A Instructions, Item 11.A–B (Code of Ethics, Participation or Interest in Client Transactions)</div>
+  </div>
+
+  <div class="finding"
+       style="--sev-color: #b32e2e; --sev-bg: #fce8e8;">
+    <div class="row1">
+      <span class="id">F-008</span>
+      <span class="sev">high</span>
+      <span class="ref">Item 11</span>
+      <span class="ref">· compliance program</span>
+    </div>
+    <div class="summary">Code of Ethics, personal-trading preclearance, and reporting policies could not be confirmed from the extracted Item 11 text.</div>
+    <div class="detail">All Code of Ethics boolean fields (has_code_of_ethics, preclearance, reporting) were set to null because the text under the Item 11 header was a continuation of fee disclosures. The extractor flagged the Item 10/11/12 sections as offset/misaligned. Rule 204A-1 requires SEC-registered advisers to adopt a Code of Ethics with personal-trading reporting; absence in the extraction is almost certainly an extraction artifact rather than a substantive gap, but it must be confirmed.</div>
+    <div class="recommendation">Re-run extraction against the correctly aligned Item 11 text or pull the section manually. Confirm the Code of Ethics is described, copies are offered to clients on request, and personal-trading preclearance/reporting controls are documented.</div>
+    <div class="sec-ref">Advisers Act Rule 204A-1; Form ADV Part 2A Instructions, Item 11.A</div>
+  </div>
+
+  <div class="finding"
+       style="--sev-color: #b32e2e; --sev-bg: #fce8e8;">
+    <div class="row1">
+      <span class="id">F-009</span>
+      <span class="sev">high</span>
+      <span class="ref">Item 12</span>
+      <span class="ref">· brokerage practice</span>
+    </div>
+    <div class="summary">Item 12 brokerage practices (soft dollars, directed brokerage, aggregation) could not be confirmed from the extracted text.</div>
+    <div class="detail">Item 12 booleans are all null because the extracted text under the Item 12 header was fee-schedule continuation, not brokerage practices. The brochure itself cross-references 'See Item 12 – Brokerage Practices' but the substantive content was not present in the extracted segment. This is an audit gap, not (yet) a substantive finding, but soft-dollar arrangements (28(e) safe-harbor scope) and any directed-brokerage practices are material conflicts that the CCO must be able to defend.</div>
+    <div class="recommendation">Pull the Item 12 section from the source brochure and re-extract. Confirm soft-dollar posture (within/outside 28(e)), directed brokerage policy, order aggregation, and any brokerage-for-referrals arrangements before the report is signed off.</div>
+    <div class="sec-ref">Form ADV Part 2A Instructions, Item 12; Section 28(e) of the Exchange Act</div>
+  </div>
+
+  <div class="finding"
+       style="--sev-color: #a07f1f; --sev-bg: #fdf3d4;">
+    <div class="row1">
+      <span class="id">F-010</span>
+      <span class="sev">low</span>
+      <span class="ref">Item 10</span>
+      <span class="ref">· conflict of interest</span>
+    </div>
+    <div class="summary">Affiliations limited to investment adviser and fund complex per extracted Item 10; broker-dealer / insurance / bank affiliations not indicated.</div>
+    <div class="detail">Item 10 extraction identifies an affiliated investment adviser, an affiliated investment company / fund complex (mutual funds, ETFs, CITs), and use of other investment advisers. Affiliated broker-dealer, insurance company, and bank fields are null — read by the extractor as 'not present in the text' rather than affirmatively denied. The relatively narrow affiliation footprint is a positive signal for conflicts handling, subject to confirmation.</div>
+    <div class="recommendation">Confirm against the full Item 10 text that no broker-dealer, insurance, or bank affiliation exists. If confirmed, document; if any are present, escalate for re-scoring of the conflicts category.</div>
+    <div class="sec-ref">Form ADV Part 2A Instructions, Item 10 (Other Financial Industry Activities and Affiliations)</div>
+  </div>
+
+  <div class="finding"
+       style="--sev-color: #cc6e2a; --sev-bg: #fdebd5;">
+    <div class="row1">
+      <span class="id">F-011</span>
+      <span class="sev">medium</span>
+      <span class="ref">Item 5</span>
+      <span class="ref">· disclosure quality</span>
+    </div>
+    <div class="summary">Endowments/Foundations and OCIO schedules disclosed only as 'maximum' rates without breakpoints or minimums.</div>
+    <div class="detail">The E&F schedule is captured as a single flat 75 bps and the OCIO schedule as a single flat 30 bps, both described in the brochure only as a maximum. Absent stated breakpoints or minimums, institutional prospects cannot model their effective fee, and the firm retains broad pricing discretion. This is permissible but reduces transparency.</div>
+    <div class="recommendation">Consider whether the firm can publish indicative breakpoints or a typical-effective-fee range in the next amendment to improve transparency for institutional prospects.</div>
+    <div class="sec-ref">Form ADV Part 2A Instructions, Item 5.A (plain-English fee description)</div>
+  </div>
+
+</div>
+
+
+
+
+
+<div class="notes"><strong>Notes from the redline writer:</strong> Several findings (F-005, F-008, F-009) are driven by extraction misalignment between the Item 10/11/12 headers and their underlying text rather than by substantive brochure deficiencies. Before this report is escalated beyond the analyst desk, the source brochure should be re-extracted with corrected section anchoring so that Code of Ethics, personal-trading, and brokerage-practice booleans can be populated and the corresponding findings either closed or upgraded. Peer context was not provided to this run, so no peer_comparisons entries are included and all fee-competitiveness language is absolute rather than relative.</div>
+
+
+<footer>
+  <strong>Provenance.</strong>
+  Brochure CRD <code>110181</code>, version <code>1037550</code>.
+  Source PDF SHA-256 <code>4492c6704f63ebec…</code>.
+  Trace <code>brown-advisory-rescued</code>.
+  Report hash <code>8ea26848ab106e4f…</code>.
+  Generated by ADV-Lens; not legal advice; subject to CCO sign-off via <code>POST /report/decision</code>.
+</footer>
+
+</body>
+</html>

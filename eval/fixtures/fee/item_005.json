@@ -1,0 +1,49 @@
+{
+  "id": "fee-005",
+  "brochure_crd": "999011",
+  "section_id": "item-5",
+  "section_type": "fee",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-25",
+  "labeled_at": "2026-04-25T00:00:00Z",
+  "notes": "Realism-style: solo-RIA wirehouse refugee with retainer + AUM tier + retirement-plan consulting; lots of 12b-1 / mutual-fund-share-class disclosure; trail commissions on legacy insurance products. Tests the 'other_compensation_disclosed' tag detection on prose that doesn't itemize cleanly.",
+  "inputs": {
+    "section_body": "Item 5 — Fees and Compensation\n\nDescription of Compensation\n\nThe firm offers two principal categories of advisory engagement. Compensation arrangements for each are described below.\n\n(a) Comprehensive Wealth Advisory. Clients engaging the firm for ongoing comprehensive wealth advisory services pay an annual retainer of $7,500 plus an asset-based fee at the following tiered rates, with the higher of the retainer plus asset-based fee or a minimum annual fee of $12,000 applying:\n\n   On the first $1,000,000 of assets:                    0.95% per annum\n   On assets between $1,000,001 and $3,000,000:          0.75% per annum\n   On assets above $3,000,000:                           0.55% per annum\n\nFees are billed and payable monthly in arrears, calculated based on the average daily balance of the assets in advisory accounts during the billing period. The firm does not impose any fees that are not described in this Item 5. Fees are non-negotiable except in extraordinary circumstances determined by the firm's Chief Executive Officer in consultation with the Chief Compliance Officer.\n\n(b) Retirement Plan Consulting. The firm provides ERISA Section 3(21) co-fiduciary services to qualified retirement plans for an annual fee equal to 0.30% of plan assets, with a minimum annual fee of $5,000 and a maximum annual fee of $25,000 per plan. Fees are invoiced quarterly in arrears.\n\nOther Forms of Compensation Received by the Firm and its Supervised Persons\n\nCertain mutual funds in client portfolios may pay 12b-1 distribution and service fees and/or sub-transfer-agent fees to the broker-dealer of record. The firm has elected as a matter of policy to recommend the lowest-expense available share class to clients in all cases where the firm has practical access to multiple share classes; however, in legacy accounts transferred to the firm from a prior advisor, certain share classes that pay 12b-1 fees may remain in client accounts until and unless the firm determines that an exchange to a lower-expense share class is in the client's best interest. Any 12b-1 fees received by the firm or any related person from such legacy positions are credited back to the affected client account on a pro-rata basis no less frequently than quarterly.\n\nOne supervised person of the firm continues to receive trail commissions from variable annuity contracts sold to certain clients prior to that supervised person's affiliation with the firm. The firm requires the supervised person to credit all such trail commissions back to the affected clients via fee offsets to the client's advisory account.\n\nNeither the firm nor any supervised person accepts performance-based fees, soft-dollar benefits, or any form of compensation tied to recommendations of any specific security or product."
+  },
+  "expected": {
+    "schedules": [
+      {
+        "pricing_model": "aum_tiered",
+        "program_name": "Comprehensive Wealth Advisory",
+        "tiers": [
+          {"min_assets_usd": 0, "max_assets_usd": 1000000, "rate_basis_points": 95, "flat_fee_usd": null},
+          {"min_assets_usd": 1000000, "max_assets_usd": 3000000, "rate_basis_points": 75, "flat_fee_usd": null},
+          {"min_assets_usd": 3000000, "max_assets_usd": null, "rate_basis_points": 55, "flat_fee_usd": null}
+        ],
+        "hourly_rate_low_usd": null,
+        "hourly_rate_high_usd": null,
+        "minimum_annual_fee_usd": 12000,
+        "minimum_account_size_usd": null,
+        "billing_frequency": "monthly",
+        "billing_timing": "arrears",
+        "fees_negotiable": false
+      },
+      {
+        "pricing_model": "aum_flat",
+        "program_name": "Retirement Plan Consulting",
+        "tiers": [
+          {"min_assets_usd": 0, "max_assets_usd": null, "rate_basis_points": 30, "flat_fee_usd": null}
+        ],
+        "hourly_rate_low_usd": null,
+        "hourly_rate_high_usd": null,
+        "minimum_annual_fee_usd": 5000,
+        "minimum_account_size_usd": null,
+        "billing_frequency": "quarterly",
+        "billing_timing": "arrears",
+        "fees_negotiable": false
+      }
+    ],
+    "accepts_performance_fees": false,
+    "other_compensation_disclosed": ["12b-1 fees", "trail commissions"]
+  }
+}

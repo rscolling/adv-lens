@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ADV-Lens Redline — CRD {{ report.brochure_crd }}</title>
+<style>
+  @page { size: Letter; margin: 0.6in; }
+  html { font-size: 11pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+         line-height: 1.4; color: #111; margin: 0; }
+  header { padding: 0 0 0.8em 0; border-bottom: 2px solid #1f2933; margin-bottom: 1em; }
+  header .product { font-size: 9pt; color: #777; letter-spacing: 0.06em; text-transform: uppercase; }
+  header h1 { font-size: 18pt; margin: 0.2em 0; }
+  header .sub { font-size: 10pt; color: #555; }
+  .scorebar { display: flex; align-items: stretch; gap: 1em; margin: 1em 0 1.2em; }
+  .gauge {
+    flex: 0 0 auto; width: 130px; padding: 0.8em 0.4em; text-align: center;
+    border: 1px solid #ccc; border-radius: 6px;
+    background: linear-gradient(180deg, var(--gauge-bg-top) 0%, var(--gauge-bg-bottom) 100%);
+  }
+  .gauge .num { font-size: 36pt; font-weight: 700; line-height: 1; color: var(--gauge-fg); }
+  .gauge .lbl { font-size: 8pt; color: #555; margin-top: 0.3em; text-transform: uppercase; letter-spacing: 0.05em; }
+  .headline { flex: 1; padding: 0.5em 0.8em; background: #f7f7f9; border-left: 4px solid #1f2933; border-radius: 3px; }
+  .headline-label { font-size: 8pt; color: #777; text-transform: uppercase; letter-spacing: 0.05em; }
+  .headline-text { font-size: 10pt; margin-top: 0.2em; }
+  table { border-collapse: collapse; width: 100%; margin: 0.6em 0; font-size: 9.5pt; }
+  th, td { border: 1px solid #d0d0d0; padding: 0.35em 0.6em; text-align: left; vertical-align: top; }
+  th { background: #ececef; font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  h2 { font-size: 13pt; margin: 1.2em 0 0.4em; padding-bottom: 0.2em; border-bottom: 1px solid #ddd; }
+  h3 { font-size: 11pt; margin: 0.6em 0 0.2em; }
+  .findings .finding {
+    margin: 0.5em 0; padding: 0.6em 0.8em;
+    border-left: 4px solid var(--sev-color); background: var(--sev-bg); border-radius: 3px;
+    page-break-inside: avoid;
+  }
+  .finding .row1 { display: flex; gap: 0.6em; align-items: baseline; }
+  .finding .id { font-weight: 700; font-family: "SF Mono", Consolas, "Liberation Mono", monospace; font-size: 10pt; }
+  .finding .sev {
+    font-size: 8pt; font-weight: 700; padding: 0.1em 0.5em; border-radius: 3px;
+    color: white; background: var(--sev-color); text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .finding .ref { font-size: 9pt; color: #555; }
+  .finding .summary { font-weight: 600; margin: 0.2em 0; font-size: 10.5pt; }
+  .finding .detail { font-size: 9.5pt; margin: 0.3em 0; }
+  .finding .recommendation { font-size: 9.5pt; margin-top: 0.4em;
+    padding: 0.3em 0.5em; background: rgba(255,255,255,0.55); border-radius: 3px; }
+  .finding .recommendation::before { content: "Recommend: "; font-weight: 700; color: #444; }
+  .finding .sec-ref { font-size: 8.5pt; color: #666; margin-top: 0.3em; font-style: italic; }
+  footer { margin-top: 2em; padding-top: 0.8em; border-top: 1px solid #ccc;
+           font-size: 8.5pt; color: #777; }
+  footer code { font-family: "SF Mono", Consolas, monospace; font-size: 8pt; background: #f0f0f0;
+                padding: 0.05em 0.3em; border-radius: 2px; }
+  .empty { color: #888; font-style: italic; }
+  .notes { background: #fff8d8; border-left: 4px solid #d4a017;
+           padding: 0.5em 0.8em; margin: 1em 0; font-size: 9.5pt; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="product">ADV-Lens Compliance Redline</div>
+  <h1>CRD {{ report.brochure_crd }}{% if report.brochure_version_id %} — Brochure {{ report.brochure_version_id }}{% endif %}</h1>
+  <div class="sub">Form ADV Part 2A scorecard, generated {{ generated_at }}</div>
+</header>
+
+<section class="scorebar">
+  {% set s = report.scorecard.overall_score %}
+  <div class="gauge"
+       style="
+         --gauge-fg: {{ score_colour(s) }};
+         --gauge-bg-top: {{ score_bg_top(s) }};
+         --gauge-bg-bottom: {{ score_bg_bottom(s) }};
+       ">
+    <div class="num">{{ s }}</div>
+    <div class="lbl">Overall Score</div>
+  </div>
+  <div class="headline">
+    <div class="headline-label">Headline</div>
+    <div class="headline-text">{{ report.scorecard.headline }}</div>
+  </div>
+</section>
+
+<h2>Category breakdown</h2>
+<table>
+  <thead><tr><th>Category</th><th class="num">Score</th><th>Rationale</th></tr></thead>
+  <tbody>
+  {% for c in report.scorecard.categories %}
+    <tr>
+      <td><strong>{{ c.name|replace('_', ' ')|title }}</strong></td>
+      <td class="num" style="color: {{ score_colour(c.score) }}; font-weight: 700;">{{ c.score }}</td>
+      <td>{{ c.rationale }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h2>Findings ({{ report.findings|length }})</h2>
+{% if report.findings %}
+<div class="findings">
+{% for f in report.findings %}
+  <div class="finding"
+       style="--sev-color: {{ severity_colour(f.severity) }}; --sev-bg: {{ severity_bg(f.severity) }};">
+    <div class="row1">
+      <span class="id">{{ f.id }}</span>
+      <span class="sev">{{ f.severity }}</span>
+      {% if f.item_reference %}<span class="ref">Item {{ f.item_reference }}</span>{% endif %}
+      {% if f.category %}<span class="ref">· {{ f.category|replace('_', ' ') }}</span>{% endif %}
+    </div>
+    <div class="summary">{{ f.summary }}</div>
+    {% if f.detail %}<div class="detail">{{ f.detail }}</div>{% endif %}
+    {% if f.recommendation %}<div class="recommendation">{{ f.recommendation }}</div>{% endif %}
+    {% if f.sec_expectation_ref %}<div class="sec-ref">{{ f.sec_expectation_ref }}</div>{% endif %}
+  </div>
+{% endfor %}
+</div>
+{% else %}
+<p class="empty">No findings recorded.</p>
+{% endif %}
+
+{% if report.peer_comparisons %}
+<h2>Peer comparisons</h2>
+<ul>
+{% for pc in report.peer_comparisons %}
+  <li>
+    <strong>Item {{ pc.item_number }}</strong> ({{ pc.peer_count }} peer{{ '' if pc.peer_count == 1 else 's' }}):
+    {{ pc.median_peer_position or "no plain-language summary" }}
+    {% if pc.notable_outliers %}
+      <br><span style="color:#666; font-size:9pt;">Outliers: {{ pc.notable_outliers|join('; ') }}</span>
+    {% endif %}
+  </li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if report.notes %}
+<div class="notes"><strong>Notes from the redline writer:</strong> {{ report.notes }}</div>
+{% endif %}
+
+<footer>
+  <strong>Provenance.</strong>
+  Brochure CRD <code>{{ report.brochure_crd }}</code>{% if report.brochure_version_id %}, version <code>{{ report.brochure_version_id }}</code>{% endif %}.
+  {% if meta and meta.brochure_sha256 %}Source PDF SHA-256 <code>{{ meta.brochure_sha256[:16] }}…</code>.{% endif %}
+  {% if meta and meta.trace_id %}Trace <code>{{ meta.trace_id }}</code>.{% endif %}
+  {% if meta and meta.report_hash %}Report hash <code>{{ meta.report_hash[:16] }}…</code>.{% endif %}
+  Generated by ADV-Lens; not legal advice; subject to CCO sign-off via <code>POST /report/decision</code>.
+</footer>
+
+</body>
+</html>

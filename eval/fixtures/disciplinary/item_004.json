@@ -1,0 +1,33 @@
+{
+  "id": "disciplinary-004",
+  "brochure_crd": "999012",
+  "section_id": "item-9",
+  "section_type": "disciplinary",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-25",
+  "labeled_at": "2026-04-25T00:00:00Z",
+  "notes": "Realism-style: multi-paragraph SEC administrative settlement with extensive hedge language ('without admitting or denying', 'the firm has cooperated fully', 'the firm has implemented enhancements'). Tests that the extractor correctly classifies as settled+consent_order despite the qualifying prose; that monetary penalties are summed correctly across the disgorgement / civil penalty / prejudgment interest line items.",
+  "inputs": {
+    "section_body": "Item 9 — Disciplinary Information\n\nRegistered investment advisers and their management persons are required to disclose all material facts regarding any legal or disciplinary event that would be material to your evaluation of the firm or the integrity of management. The firm has the following disclosures to report.\n\n1. SEC Administrative Proceeding (March 2024). On March 18, 2024, the firm entered into a settled administrative and cease-and-desist proceeding with the U.S. Securities and Exchange Commission relating to the firm's compliance procedures concerning the calculation, billing, and review of advisory fees during the period from January 2019 through March 2022. Without admitting or denying the findings set forth in the order, the firm consented to the entry of an order finding violations of Sections 206(2) and 206(4) of the Investment Advisers Act of 1940 and Rules 206(4)-7 and 206(4)-8 thereunder. The order found, among other things, that during the relevant period the firm had inadvertently overcharged a subset of clients due to errors in the firm's billing system in connection with the application of certain breakpoints and householding discounts.\n\nIn settlement, the firm agreed to (i) a censure; (ii) a cease-and-desist order; (iii) disgorgement in the amount of $487,000 representing the amount of overcharged fees; (iv) prejudgment interest in the amount of $63,000; and (v) a civil money penalty in the amount of $250,000. The firm has fully reimbursed all affected clients (with interest) prior to the entry of the order, and has implemented enhancements to its billing systems and review procedures designed to prevent recurrence of the issues identified. The firm cooperated with the SEC throughout the investigation and notes that the SEC's order acknowledges the firm's remedial efforts and cooperation.\n\nThe firm believes that the matters described in the SEC order have been fully resolved and that the firm's enhanced policies, procedures, and supervisory controls are reasonably designed to detect and prevent recurrence of similar issues.\n\nNo other disciplinary or legal events have occurred with respect to the firm or any of its management persons that would be material to a client's evaluation of the firm or its services. Information concerning the disciplinary history of individual investment adviser representatives associated with the firm is available on the SEC's Investment Adviser Public Disclosure (IAPD) website at adviserinfo.sec.gov."
+  },
+  "expected": {
+    "has_disciplinary_history": true,
+    "events": [
+      {
+        "event_type": "sec_administrative",
+        "event_date": "2024-03-18",
+        "event_year": 2024,
+        "authority": "U.S. Securities and Exchange Commission",
+        "involved_party_type": "firm",
+        "involved_party_name": null,
+        "allegation": "Inadvertent overcharging of advisory fees due to billing-system errors involving breakpoints and householding discounts; violations of Sections 206(2) and 206(4) of the Advisers Act and Rules 206(4)-7 and 206(4)-8.",
+        "resolution": "settled",
+        "sanction_monetary_usd": 800000,
+        "sanction_suspension_days": null,
+        "sanction_other": ["censure", "cease and desist", "disgorgement"],
+        "is_material": null
+      }
+    ],
+    "extraction_warnings": []
+  }
+}

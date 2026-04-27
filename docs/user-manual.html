@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Robert Colling" />
+  <title>ADV-Lens — User Manual</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="user-manual-print.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">ADV-Lens — User Manual</h1>
+<p class="subtitle">A printable desk reference for compliance officers,
+M&amp;A diligence teams, and the engineers who run the system</p>
+<p class="author">Robert Colling</p>
+<p class="date">Generated 2026-04-26 from main</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#1-what-this-is-in-plain-english"
+id="toc-1-what-this-is-in-plain-english">1. What this is, in plain
+English</a></li>
+<li><a href="#2-the-vocabulary" id="toc-2-the-vocabulary">2. The
+vocabulary</a>
+<ul>
+<li><a href="#21-acronyms" id="toc-21-acronyms">2.1 Acronyms</a></li>
+<li><a href="#22-industry-jargon" id="toc-22-industry-jargon">2.2
+Industry jargon</a></li>
+</ul></li>
+<li><a href="#3-what-goes-in-a-form-adv-part-2a-brochure"
+id="toc-3-what-goes-in-a-form-adv-part-2a-brochure">3. What goes in: a
+Form ADV Part 2A brochure</a>
+<ul>
+<li><a href="#31-what-the-input-actually-looks-like"
+id="toc-31-what-the-input-actually-looks-like">3.1 What the input
+actually looks like</a></li>
+</ul></li>
+<li><a href="#4-what-comes-out-the-redline-report"
+id="toc-4-what-comes-out-the-redline-report">4. What comes out: the
+Redline Report</a>
+<ul>
+<li><a href="#41-structure" id="toc-41-structure">4.1 Structure</a></li>
+<li><a href="#42-sample-real-run-2026-04-26--with-llm-rescue"
+id="toc-42-sample-real-run-2026-04-26--with-llm-rescue">4.2 Sample (real
+run, 2026-04-26 — with LLM rescue)</a></li>
+<li><a href="#43-how-to-read-the-score"
+id="toc-43-how-to-read-the-score">4.3 How to read the score</a></li>
+<li><a href="#44-how-to-read-the-findings"
+id="toc-44-how-to-read-the-findings">4.4 How to read the
+findings</a></li>
+</ul></li>
+<li><a href="#5-how-the-system-works" id="toc-5-how-the-system-works">5.
+How the system works</a>
+<ul>
+<li><a href="#51-pipeline-at-a-glance"
+id="toc-51-pipeline-at-a-glance">5.1 Pipeline at a glance</a></li>
+<li><a href="#52-etl-at-each-hop" id="toc-52-etl-at-each-hop">5.2 ETL at
+each hop</a></li>
+<li><a href="#53-per-node-breakdown" id="toc-53-per-node-breakdown">5.3
+Per-node breakdown</a></li>
+<li><a href="#54-per-node-model-assignment"
+id="toc-54-per-node-model-assignment">5.4 Per-node model
+assignment</a></li>
+</ul></li>
+<li><a href="#6-running-the-system" id="toc-6-running-the-system">6.
+Running the system</a>
+<ul>
+<li><a href="#61-prerequisites" id="toc-61-prerequisites">6.1
+Prerequisites</a></li>
+<li><a href="#62-first-boot" id="toc-62-first-boot">6.2 First
+boot</a></li>
+<li><a
+href="#63-one-shot-cli-synchronous-useful-for-evals-and-debugging"
+id="toc-63-one-shot-cli-synchronous-useful-for-evals-and-debugging">6.3
+One-shot CLI (synchronous; useful for evals and debugging)</a></li>
+<li><a href="#64-http-asynchronous-production-shape"
+id="toc-64-http-asynchronous-production-shape">6.4 HTTP (asynchronous;
+production shape)</a></li>
+<li><a href="#65-approving-or-rejecting-a-report-hitl"
+id="toc-65-approving-or-rejecting-a-report-hitl">6.5 Approving or
+rejecting a report (HITL)</a></li>
+<li><a href="#66-the-audit-trail" id="toc-66-the-audit-trail">6.6 The
+audit trail</a></li>
+</ul></li>
+<li><a href="#7-safety--compliance" id="toc-7-safety--compliance">7.
+Safety + compliance</a>
+<ul>
+<li><a href="#71-what-this-is-what-it-isnt"
+id="toc-71-what-this-is-what-it-isnt">7.1 What this is, what it
+isn't</a></li>
+<li><a href="#72-the-hitl-gate-built"
+id="toc-72-the-hitl-gate-built">7.2 The HITL gate (built)</a></li>
+<li><a href="#73-audit-table-coverage-built"
+id="toc-73-audit-table-coverage-built">7.3 Audit-table coverage
+(built)</a></li>
+<li><a href="#74-regulatory-posture" id="toc-74-regulatory-posture">7.4
+Regulatory posture</a></li>
+<li><a href="#75-data-handling" id="toc-75-data-handling">7.5 Data
+handling</a></li>
+</ul></li>
+<li><a href="#8-production-checklist" id="toc-8-production-checklist">8.
+Production checklist</a>
+<ul>
+<li><a href="#81-daily--per-shift" id="toc-81-daily--per-shift">8.1
+Daily / per-shift</a>
+<ul>
+<li><a href="#811-wiring-langfuse-to-your-runs"
+id="toc-811-wiring-langfuse-to-your-runs">8.1.1 Wiring Langfuse to your
+runs</a></li>
+</ul></li>
+<li><a href="#82-weekly" id="toc-82-weekly">8.2 Weekly</a></li>
+<li><a href="#83-the-stuck-row-reaper"
+id="toc-83-the-stuck-row-reaper">8.3 The stuck-row reaper</a></li>
+<li><a href="#84-anthropic-spend" id="toc-84-anthropic-spend">8.4
+Anthropic spend</a></li>
+<li><a href="#85-eval-harness-regression-policy"
+id="toc-85-eval-harness-regression-policy">8.5 Eval-harness regression
+policy</a></li>
+</ul></li>
+<li><a href="#9-whats-not-built-yet--roadmap"
+id="toc-9-whats-not-built-yet--roadmap">9. What's not built yet —
+roadmap</a>
+<ul>
+<li><a href="#91-week-4--eval-rigour--segmenter-robustness"
+id="toc-91-week-4--eval-rigour--segmenter-robustness">9.1 Week 4 — eval
+rigour + segmenter robustness</a></li>
+<li><a href="#92-week-5--presentation-polish"
+id="toc-92-week-5--presentation-polish">9.2 Week 5 — presentation
+polish</a></li>
+<li><a href="#93-week-6--optional-bolt-on"
+id="toc-93-week-6--optional-bolt-on">9.3 Week 6 — optional
+bolt-on</a></li>
+<li><a href="#94-post-portfolio" id="toc-94-post-portfolio">9.4
+Post-portfolio</a></li>
+</ul></li>
+<li><a href="#10-reference" id="toc-10-reference">10. Reference</a>
+<ul>
+<li><a href="#101-http-endpoints" id="toc-101-http-endpoints">10.1 HTTP
+endpoints</a></li>
+<li><a href="#102-cli-commands" id="toc-102-cli-commands">10.2 CLI
+commands</a></li>
+<li><a href="#103-environment-variables"
+id="toc-103-environment-variables">10.3 Environment variables</a></li>
+<li><a href="#104-file-layout" id="toc-104-file-layout">10.4 File
+layout</a></li>
+<li><a href="#105-adr-index" id="toc-105-adr-index">10.5 ADR
+index</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="1-what-this-is-in-plain-english">1. What this is, in plain
+English</h1>
+<p>ADV-Lens reads a registered investment adviser's regulatory
+disclosure brochure (the SEC Form ADV Part 2A — see the vocabulary
+section if any of that is unfamiliar) and produces a structured
+<strong>redline report</strong> that a Chief Compliance Officer can use
+to:</p>
+<ul>
+<li>spot disclosure weaknesses against SEC plain-English
+expectations,</li>
+<li>compare the firm's fees, conflicts, and disciplinary disclosures to
+a cohort of peer brochures of similar size and strategy,</li>
+<li>have a defensible audit trail of what the system extracted, what it
+flagged, and which human approved or rejected the report.</li>
+</ul>
+<p>It is <strong>not</strong> legal advice. It is <strong>not</strong>
+an auto-publisher. It is <strong>not</strong> a substitute for CCO
+judgment. Every report leaves the system only after a human review gate
+writes a row to an audit table.</p>
+<p>The intended day-to-day reader is a CCO at a mid-market RIA, an
+M&amp;A diligence analyst evaluating a target adviser, or a
+wealth-management consulting team reviewing a client's filing
+posture.</p>
+<hr />
+<h1 id="2-the-vocabulary">2. The vocabulary</h1>
+<p>Every piece of jargon that appears in this manual or in the system,
+in one sentence each. Skim, then come back when you hit a term you don't
+recognise.</p>
+<h2 id="21-acronyms">2.1 Acronyms</h2>
+<table>
+<thead>
+<tr>
+<th>Acronym</th>
+<th>Stands for</th>
+<th>What it means in this system</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADV</td>
+<td>(no expansion — the SEC's form name)</td>
+<td>The registration form every SEC- or state-registered investment
+adviser files. <strong>Part 2A</strong> is the public disclosure
+brochure ADV-Lens reads.</td>
+</tr>
+<tr>
+<td>RIA</td>
+<td>Registered Investment Adviser</td>
+<td>A firm that gives investment advice for compensation and is
+registered with the SEC or a state regulator.</td>
+</tr>
+<tr>
+<td>CCO</td>
+<td>Chief Compliance Officer</td>
+<td>The named person at an RIA accountable for compliance with the
+Advisers Act. The intended human user of ADV-Lens.</td>
+</tr>
+<tr>
+<td>CRD</td>
+<td>Central Registration Depository</td>
+<td>The unique numeric identifier the SEC and FINRA use for every
+adviser firm and individual. ADV-Lens keys everything off the firm's
+CRD.</td>
+</tr>
+<tr>
+<td>IARD</td>
+<td>Investment Adviser Registration Depository</td>
+<td>The SEC system advisers file ADV through. The bulk download contains
+every active adviser's Part 1 record.</td>
+</tr>
+<tr>
+<td>IAPD</td>
+<td>Investment Adviser Public Disclosure</td>
+<td>The public-facing SEC website that publishes every adviser's
+brochures. ADV-Lens fetches PDFs from
+<code>files.adviserinfo.sec.gov</code>.</td>
+</tr>
+<tr>
+<td>AUM</td>
+<td>Assets Under Management</td>
+<td>Total client assets the firm manages. ADV-Lens uses an AUM band
+(<span class="math inline">0−</span>1B, $1-5B, $5-50B, $50B+) as a
+peer-cohort filter.</td>
+</tr>
+<tr>
+<td>SEC</td>
+<td>Securities and Exchange Commission</td>
+<td>Federal regulator. Registers and examines RIAs above $100M AUM
+(state regulators handle smaller).</td>
+</tr>
+<tr>
+<td>FINRA</td>
+<td>Financial Industry Regulatory Authority</td>
+<td>Self-regulator for broker-dealers; runs BrokerCheck, the public
+lookup for adviser/broker disciplinary history.</td>
+</tr>
+<tr>
+<td>HITL</td>
+<td>Human-In-The-Loop</td>
+<td>A pipeline pattern where machine output is gated on a human approval
+step before being released. ADV-Lens's <code>HumanReviewGate</code> node
+implements this.</td>
+</tr>
+<tr>
+<td>RAG</td>
+<td>Retrieval-Augmented Generation</td>
+<td>Pulling relevant text from a knowledge store and feeding it to an
+LLM as context. ADV-Lens uses RAG to put peer-brochure excerpts in front
+of the redline writer.</td>
+</tr>
+<tr>
+<td>BRCHR_VRSN_ID</td>
+<td>Brochure Version ID</td>
+<td>The SEC's per-version identifier for a specific filing of a
+brochure. The same firm can have multiple brochures (e.g., wrap fee
+program disclosure plus main brochure).</td>
+</tr>
+<tr>
+<td>ERA</td>
+<td>Exempt Reporting Adviser</td>
+<td>A firm that meets a registration exemption but still files an
+abbreviated ADV. ADV-Lens does not currently process ERAs; it targets
+full Part 2A filings.</td>
+</tr>
+<tr>
+<td>M&amp;A</td>
+<td>Mergers and Acquisitions</td>
+<td>One target use case: an acquirer's diligence team reading a target
+adviser's ADV.</td>
+</tr>
+<tr>
+<td>ADR</td>
+<td>Architecture Decision Record</td>
+<td>A short markdown file in <code>docs/adr/</code> capturing one design
+decision and its consequences. Eleven exist today.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="22-industry-jargon">2.2 Industry jargon</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>One-sentence definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fee schedule</td>
+<td>The firm's published pricing — typically a tiered percentage of AUM,
+sometimes flat retainer or hourly, found in <strong>Item 5</strong> of
+the ADV.</td>
+</tr>
+<tr>
+<td>Conflict of interest</td>
+<td>Any arrangement that gives the firm a financial incentive to act
+against a client's interest — affiliated funds, soft dollars, principal
+trading, etc. Disclosed in <strong>Items 10/11/12</strong>.</td>
+</tr>
+<tr>
+<td>Disciplinary disclosure</td>
+<td>Any past regulatory, criminal, or civil action involving the firm or
+its principals. Disclosed in <strong>Item 9</strong>. The CCO must keep
+this current.</td>
+</tr>
+<tr>
+<td>Annual ADV amendment</td>
+<td>Every adviser must file an updated ADV within 90 days of fiscal-year
+end. ADV-Lens sees the most recent filing on IAPD.</td>
+</tr>
+<tr>
+<td>Wrap fee program</td>
+<td>A bundled-fee program where one charge covers advice + execution +
+custody. Has its own brochure variant (Part 2A Appendix 1).</td>
+</tr>
+<tr>
+<td>Custodian</td>
+<td>The bank or broker-dealer that holds client assets. Disclosed in
+<strong>Item 12</strong> when relevant.</td>
+</tr>
+<tr>
+<td>Compliance exam</td>
+<td>The SEC or state regulator's periodic on-site review of an adviser's
+books, records, and disclosures. ADV-Lens is designed to make exam prep
+cheaper, not to replace exam-readiness work.</td>
+</tr>
+<tr>
+<td>Soft dollars</td>
+<td>Research or services a custodian provides to the adviser in exchange
+for client trading commissions — disclosed in Item 12 and gated by the
+<strong>§ 28(e) safe harbor</strong>.</td>
+</tr>
+<tr>
+<td>Performance fee</td>
+<td>Compensation tied to investment performance (e.g., 20% of gains).
+Permitted only with qualified clients; disclosed in Item 5.</td>
+</tr>
+<tr>
+<td>Code of Ethics</td>
+<td>A firm's written rules governing personal trading by access persons,
+required by Rule 204A-1, summarised in Item 11.</td>
+</tr>
+</tbody>
+</table>
+<p>If a term in this manual is not in the table above, it appears in the
+parking-lot doc (<code>docs/parking-lot.md</code>) or the architecture
+doc as a candidate for inclusion.</p>
+<hr />
+<h1 id="3-what-goes-in-a-form-adv-part-2a-brochure">3. What goes in: a
+Form ADV Part 2A brochure</h1>
+<p>The system's input is a single PDF — the firm's most recent Part 2A
+brochure as published on IAPD. Brochures are typically 30–80 pages and
+follow a fixed structure of 18 numbered Items the SEC mandates.</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Title</th>
+<th>What's in it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Cover Page</td>
+<td>Firm name, address, contact, brochure date.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Material Changes</td>
+<td>Summary of changes since last annual amendment.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Table of Contents</td>
+<td>Required structural element.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Advisory Business</td>
+<td>Firm history, ownership, services, total AUM.</td>
+</tr>
+<tr>
+<td><strong>5</strong></td>
+<td><strong>Fees and Compensation</strong></td>
+<td><strong>Fee schedules, billing, third-party costs.</strong> Read by
+the Fee Extractor.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Performance-Based Fees</td>
+<td>Disclosure if any.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Types of Clients</td>
+<td>Individuals, pensions, funds, etc.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Methods of Analysis</td>
+<td>Investment process.</td>
+</tr>
+<tr>
+<td><strong>9</strong></td>
+<td><strong>Disciplinary Information</strong></td>
+<td><strong>Regulatory, criminal, civil actions.</strong> Read by the
+Disciplinary Extractor.</td>
+</tr>
+<tr>
+<td><strong>10</strong></td>
+<td><strong>Other Financial Industry Activities and
+Affiliations</strong></td>
+<td><strong>Affiliated B/D, insurance, fund complex, bank.</strong> Read
+by the Conflicts Extractor (part 1 of 3).</td>
+</tr>
+<tr>
+<td><strong>11</strong></td>
+<td><strong>Code of Ethics, Personal Trading, Participation in Client
+Transactions</strong></td>
+<td><strong>Personal-trading policy, material conflicts.</strong> Read
+by the Conflicts Extractor (part 2 of 3).</td>
+</tr>
+<tr>
+<td><strong>12</strong></td>
+<td><strong>Brokerage Practices</strong></td>
+<td><strong>Soft dollars, directed brokerage, trade
+aggregation.</strong> Read by the Conflicts Extractor (part 3 of
+3).</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Review of Accounts</td>
+<td>Account-review cadence and triggers.</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Client Referrals &amp; Other Compensation</td>
+<td>Referral arrangements.</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Custody</td>
+<td>Custody arrangements and account-statement delivery.</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Investment Discretion</td>
+<td>Discretionary authority granted.</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Voting Client Securities</td>
+<td>Proxy-voting policy.</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Financial Information</td>
+<td>Pre-paid fees, financial condition, bankruptcy disclosures.</td>
+</tr>
+</tbody>
+</table>
+<p>ADV-Lens reads <strong>Items 5, 9, 10, 11, 12</strong> with dedicated
+LLM extractors. The other 13 Items are segmented and stored but not
+currently scored — they're available for future extractors.</p>
+<h3 id="31-what-the-input-actually-looks-like">3.1 What the input
+actually looks like</h3>
+<p>The three images below are from the live Brown Advisory run on
+2026-04-26 — a deliberately neutral mid-size RIA, no recent compliance
+noise, multi-program brochure structure (the kind that exercises both
+the regex segmenter and the LLM rescue per ADR 0014).</p>
+<p><strong>The IAPD firm summary page</strong> — what a CRD resolves to.
+The "PART 2 BROCHURES" button links to the per-brochure PDF the system
+actually fetches. Brown Advisory: CRD 110181, SEC# 801-38826, registered
+6/7/1991.</p>
+<p><img src="images/iapd-brown-advisory-summary.png"
+alt="IAPD firm summary for Brown Advisory" /></p>
+<p><strong>Item 5 — Fees and Compensation</strong> (page 13 of the
+brochure). A multi-program tiered AUM fee schedule. Each program lists
+breakpoints in plain English; the fee extractor's job is to recover
+these into structured <code>FeeSchedule</code> / <code>FeeTier</code>
+objects.</p>
+<p><img src="images/brown-advisory-item5-fees-page13.png"
+alt="Item 5 fee schedules from Brown Advisory page 13" /></p>
+<p><strong>Item 9 — Disciplinary Information</strong> (page 43 of the
+brochure). The canonical "no disciplinary history" disclosure pattern:
+<em>"Neither Brown Advisory nor any of our supervised persons have been
+involved in any legal or disciplinary events..."</em>. The disciplinary
+extractor's job is to recognise this as
+<code>has_disciplinary_history: false</code> rather than hallucinating
+events from the surrounding text.</p>
+<p><img src="images/brown-advisory-item9-disciplinary-page43.png"
+alt="Item 9 disciplinary disclosure from Brown Advisory page 43" /></p>
+<hr />
+<h1 id="4-what-comes-out-the-redline-report">4. What comes out: the
+Redline Report</h1>
+<p>The system's output is a <code>RedlineReport</code> Pydantic object,
+serialised to JSON and (after the audit-trail bundle work — see § 9)
+optionally rendered as a 1-page HTML/PDF for printing or emailing to the
+CCO.</p>
+<h2 id="41-structure">4.1 Structure</h2>
+<p>A RedlineReport contains:</p>
+<ul>
+<li><code>brochure_crd</code> and <code>brochure_version_id</code> —
+exact provenance.</li>
+<li><code>scorecard</code> — an overall score (0-100) plus four
+mandatory category sub-scores, each 0-100 with a one-sentence rationale:
+<ul>
+<li><strong>compliance</strong> — does the brochure meet SEC
+plain-English and coverage expectations?</li>
+<li><strong>transparency</strong> — are fees, conflicts, and risks
+disclosed clearly?</li>
+<li><strong>conflicts_handling</strong> — when conflicts exist, is the
+mitigation explained?</li>
+<li><strong>fee_competitiveness</strong> — relative to the AUM-band peer
+cohort.</li>
+</ul></li>
+<li><code>findings</code> — between 4 and 12 individual flagged items,
+each with:
+<ul>
+<li>a stable ID (<code>F-001</code>, <code>F-002</code>, …),</li>
+<li>a <code>category</code> tag (e.g. <code>compliance_program</code>,
+<code>fee_structure</code>, <code>conflicts</code>),</li>
+<li>a severity (<code>info</code> / <code>low</code> /
+<code>medium</code> / <code>high</code> / <code>critical</code>),</li>
+<li>an <code>item_reference</code> — the ADV Item number the finding
+cites (null for cross-Item issues),</li>
+<li>a <code>summary</code> (one sentence) and a <code>detail</code> (one
+paragraph),</li>
+<li>a <code>sec_expectation_ref</code> pointing at the specific Form ADV
+instruction or Advisers Act rule the expectation derives from,</li>
+<li>an optional <code>peer_comparison</code> populated when peer context
+was available,</li>
+<li>a <code>recommendation</code> — what the CCO should actually
+do.</li>
+</ul></li>
+<li><code>peer_comparisons</code> — list of cross-firm comparisons keyed
+on extracted field, populated when peer context was available.</li>
+<li><code>extraction_warnings_seen</code> — surfaces any
+<code>extraction_warnings</code> that the upstream extractors emitted,
+so the redline writer's interpretive judgment is auditable.</li>
+<li><code>notes</code> — free-form notes from the redline writer about
+caveats, upstream input quality, or limits on the assertions made.</li>
+</ul>
+<p>The schema lives in <code>src/adv_lens/extractors/schemas.py</code>
+(<code>RedlineReport</code>, <code>Scorecard</code>,
+<code>ScoreCategory</code>, <code>Finding</code>).</p>
+<h2 id="42-sample-real-run-2026-04-26--with-llm-rescue">4.2 Sample (real
+run, 2026-04-26 — with LLM rescue)</h2>
+<p>The first live end-to-end run against a real IAPD brochure:
+<strong>Brown Advisory LLC</strong> (CRD 110181, BRCHR_VRSN_ID 1037550,
+brochure filed 2026-03-31). Full artifact at <a
+href="examples/sample-report.json"><code>docs/examples/sample-report.json</code></a>
+(19KB, redline + provenance metadata) and the full pipeline state at
+<code>docs/examples/sample-state.json</code> (~290KB).</p>
+<blockquote>
+<p><strong>Honest commentary on this sample.</strong> The overall_score
+is 68. The brochure has a non-canonical multi-program structure — only
+Items 2/3/4/9/15/16 have ALL-CAPS narrative headers; Items 5/10/11/12
+lack standalone section headers because their content is bundled into
+per-program subsections. The pipeline handled this in two stages:</p>
+<ol type="1">
+<li>The regex <code>HeuristicSegmenter</code> caught Items 2/3/4/9/15/16
+cleanly (Item 9 = no disciplinary disclosures, a score-positive signal)
+but produced 0–144-char fragments for Items 5/10/11/12.</li>
+<li>The <strong>ADR 0014 LLM rescue</strong> kicked in: Haiku 4.5
+located the real spans for the four missing Items in one prompt
+round-trip, producing 3,452 / 3,813 / 16,544 / 18,120-char bodies for
+Items 10 / 11 / 5 / 12 respectively. Backend tag on the resulting
+<code>SegmentedBrochure</code> is <code>heuristic+llm_fallback</code>,
+with a warning recording exactly which Items were rescued.</li>
+</ol>
+<p>Qdrant remained offline for this run, so <code>retrieve_peers</code>
+degraded gracefully (empty <code>peer_context</code>) and the redline
+writer noted the absence of peer benchmarking in its headline.</p>
+<p>Of the 11 findings, 3 are high-severity (re-extraction of misaligned
+Items 11/12 spans recommended), 4 medium, 2 low, 2 info. F-001 is a
+<em>positive</em> info-severity finding documenting that the Private
+Client</p>
+<blockquote>
+<p>$5M schedule's 100→30 bp tiered structure is industry-standard.</p>
+</blockquote>
+<p>The portfolio claim is now demonstrable end-to-end: <em>"we extract
+Items 5/9/10/11/12 from canonical and multi-program brochures alike,
+with a deterministic-first / LLM-rescue-as-fallback architecture, and
+surface any remaining gaps as findings rather than hiding them."</em>
+Full diagnostic in <a
+href="adr/0014-segmenter-limits-multi-program-brochures.md">ADR
+0014</a>; the SEC URL/UA migration story patched in this same session is
+in <a href="adr/0015-sec-iapd-url-and-ua-fragility.md">ADR 0015</a>.</p>
+</blockquote>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;meta&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;crd&quot;</span><span class="fu">:</span> <span class="st">&quot;110181&quot;</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;brochure_version_id&quot;</span><span class="fu">:</span> <span class="st">&quot;1037550&quot;</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;trace_id&quot;</span><span class="fu">:</span> <span class="st">&quot;brown-advisory-rescued&quot;</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;review_status&quot;</span><span class="fu">:</span> <span class="st">&quot;pending_review&quot;</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;segmenter_backend&quot;</span><span class="fu">:</span> <span class="st">&quot;heuristic+llm_fallback&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;redline&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;scorecard&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;overall_score&quot;</span><span class="fu">:</span> <span class="dv">68</span><span class="fu">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;headline&quot;</span><span class="fu">:</span> <span class="st">&quot;Brown Advisory (CRD 110181) brochure presents a clean disciplinary record and a competitive tiered fee structure, but the extracted text for Items 11 and 12 was misaligned and key disclosures (Code of Ethics, brokerage practices, performance fees, wrap economics) could not be verified from this extraction; scorecard generated without peer comparison and several findings are gated on a re-extraction of the source brochure.&quot;</span><span class="fu">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;categories&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span><span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;compliance&quot;</span><span class="fu">,</span>          <span class="dt">&quot;score&quot;</span><span class="fu">:</span> <span class="dv">65</span><span class="fu">,</span> <span class="dt">&quot;rationale&quot;</span><span class="fu">:</span> <span class="st">&quot;No disciplinary history disclosed (positive). Extracted text for Items 11 (Code of Ethics) and 12 (brokerage) was misaligned with their headers, leaving core compliance-program controls unverifiable from this extraction.&quot;</span><span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span><span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;transparency&quot;</span><span class="fu">,</span>        <span class="dt">&quot;score&quot;</span><span class="fu">:</span> <span class="dv">60</span><span class="fu">,</span> <span class="dt">&quot;rationale&quot;</span><span class="fu">:</span> <span class="st">&quot;Private Client &gt;$5M schedule is well-tiered and clearly stated. Other programs are weaker: &lt;$5M schedule does not state rates above $5M; E&amp;F and OCIO are disclosed only as maximum rates with no breakpoints; wrap-program compensation to the firm is not quantified.&quot;</span><span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span><span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;conflicts_handling&quot;</span><span class="fu">,</span>  <span class="dt">&quot;score&quot;</span><span class="fu">:</span> <span class="dv">65</span><span class="fu">,</span> <span class="dt">&quot;rationale&quot;</span><span class="fu">:</span> <span class="st">&quot;Standard but material proprietary-product conflict surfaced (firm may recommend affiliated funds/CITs in which it has a financial interest). No B/D, insurance, or banking affiliation footprint visible in the extraction.&quot;</span><span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span><span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;fee_competitiveness&quot;</span><span class="fu">,</span> <span class="dt">&quot;score&quot;</span><span class="fu">:</span> <span class="dv">78</span><span class="fu">,</span> <span class="dt">&quot;rationale&quot;</span><span class="fu">:</span> <span class="st">&quot;Headline rates are reasonable: Private Client reaches 30 bps at $100M+, OCIO is capped at 30 bps, E&amp;F is capped at 75 bps. Fees stated to be negotiable. Without peer context this is an absolute, not relative, assessment.&quot;</span><span class="fu">}</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;findings&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">{</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="st">&quot;F-001&quot;</span><span class="fu">,</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;category&quot;</span><span class="fu">:</span> <span class="st">&quot;fee_structure&quot;</span><span class="fu">,</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;severity&quot;</span><span class="fu">:</span> <span class="st">&quot;info&quot;</span><span class="fu">,</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;item_reference&quot;</span><span class="fu">:</span> <span class="dv">5</span><span class="fu">,</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;summary&quot;</span><span class="fu">:</span> <span class="st">&quot;Tiered AUM fee schedule for Private Client Portfolios &gt;$5M is competitive and uses standard breakpoints.&quot;</span><span class="fu">,</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;detail&quot;</span><span class="fu">:</span> <span class="st">&quot;The Private Client Portfolios &gt;$5M schedule begins at 100 bps on the first $5M and steps down through 75/50/35/30 bps, with a top breakpoint at $100M. Billing is quarterly and fees are stated to be negotiable. Structure appears consistent with industry norms for high-net-worth discretionary management.&quot;</span><span class="fu">,</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;sec_expectation_ref&quot;</span><span class="fu">:</span> <span class="st">&quot;Form ADV Part 2A Instructions, Item 5.A (fee schedule disclosure)&quot;</span><span class="fu">,</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;peer_comparison&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;recommendation&quot;</span><span class="fu">:</span> <span class="st">&quot;No action required. Document the schedule in the firm&#39;s fee-comparison file for next annual review.&quot;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">{</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="st">&quot;F-002&quot;</span><span class="fu">,</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;category&quot;</span><span class="fu">:</span> <span class="st">&quot;fee_structure&quot;</span><span class="fu">,</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;severity&quot;</span><span class="fu">:</span> <span class="st">&quot;low&quot;</span><span class="fu">,</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;item_reference&quot;</span><span class="fu">:</span> <span class="dv">5</span><span class="fu">,</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;summary&quot;</span><span class="fu">:</span> <span class="st">&quot;Private Client &lt;$5M schedule is ambiguous: only the first $5M is tiered; no rate stated for assets above $5M.&quot;</span><span class="fu">,</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;detail&quot;</span><span class="fu">:</span> <span class="st">&quot;The &lt;$5M schedule shows 125 bps on the first $3M and 100 bps from $3M-$5M, but does not state a rate for assets above $5M. The extractor&#39;s working hypothesis is that this schedule applies only when the $5M minimum is waived. The brochure language as extracted may leave a sub-$5M client unclear about how growth above $5M would be billed.&quot;</span><span class="fu">,</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;sec_expectation_ref&quot;</span><span class="fu">:</span> <span class="st">&quot;Form ADV Part 2A Instructions, Item 5.A (plain-English fee description)&quot;</span><span class="fu">,</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;peer_comparison&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;recommendation&quot;</span><span class="fu">:</span> <span class="st">&quot;Review the source brochure text to confirm whether the schedule rolls into the &gt;$5M grid once a sub-minimum account crosses $5M. If ambiguous, escalate to disclosure counsel for a clarifying edit at the next amendment.&quot;</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>The full report has 11 findings (3 high, 4 medium, 2 low, 2 info).
+The 3 high-severity findings recommend re-extracting Items 11 and 12
+where the LLM rescue produced misaligned spans the redline writer
+detected in its content review. Read <a
+href="examples/sample-report.json"><code>docs/examples/sample-report.json</code></a>
+for the complete artifact including provenance
+(<code>brochure_sha256</code>, <code>report_hash</code>) used by the
+audit-trail mechanism.</p>
+<h2 id="43-how-to-read-the-score">4.3 How to read the score</h2>
+<ul>
+<li><strong>90+</strong> — exemplary. Use as a peer-benchmark
+reference.</li>
+<li><strong>80-89</strong> — solid. Address 2-3 medium findings before
+next annual amendment; no exam concern.</li>
+<li><strong>70-79</strong> — adequate. Address all medium and high
+findings before next amendment; prepare a remediation memo for exam
+file.</li>
+<li><strong>60-69</strong> — weak. Triggers a formal
+disclosure-improvement project.</li>
+<li><strong>Below 60</strong> — material disclosure gap. Engage outside
+compliance counsel; do not rely on the brochure as currently filed.</li>
+</ul>
+<p>These thresholds are advisory, not regulatory. Your compliance
+counsel sets the actual remediation bar.</p>
+<h2 id="44-how-to-read-the-findings">4.4 How to read the findings</h2>
+<p>Each finding cites the ADV Item it relates to and has a severity. The
+severity scale is calibrated to <strong>what would change at
+exam</strong>, not to what would change a hiring decision:</p>
+<ul>
+<li><strong>critical</strong> — likely violates a specific Advisers Act
+rule or Marketing Rule provision. Fix before any new client
+onboarding.</li>
+<li><strong>high</strong> — material disclosure gap an SEC examiner
+would request a written explanation for. Fix before next amendment.</li>
+<li><strong>medium</strong> — clarity or completeness gap that would
+draw a comment letter but not a deficiency finding. Fix in next
+amendment cycle.</li>
+<li><strong>low</strong> — stylistic or minor structural improvement.
+Address opportunistically.</li>
+<li><strong>info</strong> — observation, not a defect. Common when the
+system finds something noteworthy but not actionable.</li>
+</ul>
+<p>A finding without a numeric Item reference signals a cross-Item issue
+(e.g., contradiction between Item 5 fees and Item 12 brokerage).</p>
+<hr />
+<h1 id="5-how-the-system-works">5. How the system works</h1>
+<h2 id="51-pipeline-at-a-glance">5.1 Pipeline at a glance</h2>
+<pre><code>     ┌────────────────────────────────────────────────────────┐
+     │                                                        │
+ CRD │     ┌──────────────┐   ┌───────────────────┐           │
+─────┼────►│ fetch_       │──►│ segment_brochure  │           │
+     │     │ brochure     │   │ (HeuristicSeg)    │           │
+     │     └──────────────┘   └─────────┬─────────┘           │
+     │                                  │                     │
+     │              ┌───────────────────┼───────────────────┐ │
+     │              ▼                   ▼                   ▼ │
+     │     ┌──────────────┐  ┌──────────────────┐  ┌────────────┐
+     │     │ extract_fee  │  │ extract_         │  │ extract_   │
+     │     │ (Sonnet 4.6) │  │ disciplinary     │  │ conflicts  │
+     │     │              │  │ (Haiku 4.5)      │  │ (Sonnet 4.6│
+     │     └───────┬──────┘  └─────────┬────────┘  └─────┬──────┘
+     │             │                   │                 │     │
+     │             └────────┬──────────┴─────────────────┘     │
+     │                      ▼                                  │
+     │       ┌─────────────────────────────────┐               │
+     │       │ retrieve_peers                  │               │
+     │       │ (Qdrant hybrid: dense+BM25+RRF  │               │
+     │       │  + cross-encoder rerank)        │               │
+     │       └────────────────┬────────────────┘               │
+     │                        ▼                                │
+     │             ┌──────────────────────┐                    │
+     │             │ write_redline        │                    │
+     │             │ (Opus 4.7)           │                    │
+     │             └──────────┬───────────┘                    │
+     │                        ▼                                │
+     │             ┌──────────────────────┐                    │
+     │             │ hitl_gate            │  → audit row       │
+     │             │ (marker-style)       │    on /report/decision
+     │             └──────────────────────┘                    │
+     │                                                         │
+     └─────────────────────────────────────────────────────────┘
+                          ↓
+                 RedlineReport JSON
+                 (+ audit trail in Postgres)</code></pre>
+<p>A live Mermaid version of the same diagram is in
+<code>docs/architecture.md</code> (§ Pipeline) — GitHub renders it
+inline.</p>
+<h2 id="52-etl-at-each-hop">5.2 ETL at each hop</h2>
+<p>For each arrow in the diagram, this table names the
+<strong>Extract</strong>, the <strong>Transform</strong>, and the
+<strong>Load</strong> so a CCO can trace any field in the final
+scorecard back to a source artifact, a transform, and an audit row.</p>
+<table>
+<thead>
+<tr>
+<th>Hop</th>
+<th>Extract</th>
+<th>Transform</th>
+<th>Load</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CRD → IAPD search</td>
+<td>HTTPS GET to <code>api.adviserinfo.sec.gov</code> (rate-limited 5
+rps)</td>
+<td>JSON → <code>BrochureRef</code> Pydantic</td>
+<td><code>data/brochures/&lt;CRD&gt;/index.json</code></td>
+</tr>
+<tr>
+<td>IAPD search → PDF</td>
+<td>HTTPS GET to <code>files.adviserinfo.sec.gov/...pdf</code></td>
+<td>bytes → SHA-256 + cache key</td>
+<td><code>data/brochures/&lt;CRD&gt;/&lt;BRCHR_VRSN_ID&gt;.pdf</code>
+(idempotent)</td>
+</tr>
+<tr>
+<td>PDF → text</td>
+<td><code>pypdf</code> page iteration</td>
+<td>text concat with page boundaries</td>
+<td>in-memory <code>str</code> (passed to segmenter)</td>
+</tr>
+<tr>
+<td>text → 18 sections</td>
+<td><code>HeuristicSegmenter</code> (regex on Item 1 / Item 2 / …
+headings)</td>
+<td><code>dict[ItemNumber, SectionBody]</code> →
+<code>SegmentedBrochure</code> Pydantic</td>
+<td>in-memory; persisted in <code>state.segmented_brochure</code></td>
+</tr>
+<tr>
+<td>Item 5 → fee extraction</td>
+<td>LLM call (Sonnet 4.6 via Instructor)</td>
+<td>structured JSON → <code>FeeExtraction</code> Pydantic</td>
+<td>one row in <code>llm_calls</code> (input/output/tokens/cost), one
+field in <code>state.extractions</code></td>
+</tr>
+<tr>
+<td>Item 9 → disciplinary extraction</td>
+<td>LLM call (Haiku 4.5 via Instructor)</td>
+<td>structured JSON → <code>DisciplinaryExtraction</code> Pydantic</td>
+<td>one row in <code>llm_calls</code>, one field in
+<code>state.extractions</code></td>
+</tr>
+<tr>
+<td>Items 10/11/12 → conflicts extraction</td>
+<td>LLM call (Sonnet 4.6 via Instructor)</td>
+<td>structured JSON → <code>ConflictsExtraction</code> Pydantic</td>
+<td>one row in <code>llm_calls</code>, one field in
+<code>state.extractions</code></td>
+</tr>
+<tr>
+<td>extractions → peer hits</td>
+<td>Qdrant query per Item (5/9/10/11/12) with AUM-band filter, exclude
+self-CRD</td>
+<td>dense <code>bge-small-en-v1.5</code> + sparse hashed BM25 → RRF
+fusion → cross-encoder rerank (<code>ms-marco-MiniLM-L-6-v2</code>)</td>
+<td><code>state.peer_context: list[dict]</code> (PeerHit dumps)</td>
+</tr>
+<tr>
+<td>extractions + peers → redline</td>
+<td>LLM call (Opus 4.7 via Instructor)</td>
+<td>structured JSON → <code>RedlineReport</code> Pydantic + structural
+validator</td>
+<td>one row in <code>llm_calls</code>, <code>state.redline</code></td>
+</tr>
+<tr>
+<td>redline → review marker</td>
+<td><code>compute_report_hash(redline)</code> SHA-256</td>
+<td>sets <code>state.review_status="pending_review"</code>,
+<code>state.report_hash</code></td>
+<td><code>pipeline_runs.result</code> (full state JSON)</td>
+</tr>
+<tr>
+<td>CCO POST <code>/report/decision</code></td>
+<td>HTTP request body</td>
+<td><code>HumanReviewDecision</code> Pydantic</td>
+<td>one row in <code>human_reviews</code> (decision, reviewer,
+rationale, report_hash)</td>
+</tr>
+</tbody>
+</table>
+<p>Every LLM call additionally emits a Langfuse trace span when Langfuse
+is configured (one trace per <code>trace_id</code>, one span per
+node).</p>
+<h2 id="53-per-node-breakdown">5.3 Per-node breakdown</h2>
+<p>See <code>docs/architecture.md § Pipeline (current code)</code> for
+the full, code-citing description of each node. The short version:</p>
+<ul>
+<li><strong>fetch_brochure</strong> resolves the most recent brochure
+version for the CRD (or uses a caller-supplied
+<code>BRCHR_VRSN_ID</code>), fetches the PDF with a content-addressed
+cache, populates SHA-256 + cache-status flags on the state.</li>
+<li><strong>segment_brochure</strong> runs the regex segmenter; missing
+Items land in <code>state.errors</code> rather than raising. This means
+a brochure missing Item 9 still flows through the rest of the
+pipeline.</li>
+<li><strong>extract_fee / extract_disciplinary /
+extract_conflicts</strong> run in <strong>parallel</strong> off the
+segmenter via LangGraph's parallel-edges pattern with a custom
+<code>merge_extractions</code> reducer (ADR 0006). Each returns only its
+own field; the reducer composes them.</li>
+<li><strong>retrieve_peers</strong> is the fan-in node. It waits for all
+three extractors to complete before it issues per-Item Qdrant
+queries.</li>
+<li><strong>write_redline</strong> is the single Opus 4.7 call per
+pipeline run. Output is structurally validated before it leaves the
+node.</li>
+<li><strong>hitl_gate</strong> is <strong>marker-style</strong> (sets
+<code>review_status="pending_review"</code>
+<ul>
+<li><code>report_hash</code>), not a true LangGraph
+<code>interrupt_before</code>. ADR 0010 documents why.</li>
+</ul></li>
+</ul>
+<h2 id="54-per-node-model-assignment">5.4 Per-node model assignment</h2>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Model</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fetch_brochure</code></td>
+<td>(no LLM)</td>
+<td>Pure I/O</td>
+</tr>
+<tr>
+<td><code>segment_brochure</code></td>
+<td>(no LLM)</td>
+<td>Regex</td>
+</tr>
+<tr>
+<td><code>extract_fee</code></td>
+<td>Sonnet 4.6</td>
+<td>Numeric tables + categorical fields; benefits from Sonnet's
+structured-output discipline</td>
+</tr>
+<tr>
+<td><code>extract_disciplinary</code></td>
+<td>Haiku 4.5</td>
+<td>Disciplinary disclosures are short and largely categorical; Haiku is
+fast and cheap</td>
+</tr>
+<tr>
+<td><code>extract_conflicts</code></td>
+<td>Sonnet 4.6</td>
+<td>Three concatenated Items, lots of conditional fields; Sonnet handles
+the longer context</td>
+</tr>
+<tr>
+<td><code>retrieve_peers</code></td>
+<td>(no LLM)</td>
+<td>Vector + lexical search; cross-encoder rerank is a bge model</td>
+</tr>
+<tr>
+<td><code>write_redline</code></td>
+<td>Opus 4.7</td>
+<td>Synthesises 4 inputs into a defensible scorecard + findings; one
+call per run is the cost cap</td>
+</tr>
+</tbody>
+</table>
+<p>Per-node assignments are environment-overridable via
+<code>MODEL_*</code> env vars (see § 10.3).</p>
+<hr />
+<h1 id="6-running-the-system">6. Running the system</h1>
+<h2 id="61-prerequisites">6.1 Prerequisites</h2>
+<ul>
+<li>Python 3.12 + <code>uv</code> (see <code>pyproject.toml</code> for
+exact deps)</li>
+<li>Docker + Docker Compose (for Postgres + Qdrant + Langfuse)</li>
+<li><code>ANTHROPIC_API_KEY</code> in <code>.env</code> for any
+extraction or redline run</li>
+<li>Optional: <code>LANGFUSE_*</code> keys after first compose-up, for
+trace visibility</li>
+</ul>
+<h2 id="62-first-boot">6.2 First boot</h2>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> .env.example .env</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># edit .env: paste ANTHROPIC_API_KEY, leave LANGFUSE_* blank for now</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># visit http://localhost:3000 to provision Langfuse, paste back the</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.main  <span class="co"># or: docker compose up app</span></span></code></pre></div>
+<p>Health check: <code>GET http://localhost:8000/healthz</code></p>
+<h2 id="63-one-shot-cli-synchronous-useful-for-evals-and-debugging">6.3
+One-shot CLI (synchronous; useful for evals and debugging)</h2>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fetch + segment only (no LLM cost)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.graph.cli 108000 <span class="at">--no-llm</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Full pipeline (extractors + redline + HITL marker)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.graph.cli 108000</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pin a specific brochure version</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.graph.cli 108000 <span class="at">--brochure-version</span> 987654</span></code></pre></div>
+<p>CLI prints the final <code>ADVState</code> as JSON. Pipe to
+<code>jq</code> for inspection.</p>
+<h2 id="64-http-asynchronous-production-shape">6.4 HTTP (asynchronous;
+production shape)</h2>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Submit</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> POST http://localhost:8000/pipeline/run <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;crd&quot;: &quot;108000&quot;}&#39;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># → 202 {&quot;trace_id&quot;: &quot;advlens-abc123&quot;, &quot;status&quot;: &quot;queued&quot;,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#         &quot;status_url&quot;: &quot;/pipeline/run/advlens-abc123&quot;}</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Poll</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:8000/pipeline/run/advlens-abc123</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># → 200 {&quot;trace_id&quot;: ..., &quot;status&quot;: &quot;running&quot; | &quot;complete&quot; | &quot;failed&quot;,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#         &quot;result&quot;: {... full ADVState when complete ...}}</span></span></code></pre></div>
+<p>The status walks <code>queued → running → complete | failed</code>.
+Polling cadence: 5-15 seconds is plenty; a typical end-to-end run is
+30-90 s on a real brochure.</p>
+<h2 id="65-approving-or-rejecting-a-report-hitl">6.5 Approving or
+rejecting a report (HITL)</h2>
+<p>When <code>result.review_status == "pending_review"</code>, the CCO
+acts:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> POST http://localhost:8000/report/decision <span class="dt">\</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;trace_id&quot;: &quot;advlens-abc123&quot;,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;report_hash&quot;: &quot;&lt;echoed from the pipeline result&gt;&quot;,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;brochure_crd&quot;: &quot;108000&quot;,</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;decision&quot;: &quot;approved&quot;,</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;reviewer&quot;: &quot;jane.cco@firm.example&quot;,</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;rationale&quot;: &quot;Reviewed all medium findings; concur with the action items in F-001 and F-002.&quot;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="st">  }&#39;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># → 201 + DecisionResponse including the audit row id</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the decision history for a run:</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:8000/report/decision/advlens-abc123</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># → list of decisions oldest-first; re-posts deliberately create new rows</span></span></code></pre></div>
+<p>Decision options: <code>approved</code>, <code>rejected</code>,
+<code>revise_requested</code>.</p>
+<h2 id="66-the-audit-trail">6.6 The audit trail</h2>
+<p>Three Postgres tables, queryable at any time:</p>
+<ul>
+<li><code>llm_calls</code> — one row per LLM invocation. Includes input,
+output, model ID, intended temperature, token counts, USD cost, trace
+ID, node name, brochure CRD, timestamp.</li>
+<li><code>human_reviews</code> — one row per CCO decision. Includes
+decision, reviewer, rationale, <code>report_hash</code>, timestamp.</li>
+<li><code>pipeline_runs</code> — one row per pipeline invocation.
+Includes status, started/completed timestamps, full final state JSON,
+error.</li>
+</ul>
+<p>A typical audit query: "show me every LLM call for trace X with model
+and cost":</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> node, model, prompt_tokens, completion_tokens, cost_usd, created_at</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> llm_calls <span class="kw">WHERE</span> trace_id <span class="op">=</span> <span class="st">&#39;advlens-abc123&#39;</span> <span class="kw">ORDER</span> <span class="kw">BY</span> created_at;</span></code></pre></div>
+<blockquote>
+<p><strong>NOT BUILT YET — single-command audit-trail
+bundle.</strong></p>
+<p>Today the audit lives across three tables and a JSON column. A
+<code>GET /report/audit/{trace_id}</code> endpoint that returns a single
+ZIP containing the cached input PDF, the per-Item extraction JSONs, the
+RedlineReport, all <code>llm_calls</code> rows, and all
+<code>human_reviews</code> rows would close the "give me the
+exam-defensible bundle" need in one request. <strong>Target
+plan:</strong> Week-5 polish; Jinja+ZIP, ~3 hours.</p>
+</blockquote>
+<hr />
+<h1 id="7-safety--compliance">7. Safety + compliance</h1>
+<h2 id="71-what-this-is-what-it-isnt">7.1 What this is, what it
+isn't</h2>
+<p><strong>Is:</strong> an analyst aid for CCOs and M&amp;A diligence
+teams reading public SEC filings. Structured extraction + peer
+benchmarking + redline.</p>
+<p><strong>Isn't:</strong></p>
+<ul>
+<li>legal advice,</li>
+<li>an auto-publisher of redacted or revised brochures,</li>
+<li>a recommendation engine for investment products,</li>
+<li>a substitute for CCO judgment.</li>
+</ul>
+<p>Every report passes through a human review gate before it leaves the
+system.</p>
+<h2 id="72-the-hitl-gate-built">7.2 The HITL gate (built)</h2>
+<p>The <code>hitl_gate</code> node runs at the end of every pipeline. It
+does <strong>not</strong> publish the report. It marks the report as
+<code>pending_review</code> and computes a <code>report_hash</code>
+(SHA-256 of the canonical RedlineReport JSON). The CCO acts via
+<code>POST /report/decision</code>, which writes a row to
+<code>human_reviews</code> keyed on the hash.</p>
+<p>A re-run of the pipeline against the same CRD produces a new
+<code>trace_id</code> but a <code>report_hash</code> that may or may not
+match the prior approval. This is intentional — approvals are pinned to
+the exact bytes the CCO read, not to a moving target.</p>
+<h2 id="73-audit-table-coverage-built">7.3 Audit-table coverage
+(built)</h2>
+<p>Every LLM call and every human decision lands in Postgres with a
+trace ID that joins back to the pipeline run. The audit posture is
+designed to answer: <em>"Show me how this finding was produced and who
+signed off on it."</em> See § 6.6 for query examples.</p>
+<h2 id="74-regulatory-posture">7.4 Regulatory posture</h2>
+<p>ADV-Lens reads exclusively public SEC filings. No client PII, no
+gated scraping. The companion <code>docs/compliance.md</code> enumerates
+the specific SEC and FINRA rules the system engages with.</p>
+<blockquote>
+<p><strong>NOT BUILT YET — full compliance doc.</strong></p>
+<p><code>docs/compliance.md</code> is currently a placeholder.
+<strong>Target plan:</strong> Week-5 polish pass covers: SEC Marketing
+Rule 206(4)-1 implications (none, but defensible), Advisers Act
+recordkeeping rule 204-2, the Form ADV instructions ADV-Lens uses as a
+scoring rubric, and the exam-defensibility argument for the audit
+posture. Co-lands with the README final pass and this manual's
+revision.</p>
+</blockquote>
+<h2 id="75-data-handling">7.5 Data handling</h2>
+<ul>
+<li><strong>Input PDFs</strong> cached on disk under
+<code>data/brochures/&lt;CRD&gt;/&lt;BRCHR_VRSN_ID&gt;.pdf</code>.
+Public SEC filings; no expiry policy needed.</li>
+<li><strong>Extractions and redlines</strong> persisted in
+<code>pipeline_runs.result</code>. 90-day retention is the planned
+default; today operators clean up manually.</li>
+<li><strong>LLM call logs</strong> in <code>llm_calls</code> retain
+everything indefinitely for audit. Cost is tracked per row.</li>
+<li><strong>No client PII ever transits the system.</strong> ADV-Lens
+has no notion of client accounts and refuses (by design) to accept
+anything other than a CRD + optional version ID as input.</li>
+</ul>
+<hr />
+<h1 id="8-production-checklist">8. Production checklist</h1>
+<h2 id="81-daily--per-shift">8.1 Daily / per-shift</h2>
+<ul>
+<li><code>GET /healthz</code> returns 200.</li>
+<li>Any <code>pipeline_runs</code> row stuck in <code>running</code>
+longer than 10 minutes gets reaped by the stuck-row reaper (see §
+8.3).</li>
+<li>Langfuse dashboard shows per-pipeline trace health.</li>
+</ul>
+<h3 id="811-wiring-langfuse-to-your-runs">8.1.1 Wiring Langfuse to your
+runs</h3>
+<p>Langfuse trace emission is plumbed and tested in code: every LLM call
+in <code>LLMClient.extract</code> emits one Langfuse generation span,
+and all spans for one pipeline invocation roll up under a deterministic
+trace ID (<code>Langfuse.create_trace_id(seed=trace_id)</code>). The
+wire is no-op when Langfuse isn't configured. To turn it on:</p>
+<ol type="1">
+<li><strong>Bring up the self-host</strong> (already in
+<code>docker-compose.yml</code>):
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span> langfuse-web langfuse-worker langfuse-db</span></code></pre></div></li>
+<li><strong>Provision keys</strong> in the Langfuse UI at <a
+href="http://localhost:3000">http://localhost:3000</a>: create an
+organisation + project, copy the public/secret keys.</li>
+<li><strong>Paste keys into <code>.env</code>:</strong>
+<pre class="dotenv"><code>LANGFUSE_PUBLIC_KEY=pk-lf-...
+LANGFUSE_SECRET_KEY=sk-lf-...
+LANGFUSE_HOST=http://localhost:3000</code></pre></li>
+<li><strong>Run the pipeline as usual.</strong> The next CLI or HTTP
+invocation emits traces. Trace URL for any <code>trace_id</code> is
+available via
+<code>adv_lens.app.observability.get_trace_url(trace_id)</code> and
+printed in <code>logs/</code> when configured.</li>
+</ol>
+<p><strong>Coverage today:</strong> one Langfuse generation span per LLM
+call (fee / disciplinary / conflicts extractors, segmenter LLM rescue,
+redline writer), each with model ID, input/output tokens, USD cost, the
+brochure CRD, and the originating pipeline trace ID. Roll-up trace
+contains every span for one pipeline invocation in time order.</p>
+<blockquote>
+<p><strong>README trace links populate after the first traced
+run.</strong> The README's "3 example traces" placeholders are populated
+by hand from the Langfuse UI after the self-host has at least one
+CCO-approved brochure run end-to-end.</p>
+</blockquote>
+<h2 id="82-weekly">8.2 Weekly</h2>
+<ul>
+<li>Run the eval harness against the golden set:
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> eval.runner</span></code></pre></div>
+Compare F1 per section to the prior week's baseline (committed to
+<code>eval/results/</code>). A drop of more than 0.05 mean F1 in any
+section warrants a prompt or schema diff.</li>
+</ul>
+<h2 id="83-the-stuck-row-reaper">8.3 The stuck-row reaper</h2>
+<p>Process restarts (deploys, OOMs, network partitions) leave any
+in-flight pipeline runs stuck in <code>status="running"</code>. The
+reaper sweeps them:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dry run — show candidates without mutating</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.jobs.reaper <span class="at">--dry-run</span> <span class="at">--verbose</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Actually mark stuck rows as failed</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> adv_lens.app.jobs.reaper <span class="at">--verbose</span></span></code></pre></div>
+<p>Wire into cron / a Kubernetes CronJob at whatever cadence matches
+your deployment's restart frequency. Default threshold is 10 minutes;
+tune via <code>PIPELINE_RUN_REAP_THRESHOLD_MINUTES</code> in
+<code>.env</code>.</p>
+<h2 id="84-anthropic-spend">8.4 Anthropic spend</h2>
+<p>Every LLM call writes its cost estimate in USD to
+<code>llm_calls.cost_usd</code>. A typical full pipeline run costs <span
+class="math inline">0.50−</span>1.50 (one Opus call dominates). Per-day
+budget alarm:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="dt">DATE</span>(created_at) <span class="kw">AS</span> <span class="dt">day</span>, <span class="fu">SUM</span>(cost_usd) <span class="kw">AS</span> daily_usd</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> llm_calls</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> created_at <span class="op">&gt;</span> NOW() <span class="op">-</span> <span class="dt">INTERVAL</span> <span class="st">&#39;7 days&#39;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dt">day</span> <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="dt">day</span>;</span></code></pre></div>
+<h2 id="85-eval-harness-regression-policy">8.5 Eval-harness regression
+policy</h2>
+<blockquote>
+<p><strong>NOT BUILT YET — CI eval-regression gate.</strong></p>
+<p>Today the eval harness runs locally and writes
+<code>eval/results/&lt;UTC&gt;/report.{json,md}</code>. No CI check
+enforces a regression bar yet. <strong>Target plan:</strong> Week-4 —
+GitHub Actions job that runs the eval on every PR (against an
+Anthropic-key secret), compares the resulting <code>mean_score</code>
+per section to the latest committed baseline, and blocks the PR if any
+section drops more than 0.05. Pairs with the LLM-as-judge dual-judge
+pattern (ADR 0009).</p>
+</blockquote>
+<hr />
+<h1 id="9-whats-not-built-yet--roadmap">9. What's not built yet —
+roadmap</h1>
+<p>The system is feature-complete on the <strong>pipeline + extractor +
+audit</strong> axes (Weeks 1-3). The remaining work is <strong>rigour +
+presentation + operational polish</strong> (Weeks 4-6). In rough
+priority order:</p>
+<h3 id="91-week-4--eval-rigour--segmenter-robustness">9.1 Week 4 — eval
+rigour + segmenter robustness</h3>
+<ul>
+<li><p><strong>Segmenter robustness against multi-program /
+bundled-Items brochures</strong> (see ADR 0014). The
+<code>HeuristicSegmenter</code> regex looks for line-anchored "Item N"
+headers (case-insensitive, common punctuation variants). It works
+cleanly on the textbook brochure structure but breaks on brochures that
+<strong>bundle Items together</strong> — for example, where the
+fee-disclosure narrative for Items 5/10/11/12 lives inside per-program
+subsections like "Brown Advisory Wrap Program — Fees and Compensation"
+rather than a standalone "Item 5" header. The Brown Advisory live run (§
+4.2) surfaced this honestly: Items 2/3/4/9/15/16 parsed cleanly, Items
+5/10/11/12 did not. <strong>Target plan:</strong> add an LLM fallback
+(Haiku 4.5, one call per brochure) that locates Item-section spans when
+the regex finds &lt;2K-char bodies for any of Items 5/9/10/11/12.
+Triggered only on the difficult subset; regex stays primary. Full design
++ diagnostic in ADR 0014.</p></li>
+<li><p><strong>LLM-as-judge for redline scoring</strong> (ADR 0009).
+Today the redline is scored only structurally (4-12 findings, valid
+scorecard categories, unique IDs, severity not pathological). A second
+LLM judge reading the redline against the brochure would give a
+content-quality score. Plan: dual-judge with cross-checking to control
+for judge drift.</p></li>
+<li><p><strong>Golden set scaling: 19 → 65 fixtures.</strong> Spread
+across all three extractor sections; mix synthetic-clean and
+realism-style prose. The 19 fixtures shipped today validate the
+extractors structurally; 65 gives stable per-section F1 numbers that
+survive run-to-run noise.</p></li>
+<li><p><strong>CI eval-regression gate</strong> (see § 8.5).</p></li>
+<li><p><strong>Multi-run averaging.</strong> Without
+<code>temperature=0</code> (deprecated by Anthropic on Opus 4.7, with
+Sonnet/Haiku to follow), single-shot F1 has run-to-run variance up to
+0.15 on individual fixtures. Eval should run each fixture N=3 and report
+median + spread.</p></li>
+</ul>
+<h3 id="92-week-5--presentation-polish">9.2 Week 5 — presentation
+polish</h3>
+<ul>
+<li><del><strong>Per-brochure HTML/PDF redline report.</strong></del>
+<strong>Done 2026-04-26.</strong> <code>adv_lens.redline.cli</code>
+renders any <code>RedlineReport</code> JSON (or the trimmed
+sample-report wrapper) to a self-contained HTML artifact and optional
+PDF via headless Chrome. Score gauge, severity-coloured finding cards,
+category breakdown table, footer with provenance (CRD, version, brochure
+SHA-256, trace, report hash). Live sample at <a
+href="examples/sample-report.html"><code>docs/examples/sample-report.html</code></a>
+and <a
+href="examples/sample-report.pdf"><code>docs/examples/sample-report.pdf</code></a>.
+Page-1 preview: <img src="images/sample-redline-page1-preview.png"
+alt="sample redline page 1" /></li>
+<li><strong>Langfuse traces wired</strong> (see § 8.1).</li>
+<li><strong>Compliance doc final pass</strong> (see § 7.4).</li>
+<li><strong>Demo GIF / video.</strong> 60-90 seconds, full pipeline
+against one brochure ending with a CCO approval action. README
+embed.</li>
+<li><strong>Visual sample of input data</strong> in this manual (see § 3
+callout).</li>
+<li><strong>Live IAPD run</strong> — produces the real
+<code>docs/examples/sample-report.json</code> that updates § 4.2 in this
+manual.</li>
+<li><strong>Audit-trail bundle export</strong> (see § 6.6 callout).</li>
+<li><strong>Output bundle layout</strong> — design once for the CLI and
+HTTP endpoint: per-run output directory containing the cached PDF, the
+segmented sections, the extraction JSONs, the RedlineReport, and the
+audit excerpt as a single bundle.</li>
+</ul>
+<h3 id="93-week-6--optional-bolt-on">9.3 Week 6 — optional bolt-on</h3>
+<ul>
+<li><strong>ADV-Diff</strong> — quarterly change detector. When a
+watched CRD's <code>BRCHR_VRSN_ID</code> changes on IAPD, fire the
+pipeline against the new brochure, diff the resulting RedlineReport
+against the prior approved one, and route the change summary to the CCO.
+Reuses every component of this system.</li>
+</ul>
+<h3 id="94-post-portfolio">9.4 Post-portfolio</h3>
+<ul>
+<li><strong>Peer benchmarking dashboard</strong> — for a single
+brochure, show its scores vs the AUM-band median + p25/p75 per category.
+The actual product story for an F2-Strategy-style consulting pitch.
+Needs N≥10 real brochures cached, so a Week-5+ thing.</li>
+<li><strong>Eval-trend dashboard</strong> — static HTML page from
+<code>eval/results/*.json</code>, F1 per section over commit history.
+GitHub Pages publish.</li>
+<li><strong>On-prem branch</strong> — Ollama (Qwen 2.5 / Llama 3.3)
+fallback for customers who can't ship brochure text to a hosted LLM. ADR
+0012 pending.</li>
+<li><strong>Peer auto-discovery from IARD</strong> — today the peer
+corpus is operator-curated. Auto-discovery from the IARD bulk Part 1 CSV
+by AUM band + strategy tag is a Week-7+ thing. ADR 0013 pending.</li>
+</ul>
+<hr />
+<h1 id="10-reference">10. Reference</h1>
+<h2 id="101-http-endpoints">10.1 HTTP endpoints</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/healthz</code></td>
+<td>Liveness</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/brochure/{crd}</code></td>
+<td>List current Part 2A brochures for a CRD</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/pipeline/run</code></td>
+<td>Submit a pipeline run; returns 202 + status URL</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/pipeline/run/{trace_id}</code></td>
+<td>Poll pipeline state</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/report/decision</code></td>
+<td>Write a CCO decision row</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/report/decision/{trace_id}</code></td>
+<td>Read decision history</td>
+</tr>
+</tbody>
+</table>
+<h2 id="102-cli-commands">10.2 CLI commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>python -m adv_lens.ingestion.cli fetch-brochure &lt;CRD&gt;</code></td>
+<td>Fetch one brochure</td>
+</tr>
+<tr>
+<td><code>python -m adv_lens.ingestion.cli search &lt;query&gt;</code></td>
+<td>IAPD search</td>
+</tr>
+<tr>
+<td><code>python -m adv_lens.segmenter.cli &lt;PDF&gt;</code></td>
+<td>Dump Item 1-18 sections</td>
+</tr>
+<tr>
+<td><code>python -m adv_lens.app.graph.cli &lt;CRD&gt;</code></td>
+<td>Run the full pipeline synchronously</td>
+</tr>
+<tr>
+<td><code>python -m adv_lens.app.main</code></td>
+<td>Start the FastAPI app</td>
+</tr>
+<tr>
+<td><code>python -m adv_lens.app.jobs.reaper [--dry-run]</code></td>
+<td>Sweep stuck pipeline_runs rows</td>
+</tr>
+<tr>
+<td><code>python -m adv_lens.redline.cli &lt;report.json&gt; [--pdf]</code></td>
+<td>Render a saved RedlineReport to HTML / PDF</td>
+</tr>
+<tr>
+<td><code>python -m eval.runner [&lt;section&gt;]</code></td>
+<td>Run the eval harness</td>
+</tr>
+</tbody>
+</table>
+<h2 id="103-environment-variables">10.3 Environment variables</h2>
+<p>The full list is in <code>.env.example</code>. Highlights:</p>
+<table>
+<thead>
+<tr>
+<th>Var</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ANTHROPIC_API_KEY</code></td>
+<td>—</td>
+<td>Required for any LLM-backed run</td>
+</tr>
+<tr>
+<td><code>MODEL_FEE_EXTRACTOR</code></td>
+<td><code>claude-sonnet-4-6</code></td>
+<td>Per-node override</td>
+</tr>
+<tr>
+<td><code>MODEL_DISCIPLINARY</code></td>
+<td><code>claude-haiku-4-5-20251001</code></td>
+<td>Per-node override</td>
+</tr>
+<tr>
+<td><code>MODEL_CONFLICTS</code></td>
+<td><code>claude-sonnet-4-6</code></td>
+<td>Per-node override</td>
+</tr>
+<tr>
+<td><code>MODEL_REDLINE</code></td>
+<td><code>claude-opus-4-7</code></td>
+<td>Per-node override</td>
+</tr>
+<tr>
+<td><code>POSTGRES_DSN</code></td>
+<td>local docker-compose</td>
+<td>Audit + pipeline_runs</td>
+</tr>
+<tr>
+<td><code>QDRANT_URL</code></td>
+<td><code>http://localhost:6333</code></td>
+<td>Peer corpus</td>
+</tr>
+<tr>
+<td><code>LANGFUSE_*</code></td>
+<td>(blank until provisioned)</td>
+<td>Trace export</td>
+</tr>
+<tr>
+<td><code>ENABLE_HITL</code></td>
+<td><code>true</code></td>
+<td>When false, gate auto-approves (dev / batch mode)</td>
+</tr>
+<tr>
+<td><code>PIPELINE_RUN_REAP_THRESHOLD_MINUTES</code></td>
+<td>10</td>
+<td>Stuck-row reaper cutoff</td>
+</tr>
+</tbody>
+</table>
+<h2 id="104-file-layout">10.4 File layout</h2>
+<pre><code>src/adv_lens/
+  app/
+    main.py                 # FastAPI app
+    graph/
+      pipeline.py           # LangGraph topology
+      state.py              # ADVState
+      nodes/                # Per-node implementations
+    jobs/
+      models.py             # PipelineRun
+      runner.py             # async background runner
+      reaper.py             # stuck-row sweeper
+    storage/
+      audit.py              # HumanReview, llm_calls
+      db.py                 # session + engine
+  extractors/
+    fee.py                  # Fee extractor
+    disciplinary.py         # Disciplinary extractor
+    conflicts.py            # Conflicts extractor
+    redline.py              # Redline writer
+    schemas.py              # All Pydantic models
+  segmenter/                # Item 1-18 segmenter
+  ingestion/                # IAPD + IARD clients
+  retrieval/                # Qdrant + hybrid search
+  llm/                      # LLMClient + audit sink + cost
+  observability/            # Langfuse callbacks
+
+eval/
+  runner.py                 # Eval entry point
+  scorers/                  # Per-section scorers
+  fixtures/                 # Golden set (19 today, 65 target)
+  results/&lt;UTC&gt;/            # Per-run reports
+
+docs/
+  architecture.md           # Pipeline + ADR index
+  compliance.md             # (placeholder)
+  user-manual.md            # This document
+  parking-lot.md            # Captured ideas
+  adr/                      # 11 ADRs
+
+tests/                      # 221 pytest tests</code></pre>
+<h2 id="105-adr-index">10.5 ADR index</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0001</td>
+<td>Stack choices</td>
+</tr>
+<tr>
+<td>0002</td>
+<td>Data sources (IAPD/IARD)</td>
+</tr>
+<tr>
+<td>0003</td>
+<td>Segmenter strategy</td>
+</tr>
+<tr>
+<td>0004</td>
+<td>Peer corpus indexing</td>
+</tr>
+<tr>
+<td>0005</td>
+<td>Extractor pattern</td>
+</tr>
+<tr>
+<td>0006</td>
+<td>Parallel state composition</td>
+</tr>
+<tr>
+<td>0007</td>
+<td>Hybrid retrieval (revises 0004 § 5)</td>
+</tr>
+<tr>
+<td>0008</td>
+<td>Redline output format</td>
+</tr>
+<tr>
+<td>0009</td>
+<td>LLM-as-judge for redline scoring (pending)</td>
+</tr>
+<tr>
+<td>0010</td>
+<td>HITL gate (marker-style)</td>
+</tr>
+<tr>
+<td>0011</td>
+<td>Async pipeline worker</td>
+</tr>
+<tr>
+<td>0012</td>
+<td>On-prem branch scope (pending)</td>
+</tr>
+<tr>
+<td>0013</td>
+<td>Peer auto-discovery from IARD (pending)</td>
+</tr>
+</tbody>
+</table>
+<p>Each ADR follows the Context / Decision / Consequences format and is
+one file under <code>docs/adr/</code>.</p>
+<hr />
+<p><em>End of manual. Generated 2026-04-26 from <code>main</code>. The
+live source is <code>docs/user-manual.md</code>; this PDF is regenerated
+by <code>docs/build-pdf.sh</code>.</em></p>
+</body>
+</html>

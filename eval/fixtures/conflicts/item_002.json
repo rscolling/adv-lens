@@ -1,0 +1,42 @@
+{
+  "id": "conflicts-002",
+  "brochure_crd": "999008",
+  "section_id": "items-10-11-12",
+  "section_type": "conflicts",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-25",
+  "labeled_at": "2026-04-25T00:00:00Z",
+  "notes": "Synthetic: multi-affiliated complex (BD + IA holding co + insurance agency + fund complex). Soft dollars within 28(e). Aggregates orders.",
+  "inputs": {
+    "item_10_body": "Item 10 — Other Financial Industry Activities and Affiliations\n\nThe firm is a wholly owned subsidiary of Synthetic Capital Holdings, Inc. (the 'Holding Company'). The Holding Company also owns Synthetic Securities LLC, a registered broker-dealer and FINRA member, and Synthetic Insurance Agency LLC, a licensed insurance agency. Several supervised persons of the firm are also registered representatives of Synthetic Securities LLC and licensed insurance agents of Synthetic Insurance Agency LLC.\n\nThe firm serves as the investment adviser to the Synthetic Funds, a family of registered open-end investment companies. Affiliation with the Synthetic Funds may create incentives to recommend the Synthetic Funds to clients; the firm addresses this conflict through its best-interest review and disclosure to clients.\n\nThe firm does not recommend or select third-party investment advisers for clients.",
+    "item_11_body": "Item 11 — Code of Ethics, Participation or Interest in Client Transactions and Personal Trading\n\nThe firm has adopted a Code of Ethics that meets the requirements of Rule 204A-1. Access persons must report personal securities transactions on a quarterly basis and submit an initial and annual holdings report. Pre-clearance is required for personal investments in initial public offerings and limited offerings; pre-clearance is not required for transactions in shares of open-end mutual funds or money market instruments.\n\nThe firm and its related persons may recommend securities of the Synthetic Funds, in which related persons have a material financial interest by virtue of management fees received by the firm. The firm and its supervised persons may invest in the same securities recommended to clients, subject to the Code of Ethics' personal-trading restrictions.",
+    "item_12_body": "Item 12 — Brokerage Practices\n\nThe firm has discretionary authority to select broker-dealers for client transactions and seeks best execution. In selecting broker-dealers, the firm considers factors including commission rates, execution quality, financial responsibility, and the value of research and brokerage services provided to the firm.\n\nThe firm participates in soft-dollar arrangements with certain broker-dealers, under which the firm receives investment research and brokerage services in exchange for client commissions. All such arrangements are limited to research and brokerage services that fall within the safe harbor of Section 28(e) of the Securities Exchange Act of 1934.\n\nThe firm does not consider client referrals from broker-dealers when selecting brokers for client transactions. The firm does not generally accept client direction of brokerage. The firm aggregates client orders when consistent with its duty of best execution and its trade-allocation policy."
+  },
+  "expected": {
+    "item_10_affiliations": {
+      "affiliated_broker_dealer": true,
+      "affiliated_investment_adviser": false,
+      "affiliated_investment_company": true,
+      "affiliated_insurance": true,
+      "affiliated_bank": false,
+      "uses_other_investment_advisers": false,
+      "affiliations": ["broker-dealer", "insurance agency", "fund complex"]
+    },
+    "item_11_code_of_ethics": {
+      "has_code_of_ethics": true,
+      "recommends_securities_with_material_interest": true,
+      "personal_trading_in_recommended_securities": true,
+      "requires_personal_trade_preclearance": true,
+      "requires_personal_trade_reporting": true
+    },
+    "item_12_brokerage": {
+      "accepts_soft_dollars": true,
+      "soft_dollar_within_28e_safe_harbor": true,
+      "accepts_directed_brokerage": false,
+      "requires_directed_brokerage": false,
+      "brokerage_for_referrals": false,
+      "aggregates_orders": true
+    },
+    "extraction_warnings": []
+  }
+}

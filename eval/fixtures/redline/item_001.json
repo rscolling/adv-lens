@@ -1,0 +1,65 @@
+{
+  "id": "redline-001",
+  "brochure_crd": "999001",
+  "section_id": "redline-clean",
+  "section_type": "redline",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-25",
+  "labeled_at": "2026-04-25T00:00:00Z",
+  "notes": "Synthetic: a clean independent firm fed in. We expect a high overall score, mostly low/info findings, and a 'clean' headline.",
+  "inputs": {
+    "brochure_version_id": "999001-v1",
+    "extractions": {
+      "fee": {
+        "schedules": [
+          {
+            "pricing_model": "aum_tiered",
+            "tiers": [
+              {"min_assets_usd": 0, "max_assets_usd": 1000000, "rate_basis_points": 100, "flat_fee_usd": null},
+              {"min_assets_usd": 1000000, "max_assets_usd": null, "rate_basis_points": 75, "flat_fee_usd": null}
+            ],
+            "billing_frequency": "quarterly",
+            "billing_timing": "advance",
+            "fees_negotiable": true
+          }
+        ],
+        "accepts_performance_fees": false,
+        "other_compensation_disclosed": []
+      },
+      "disciplinary": {
+        "has_disciplinary_history": false,
+        "events": []
+      },
+      "conflicts": {
+        "item_10_affiliations": {
+          "affiliated_broker_dealer": false,
+          "affiliated_investment_adviser": false,
+          "affiliated_investment_company": false,
+          "affiliated_insurance": false,
+          "affiliated_bank": false,
+          "uses_other_investment_advisers": false,
+          "affiliations": []
+        },
+        "item_11_code_of_ethics": {
+          "has_code_of_ethics": true,
+          "recommends_securities_with_material_interest": false,
+          "personal_trading_in_recommended_securities": true,
+          "requires_personal_trade_preclearance": true,
+          "requires_personal_trade_reporting": true
+        },
+        "item_12_brokerage": {
+          "accepts_soft_dollars": false,
+          "accepts_directed_brokerage": true,
+          "requires_directed_brokerage": false,
+          "brokerage_for_referrals": false,
+          "aggregates_orders": true
+        }
+      }
+    },
+    "peer_context": []
+  },
+  "expected": {
+    "_validator_only": true,
+    "_doc": "Redline scorer is structural-only this week — actual report shape is judged by the structural validator (see eval/scorers/redline.py). When LLM-as-judge lands in week 4, this fixture's expected.canonical_report field will hold the reference report."
+  }
+}

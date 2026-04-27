@@ -1,0 +1,74 @@
+{
+  "id": "fee-004",
+  "brochure_crd": "999010",
+  "section_id": "item-5",
+  "section_type": "fee",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-25",
+  "labeled_at": "2026-04-25T00:00:00Z",
+  "notes": "Realism-style: large multi-program RIA with long narrative qualifications and 'in our sole discretion' hedging. Tests prompt robustness against prose that doesn't volunteer clean numbers. Anonymous; not modeled on a specific firm.",
+  "inputs": {
+    "section_body": "Item 5 — Fees and Compensation\n\nA. Investment Management Services. The firm provides ongoing discretionary investment management services for an annual fee based upon a percentage of the market value of the assets under our management. The standard annual fee schedule is set forth below and is generally negotiable in our sole discretion based on a number of factors, including but not limited to the size and complexity of the relationship, the nature of the services provided, the existence of pre-existing client relationships, anticipated future earnings capacity from the client, the type of accounts being managed, and other factors that we may consider from time to time:\n\n  Assets Under Management                Annual Rate\n  First $2,000,000                       1.10%\n  Next $3,000,000 (i.e., $2-5MM)         0.90%\n  Next $5,000,000 (i.e., $5-10MM)        0.70%\n  Next $15,000,000 (i.e., $10-25MM)      0.55%\n  Above $25,000,000                      Negotiable\n\nFees are calculated based on the market value of assets in the account on the last business day of the prior calendar quarter and are payable quarterly in advance. The firm does not require any minimum account size or minimum annual fee for new client relationships established after January 1, 2024; however, accounts opened prior to that date may be subject to a minimum annual fee of two thousand five hundred dollars ($2,500), which the firm may, in its sole discretion, waive in whole or in part.\n\nIn the event that an advisory relationship is terminated mid-quarter, fees paid in advance will be prorated through the date of termination and any unearned portion will be refunded to the client.\n\nB. Wrap Fee Programs. The firm sponsors a wrap fee program for certain qualifying client accounts under which a single inclusive fee covers investment advisory services, brokerage execution, custody, and reporting. Wrap program fees are described in greater detail in our Wrap Fee Program Brochure (Form ADV Part 2A Appendix 1), available upon request.\n\nC. Financial Planning Services. Stand-alone financial planning engagements are available on either a fixed-fee or hourly basis. Fixed-fee engagements typically range from $3,500 to $15,000 depending on the scope of the engagement, with the specific fee for each engagement set forth in a written planning agreement executed in advance. Hourly fees are charged at $400 per hour, billed in quarter-hour increments, with one-half of the estimated fee due upon execution of the engagement letter and the balance due upon delivery of the plan.\n\nD. Other Compensation. Neither the firm nor any of its supervised persons accept compensation for the sale of securities or other investment products, including asset-based sales charges or service fees from the sale of mutual funds. The firm does not accept performance-based compensation as defined under Rule 205-3 of the Investment Advisers Act of 1940."
+  },
+  "expected": {
+    "schedules": [
+      {
+        "pricing_model": "aum_tiered",
+        "program_name": "Investment Management Services",
+        "tiers": [
+          {"min_assets_usd": 0, "max_assets_usd": 2000000, "rate_basis_points": 110, "flat_fee_usd": null},
+          {"min_assets_usd": 2000000, "max_assets_usd": 5000000, "rate_basis_points": 90, "flat_fee_usd": null},
+          {"min_assets_usd": 5000000, "max_assets_usd": 10000000, "rate_basis_points": 70, "flat_fee_usd": null},
+          {"min_assets_usd": 10000000, "max_assets_usd": 25000000, "rate_basis_points": 55, "flat_fee_usd": null}
+        ],
+        "hourly_rate_low_usd": null,
+        "hourly_rate_high_usd": null,
+        "minimum_annual_fee_usd": 2500,
+        "minimum_account_size_usd": null,
+        "billing_frequency": "quarterly",
+        "billing_timing": "advance",
+        "fees_negotiable": true
+      },
+      {
+        "pricing_model": "wrap",
+        "program_name": "Wrap Fee Program",
+        "tiers": [],
+        "hourly_rate_low_usd": null,
+        "hourly_rate_high_usd": null,
+        "minimum_annual_fee_usd": null,
+        "minimum_account_size_usd": null,
+        "billing_frequency": "unknown",
+        "billing_timing": "unknown",
+        "fees_negotiable": null
+      },
+      {
+        "pricing_model": "fixed",
+        "program_name": "Financial Planning (fixed-fee)",
+        "tiers": [
+          {"min_assets_usd": null, "max_assets_usd": null, "rate_basis_points": null, "flat_fee_usd": 3500}
+        ],
+        "hourly_rate_low_usd": null,
+        "hourly_rate_high_usd": null,
+        "minimum_annual_fee_usd": null,
+        "minimum_account_size_usd": null,
+        "billing_frequency": "varies",
+        "billing_timing": "advance",
+        "fees_negotiable": null
+      },
+      {
+        "pricing_model": "hourly",
+        "program_name": "Financial Planning (hourly)",
+        "tiers": [],
+        "hourly_rate_low_usd": 400,
+        "hourly_rate_high_usd": 400,
+        "minimum_annual_fee_usd": null,
+        "minimum_account_size_usd": null,
+        "billing_frequency": "varies",
+        "billing_timing": "advance",
+        "fees_negotiable": null
+      }
+    ],
+    "accepts_performance_fees": false,
+    "other_compensation_disclosed": []
+  }
+}

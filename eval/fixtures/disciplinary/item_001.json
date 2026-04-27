@@ -1,0 +1,18 @@
+{
+  "id": "disciplinary-001",
+  "brochure_crd": "999004",
+  "section_id": "item-9",
+  "section_type": "disciplinary",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-24",
+  "labeled_at": "2026-04-24T00:00:00Z",
+  "notes": "Synthetic: clean firm with the standard 'no disciplinary history' boilerplate. Dominant case in the population.",
+  "inputs": {
+    "section_body": "Item 9 — Disciplinary Information\n\nRegistered investment advisers and their management persons are required to disclose all material facts regarding any legal or disciplinary event that would be material to a client's evaluation of the firm or the integrity of management.\n\nNeither the firm nor any of its management persons has any disciplinary history to disclose."
+  },
+  "expected": {
+    "has_disciplinary_history": false,
+    "events": [],
+    "extraction_warnings": []
+  }
+}

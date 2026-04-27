@@ -1,0 +1,36 @@
+{
+  "id": "fee-001",
+  "brochure_crd": "999001",
+  "section_id": "item-5",
+  "section_type": "fee",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-24",
+  "labeled_at": "2026-04-24T00:00:00Z",
+  "notes": "Synthetic: textbook AUM-tiered schedule with quarterly-in-advance billing, no minimums, no other compensation.",
+  "inputs": {
+    "section_body": "Item 5 — Fees and Compensation\n\nClient advisory fees are charged as an annual percentage of assets under management, billed quarterly in advance based on the market value of the account on the last business day of the preceding calendar quarter. The standard fee schedule is as follows:\n\n  - 1.00% per annum on the first $1,000,000 of assets;\n  - 0.85% per annum on the next $4,000,000 of assets;\n  - 0.70% per annum on the next $5,000,000 of assets;\n  - 0.50% per annum on assets above $10,000,000.\n\nFees may be negotiable in certain circumstances at the firm's sole discretion. The firm does not accept performance-based compensation. Neither the firm nor any of its supervised persons accept compensation for the sale of securities or other investment products, including 12b-1 fees or other trail commissions."
+  },
+  "expected": {
+    "schedules": [
+      {
+        "pricing_model": "aum_tiered",
+        "program_name": null,
+        "tiers": [
+          {"min_assets_usd": 0, "max_assets_usd": 1000000, "rate_basis_points": 100, "flat_fee_usd": null},
+          {"min_assets_usd": 1000000, "max_assets_usd": 5000000, "rate_basis_points": 85, "flat_fee_usd": null},
+          {"min_assets_usd": 5000000, "max_assets_usd": 10000000, "rate_basis_points": 70, "flat_fee_usd": null},
+          {"min_assets_usd": 10000000, "max_assets_usd": null, "rate_basis_points": 50, "flat_fee_usd": null}
+        ],
+        "hourly_rate_low_usd": null,
+        "hourly_rate_high_usd": null,
+        "minimum_annual_fee_usd": null,
+        "minimum_account_size_usd": null,
+        "billing_frequency": "quarterly",
+        "billing_timing": "advance",
+        "fees_negotiable": true
+      }
+    ],
+    "accepts_performance_fees": false,
+    "other_compensation_disclosed": []
+  }
+}

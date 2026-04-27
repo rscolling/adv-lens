@@ -1,0 +1,90 @@
+{
+  "id": "redline-002",
+  "brochure_crd": "999003",
+  "section_id": "redline-complex",
+  "section_type": "redline",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-25",
+  "labeled_at": "2026-04-25T00:00:00Z",
+  "notes": "Synthetic: complex firm with wrap fee program, performance fees, FINRA event against a principal, multi-affiliated structure (BD + insurance + fund family). We expect multiple medium/high findings and a non-trivial scorecard.",
+  "inputs": {
+    "brochure_version_id": "999003-v1",
+    "extractions": {
+      "fee": {
+        "schedules": [
+          {
+            "pricing_model": "wrap",
+            "program_name": "Wrap Fee Program",
+            "tiers": [
+              {"min_assets_usd": 0, "max_assets_usd": 500000, "rate_basis_points": 150, "flat_fee_usd": null},
+              {"min_assets_usd": 500000, "max_assets_usd": 2000000, "rate_basis_points": 125, "flat_fee_usd": null},
+              {"min_assets_usd": 2000000, "max_assets_usd": null, "rate_basis_points": 100, "flat_fee_usd": null}
+            ],
+            "minimum_account_size_usd": 100000,
+            "billing_frequency": "quarterly",
+            "billing_timing": "advance"
+          },
+          {
+            "pricing_model": "performance",
+            "program_name": "Qualified-Client Performance Fee",
+            "tiers": [],
+            "billing_frequency": "varies",
+            "billing_timing": "varies",
+            "fees_negotiable": true
+          }
+        ],
+        "accepts_performance_fees": true,
+        "other_compensation_disclosed": ["12b-1 fees", "directed brokerage"]
+      },
+      "disciplinary": {
+        "has_disciplinary_history": true,
+        "events": [
+          {
+            "event_type": "sro",
+            "event_year": 2018,
+            "authority": "FINRA",
+            "involved_party_type": "principal",
+            "involved_party_name": "Daniel Chen",
+            "allegation": "Failed to timely amend his Form U4 during prior employment.",
+            "resolution": "consent_order",
+            "sanction_monetary_usd": 25000,
+            "sanction_suspension_days": 30,
+            "sanction_other": [],
+            "is_material": false
+          }
+        ]
+      },
+      "conflicts": {
+        "item_10_affiliations": {
+          "affiliated_broker_dealer": true,
+          "affiliated_investment_adviser": false,
+          "affiliated_investment_company": true,
+          "affiliated_insurance": true,
+          "affiliated_bank": false,
+          "uses_other_investment_advisers": false,
+          "affiliations": ["broker-dealer", "insurance agency", "fund complex"]
+        },
+        "item_11_code_of_ethics": {
+          "has_code_of_ethics": true,
+          "recommends_securities_with_material_interest": true,
+          "personal_trading_in_recommended_securities": true,
+          "requires_personal_trade_preclearance": true,
+          "requires_personal_trade_reporting": true
+        },
+        "item_12_brokerage": {
+          "accepts_soft_dollars": true,
+          "soft_dollar_within_28e_safe_harbor": true,
+          "accepts_directed_brokerage": false,
+          "requires_directed_brokerage": false,
+          "brokerage_for_referrals": false,
+          "aggregates_orders": true
+        }
+      }
+    },
+    "peer_context": []
+  },
+  "expected": {
+    "_validator_only": true,
+    "_doc": "Redline scorer is structural-only this week. With this many disclosed conflicts + a disciplinary event, the writer should produce 6-10 findings spanning compliance / conflicts_handling / disclosure_quality, with mixed severity (one or two high, several medium)."
+  }
+}

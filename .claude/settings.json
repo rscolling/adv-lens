@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv run python -m adv_lens.ingestion.cli:*)",
+      "Bash(uv run python -m adv_lens.app.graph.cli:*)",
+      "Bash(uv run python -m adv_lens.app.jobs.reaper:*)",
+      "Bash(uv run python -m adv_lens.redline.cli:*)",
+      "Bash(uv run python -m eval.runner:*)",
+      "Bash(bash docs/build-pdf.sh:*)"
+    ]
+  }
+}

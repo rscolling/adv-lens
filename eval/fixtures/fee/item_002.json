@@ -1,0 +1,45 @@
+{
+  "id": "fee-002",
+  "brochure_crd": "999002",
+  "section_id": "item-5",
+  "section_type": "fee",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-24",
+  "labeled_at": "2026-04-24T00:00:00Z",
+  "notes": "Synthetic: hourly + flat-fee planning shop with $250k account minimum and disclosed soft-dollar use.",
+  "inputs": {
+    "section_body": "Item 5 — Fees and Compensation\n\nThe firm offers two engagement types. Investment management services are billed at a flat annual fee of $7,500 per household, payable monthly in arrears, with a minimum relationship size of $250,000 in investable assets. Standalone financial planning is offered at hourly rates ranging from $300 to $450 per hour depending on the complexity of the engagement.\n\nFees are not negotiable. The firm does not accept performance-based fees. The firm participates in soft-dollar arrangements with its custodian for certain research services, as further described in Item 12."
+  },
+  "expected": {
+    "schedules": [
+      {
+        "pricing_model": "fixed",
+        "program_name": "Investment Management",
+        "tiers": [
+          {"min_assets_usd": null, "max_assets_usd": null, "rate_basis_points": null, "flat_fee_usd": 7500}
+        ],
+        "hourly_rate_low_usd": null,
+        "hourly_rate_high_usd": null,
+        "minimum_annual_fee_usd": 7500,
+        "minimum_account_size_usd": 250000,
+        "billing_frequency": "monthly",
+        "billing_timing": "arrears",
+        "fees_negotiable": false
+      },
+      {
+        "pricing_model": "hourly",
+        "program_name": "Financial Planning",
+        "tiers": [],
+        "hourly_rate_low_usd": 300,
+        "hourly_rate_high_usd": 450,
+        "minimum_annual_fee_usd": null,
+        "minimum_account_size_usd": null,
+        "billing_frequency": "varies",
+        "billing_timing": "arrears",
+        "fees_negotiable": false
+      }
+    ],
+    "accepts_performance_fees": false,
+    "other_compensation_disclosed": ["soft dollars"]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "fee-003",
+  "brochure_crd": "999003",
+  "section_id": "item-5",
+  "section_type": "fee",
+  "source_url": null,
+  "labeled_by": "rc/ai-architect/2026-04-24",
+  "labeled_at": "2026-04-24T00:00:00Z",
+  "notes": "Synthetic: wrap-fee program plus performance-fee acknowledgement for qualified clients; multiple disclosed compensation streams.",
+  "inputs": {
+    "section_body": "Item 5 — Fees and Compensation\n\nThe firm sponsors a wrap fee program in which a single all-inclusive fee covers advisory, brokerage, custody, and reporting services. Wrap program fees are charged quarterly in advance per the schedule below, based on assets under management at the start of each quarter:\n\n  - 1.50% per annum on the first $500,000;\n  - 1.25% per annum from $500,000 to $2,000,000;\n  - 1.00% per annum above $2,000,000.\n\nA minimum account size of $100,000 applies to the wrap program.\n\nFor qualified clients (as defined in Rule 205-3 under the Advisers Act), the firm may also negotiate performance-based compensation, typically structured as 20% of net new gains over a high-water mark.\n\nThe firm and its supervised persons receive 12b-1 fees on certain mutual fund positions held in client accounts. Certain accounts use directed brokerage arrangements at the client's request."
+  },
+  "expected": {
+    "schedules": [
+      {
+        "pricing_model": "wrap",
+        "program_name": "Wrap Fee Program",
+        "tiers": [
+          {"min_assets_usd": 0, "max_assets_usd": 500000, "rate_basis_points": 150, "flat_fee_usd": null},
+          {"min_assets_usd": 500000, "max_assets_usd": 2000000, "rate_basis_points": 125, "flat_fee_usd": null},
+          {"min_assets_usd": 2000000, "max_assets_usd": null, "rate_basis_points": 100, "flat_fee_usd": null}
+        ],
+        "hourly_rate_low_usd": null,
+        "hourly_rate_high_usd": null,
+        "minimum_annual_fee_usd": null,
+        "minimum_account_size_usd": 100000,
+        "billing_frequency": "quarterly",
+        "billing_timing": "advance",
+        "fees_negotiable": null
+      },
+      {
+        "pricing_model": "performance",
+        "program_name": "Qualified-Client Performance Fee",
+        "tiers": [],
+        "hourly_rate_low_usd": null,
+        "hourly_rate_high_usd": null,
+        "minimum_annual_fee_usd": null,
+        "minimum_account_size_usd": null,
+        "billing_frequency": "varies",
+        "billing_timing": "varies",
+        "fees_negotiable": true
+      }
+    ],
+    "accepts_performance_fees": true,
+    "other_compensation_disclosed": ["12b-1 fees", "directed brokerage"]
+  }
+}

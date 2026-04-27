@@ -1,0 +1,19 @@
+[
+  {
+    "crd": "108000",
+    "aum_band": "$1B-$10B",
+    "main_office_state": "NY",
+    "notes": "Primary subject firm — set exclude_crd=108000 when querying."
+  },
+  {
+    "crd": "108001",
+    "brochure_version_id": "777123",
+    "aum_band": "$1B-$10B",
+    "main_office_state": "MA"
+  },
+  {
+    "crd": "108002",
+    "aum_band": "$100M-$1B",
+    "main_office_state": "CA"
+  }
+]

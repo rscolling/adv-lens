@@ -1,0 +1,170 @@
+/*
+ * Print-friendly stylesheet for the ADV-Lens user manual.
+ * Designed for: 8.5x11" desk printout, ~11pt body, generous margins.
+ * Rendered via: pandoc → standalone HTML → Chrome --headless --print-to-pdf.
+ */
+
+@page {
+  size: Letter;
+  margin: 0.75in;
+}
+
+html {
+  font-size: 11pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.45;
+  color: #111;
+  /* @page already defines the printable area; no body max-width needed.
+   * Constraining body width was clipping wide tables on the right. */
+}
+
+/* Title block (pandoc emits #title-block-header from YAML frontmatter) */
+header#title-block-header {
+  margin-bottom: 2em;
+  padding-bottom: 1em;
+  border-bottom: 2px solid #333;
+  page-break-after: avoid;
+}
+header#title-block-header h1.title {
+  font-size: 24pt;
+  margin-bottom: 0.2em;
+}
+header#title-block-header p.subtitle {
+  font-style: italic;
+  color: #555;
+  font-size: 12pt;
+}
+header#title-block-header p.author,
+header#title-block-header p.date {
+  font-size: 10pt;
+  color: #777;
+  margin: 0.1em 0;
+}
+
+/* Headings */
+h1, h2, h3, h4 {
+  font-weight: 600;
+  line-height: 1.2;
+  color: #111;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 18pt;
+  margin-top: 0;
+  padding-top: 0;
+  page-break-before: always;
+  border-bottom: 1px solid #999;
+  padding-bottom: 0.2em;
+}
+header#title-block-header + h1 {
+  /* The first h1 (after the title block) — no page break needed there. */
+  page-break-before: auto;
+}
+h2 { font-size: 14pt; margin-top: 1.5em; }
+h3 { font-size: 12pt; margin-top: 1.2em; }
+h4 { font-size: 11pt; margin-top: 1em; font-weight: 700; }
+
+/* Paragraphs and lists */
+p { margin: 0.6em 0; orphans: 3; widows: 3; }
+ul, ol { margin: 0.6em 0; padding-left: 1.5em; }
+li { margin: 0.2em 0; }
+
+/* Inline code and code blocks */
+code {
+  font-family: "SF Mono", Consolas, "Liberation Mono", monospace;
+  font-size: 0.9em;
+  background: #f3f3f3;
+  padding: 0.1em 0.3em;
+  border-radius: 2px;
+}
+pre {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.6em 0.8em;
+  font-size: 9pt;
+  line-height: 1.35;
+  /* In print, overflow-x: auto would clip the right edge silently.
+   * Wrap long lines instead so everything is visible on paper. */
+  white-space: pre-wrap;
+  word-break: break-word;
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  margin: 1em 0;
+  width: 100%;
+  font-size: 9.5pt;
+  page-break-inside: auto;
+  table-layout: auto;
+}
+th, td {
+  border: 1px solid #bbb;
+  padding: 0.35em 0.6em;
+  text-align: left;
+  vertical-align: top;
+  /* Force long unbreakable strings (paths, model IDs, URLs, identifiers)
+   * to wrap instead of pushing the column past the printable margin. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+th {
+  background: #eee;
+  font-weight: 600;
+}
+tr { page-break-inside: avoid; }
+thead { display: table-header-group; }
+/* Inline code inside a cell needs the same break-anywhere rule — by
+ * default code spans are unbreakable and a long path inside <code> will
+ * still overflow. */
+td code, th code {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+/* Blockquotes — used heavily for "NOT BUILT YET" callouts */
+blockquote {
+  background: #fff8d8;
+  border-left: 4px solid #d4a017;
+  padding: 0.6em 1em;
+  margin: 1em 0;
+  font-size: 10.5pt;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.4em 0; }
+blockquote strong:first-child { color: #8a6700; }
+
+/* Horizontal rules */
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 2em 0;
+}
+
+/* Trailing footer paragraph (italicised) */
+p > em:only-child {
+  display: block;
+  text-align: center;
+  font-size: 9pt;
+  color: #777;
+  margin-top: 2em;
+}
+
+/* Avoid awkward page breaks */
+table, pre, blockquote, h1, h2, h3 {
+  page-break-after: avoid;
+}
