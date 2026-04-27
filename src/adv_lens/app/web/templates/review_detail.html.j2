@@ -1,0 +1,81 @@
+{% extends "base.html.j2" %}
+{% block title %}Review {{ run.trace_id }} — ADV-Lens{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:baseline;gap:0.8em;margin-bottom:0.4em">
+  <h1 style="margin:0">CRD {{ run.brochure_crd }}</h1>
+  {% if summary.score is not none %}
+    {% if summary.score >= 80 %}<span class="score-pill score-good">{{ summary.score }}</span>
+    {% elif summary.score >= 60 %}<span class="score-pill score-warn">{{ summary.score }}</span>
+    {% else %}<span class="score-pill score-bad">{{ summary.score }}</span>
+    {% endif %}
+  {% endif %}
+  <span class="pill pill-{{ run.status }}">{{ run.status }}</span>
+  <span class="muted">·  trace <code>{{ run.trace_id }}</code></span>
+</div>
+<p class="muted" style="margin-top:0">
+  {% if run.brochure_version_id %}Brochure v{{ run.brochure_version_id }} · {% endif %}
+  {{ summary.finding_count }} findings ·
+  Created {{ run.created_at.strftime("%Y-%m-%d %H:%M UTC") }}
+</p>
+
+<div class="grid-2col">
+
+  <div class="panel" style="padding:0.4em">
+    {% if has_redline %}
+      <iframe class="redline-frame"
+              src="/review/{{ run.trace_id }}/redline.html"
+              title="Redline report for {{ run.trace_id }}"></iframe>
+    {% else %}
+      <p class="empty">
+        No redline produced for this run yet (status: {{ run.status }}).
+        {% if run.error %}<br><br>Error: <code>{{ run.error }}</code>{% endif %}
+      </p>
+    {% endif %}
+  </div>
+
+  <div>
+    <div class="panel">
+      <h3 style="margin-top:0">Reviewer decision</h3>
+      {% if not report_hash %}
+        <p class="muted"><em>No <code>report_hash</code> on this run — decision capture disabled.</em></p>
+      {% else %}
+      <form class="decision-form"
+            hx-post="/review/{{ run.trace_id }}/decide"
+            hx-target="#decisions-panel"
+            hx-swap="outerHTML"
+            hx-disabled-elt="button">
+        <input type="hidden" name="report_hash" value="{{ report_hash }}">
+
+        <label>Decision</label>
+        <div class="radio-group">
+          <label><input type="radio" name="decision" value="approved" required> Approve</label>
+          <label><input type="radio" name="decision" value="revise"> Request revision</label>
+          <label><input type="radio" name="decision" value="rejected"> Reject</label>
+        </div>
+
+        <label for="reviewer">Reviewer</label>
+        <input id="reviewer" type="text" name="reviewer" placeholder="jane.cco@firm.example" required>
+
+        <label for="rationale">Rationale</label>
+        <textarea id="rationale" name="rationale"
+                  placeholder="Why this decision? Pinned to the report SHA-256."
+                  required maxlength="4096"></textarea>
+
+        <button type="submit">Record decision</button>
+        <span class="htmx-indicator">writing audit row…</span>
+
+        <p class="muted" style="font-size:11px;margin-top:0.8em">
+          Pinned to <code>{{ report_hash[:16] }}…</code> ·
+          A new run regenerates the hash and won't satisfy this approval.
+        </p>
+      </form>
+      {% endif %}
+    </div>
+
+    {% include "decisions_panel.html.j2" %}
+  </div>
+
+</div>
+
+{% endblock %}

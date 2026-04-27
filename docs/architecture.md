@@ -145,4 +145,5 @@ roadmap entry points at the same ADRs.
 - `docs/adr/0011-async-pipeline-worker.md` — In-process `asyncio.create_task` + persisted `PipelineRun` rows; restart loses in-flight work; reaper plus path to arq/procrastinate documented.
 - `docs/adr/0014-segmenter-limits-multi-program-brochures.md` — Acknowledges regex segmenter's limitation on bundled-Item brochures; commits to Haiku 4.5 LLM fallback for Items 5/9/10/11/12 when regex produces tiny bodies.
 - `docs/adr/0015-sec-iapd-url-and-ua-fragility.md` — Documents the 2026 SEC IAPD URL migration and bot-detection bypass; preserves the diagnostic playbook for the next migration.
+- `docs/adr/0016-review-ui.md` — Server-rendered review UI for the HITL gate (FastAPI + Jinja2 + HTMX); iframes the existing redline HTML; reuses ADR 0010's audit semantics.
 - ADRs 0009 + 0012-0013 to follow (LLM-as-judge + judge-drift, on-prem branch scope, peer auto-discovery from IARD).

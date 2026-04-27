@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{% block title %}ADV-Lens Review{% endblock %}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://unpkg.com/htmx.org@2.0.4"
+        integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
+        crossorigin="anonymous"></script>
+<style>
+  :root {
+    --fg: #1f2933;
+    --muted: #5b6770;
+    --bg: #f7f8fa;
+    --panel: #ffffff;
+    --border: #d8dde3;
+    --accent: #2c5282;
+    --good: #2f855a;
+    --warn: #b7791f;
+    --bad: #b32e2e;
+  }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    color: var(--fg);
+    background: var(--bg);
+    line-height: 1.45;
+    font-size: 14px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, pre { font-family: "SF Mono", Consolas, "Liberation Mono", monospace; }
+
+  nav.topbar {
+    background: var(--fg);
+    color: #fff;
+    padding: 0.6em 1.4em;
+    display: flex;
+    align-items: baseline;
+    gap: 1.2em;
+  }
+  nav.topbar .brand { font-weight: 700; letter-spacing: 0.04em; }
+  nav.topbar .sub { color: #aab2bd; font-size: 12px; }
+  nav.topbar .right { margin-left: auto; font-size: 12px; color: #aab2bd; }
+  nav.topbar a { color: #cbd2d9; }
+  nav.topbar a:hover { color: #fff; }
+
+  main { max-width: 1280px; margin: 0 auto; padding: 1.4em 1.4em 3em; }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1em 1.2em;
+    margin: 1em 0;
+  }
+
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid var(--border); padding: 0.5em 0.6em;
+           text-align: left; vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em;
+       color: var(--muted); background: #fafbfc; }
+  tr:hover td { background: #fafbfc; }
+
+  .pill {
+    display: inline-block; padding: 0.1em 0.55em;
+    border-radius: 999px; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .pill-pending  { background: #fef3c7; color: #92400e; }
+  .pill-approved { background: #d4edda; color: #155724; }
+  .pill-rejected { background: #f8d7da; color: #721c24; }
+  .pill-revise   { background: #fff5d6; color: #92400e; }
+  .pill-running  { background: #e0e7ff; color: #1e3a8a; }
+  .pill-queued   { background: #eef0f3; color: #5b6770; }
+  .pill-complete { background: #d4edda; color: #155724; }
+  .pill-failed   { background: #f8d7da; color: #721c24; }
+
+  .score-pill {
+    display: inline-block; min-width: 2.4em; text-align: center;
+    padding: 0.15em 0.55em; border-radius: 4px; font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .score-good { background: #e0f5e9; color: #155724; }
+  .score-warn { background: #fff5d6; color: #92400e; }
+  .score-bad  { background: #f8d7da; color: #721c24; }
+
+  .muted { color: var(--muted); }
+  .empty { color: var(--muted); font-style: italic; padding: 2em 0; text-align: center; }
+
+  .grid-2col {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
+    gap: 1.4em;
+  }
+  @media (max-width: 1100px) { .grid-2col { grid-template-columns: 1fr; } }
+
+  iframe.redline-frame {
+    width: 100%;
+    height: 78vh;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  form.decision-form label { display: block; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--muted); margin: 0.6em 0 0.2em; }
+  form.decision-form input[type=text], form.decision-form input[type=email],
+  form.decision-form textarea, form.decision-form select {
+    width: 100%; padding: 0.45em 0.55em; font: inherit;
+    border: 1px solid var(--border); border-radius: 4px; background: #fff;
+    box-sizing: border-box;
+  }
+  form.decision-form textarea { min-height: 5.5em; resize: vertical; }
+  form.decision-form .radio-group { display: flex; gap: 0.6em; flex-wrap: wrap; }
+  form.decision-form .radio-group label {
+    display: flex; align-items: center; gap: 0.35em;
+    padding: 0.35em 0.7em; border: 1px solid var(--border); border-radius: 4px;
+    cursor: pointer; margin: 0; text-transform: none; letter-spacing: 0;
+    font-size: 13px; color: var(--fg); background: #fff;
+  }
+  form.decision-form .radio-group input { margin: 0; }
+  form.decision-form button {
+    margin-top: 0.9em; padding: 0.55em 1.1em; font: inherit;
+    background: var(--accent); color: #fff; border: 0; border-radius: 4px;
+    cursor: pointer; font-weight: 600;
+  }
+  form.decision-form button:hover { background: #1e3a5f; }
+  .htmx-indicator { display: none; color: var(--muted); font-size: 12px;
+    margin-left: 0.6em; }
+  .htmx-request .htmx-indicator { display: inline; }
+
+  .decisions-list { list-style: none; padding: 0; margin: 0.4em 0 0; }
+  .decisions-list li {
+    border-left: 3px solid var(--border); padding: 0.4em 0.7em;
+    margin: 0.4em 0; background: #fafbfc; border-radius: 0 4px 4px 0;
+  }
+  .decisions-list li.d-approved { border-left-color: var(--good); }
+  .decisions-list li.d-rejected { border-left-color: var(--bad); }
+  .decisions-list li.d-revise   { border-left-color: var(--warn); }
+  .decisions-list .meta { font-size: 11.5px; color: var(--muted); }
+
+  .toast-fresh {
+    background: #e0f5e9; border-left-color: var(--good) !important;
+    animation: fade-bg 1.6s ease-out forwards;
+  }
+  @keyframes fade-bg {
+    0% { background: #c6f0d6; }
+    100% { background: #fafbfc; }
+  }
+</style>
+{% block head_extra %}{% endblock %}
+</head>
+<body>
+<nav class="topbar">
+  <span class="brand">ADV-Lens</span>
+  <span class="sub">Form ADV Part 2A reviewer</span>
+  <span class="right">
+    <a href="/review">All runs</a>
+    &nbsp;·&nbsp;
+    <a href="/docs">API</a>
+  </span>
+</nav>
+<main>
+{% block content %}{% endblock %}
+</main>
+</body>
+</html>

@@ -12,6 +12,7 @@ from adv_lens.app.jobs.scheduler import get_scheduler
 from adv_lens.app.settings import settings
 from adv_lens.app.storage.audit import HumanReview
 from adv_lens.app.storage.db import get_session
+from adv_lens.app.web import router as review_ui_router
 from adv_lens.ingestion import IAPDClient
 from adv_lens.ingestion.models import BrochureRef
 
@@ -25,6 +26,9 @@ app = FastAPI(
     description="Form ADV Part 2A intelligence + peer benchmarking.",
     version=__version__,
 )
+
+# Server-rendered review UI (HITL gate) — see adv_lens.app.web.
+app.include_router(review_ui_router)
 
 
 @app.get("/healthz", tags=["meta"])

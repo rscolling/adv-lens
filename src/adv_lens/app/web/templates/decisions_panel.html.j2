@@ -1,0 +1,24 @@
+<div class="panel" id="decisions-panel">
+  <h3 style="margin-top:0">Decision history
+    <span class="muted" style="font-weight:400;font-size:13px">({{ decisions|length }})</span>
+  </h3>
+  {% if decisions %}
+    <ul class="decisions-list">
+      {% for d in decisions %}
+      <li class="d-{{ d.decision }}{% if just_recorded and loop.last %} toast-fresh{% endif %}">
+        <div>
+          <span class="pill pill-{{ d.decision }}">{{ d.decision }}</span>
+          <strong>{{ d.reviewer }}</strong>
+        </div>
+        <div style="margin-top:0.2em">{{ d.rationale }}</div>
+        <div class="meta" style="margin-top:0.3em">
+          {{ d.ts.strftime("%Y-%m-%d %H:%M UTC") }} ·
+          hash <code>{{ d.report_hash[:16] }}…</code>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty" style="padding:0.6em 0">No decisions recorded yet.</p>
+  {% endif %}
+</div>

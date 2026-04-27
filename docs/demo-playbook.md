@@ -1,25 +1,33 @@
 # ADV-Lens demo playbook
 
 A 60-90s screen recording of the full ADV-Lens flow against Brown
-Advisory LLC, ending with a CCO decision. Designed to be captured
-in one take by the operator (every step is deterministic given the
-cached brochure + a real `ANTHROPIC_API_KEY`).
+Advisory LLC, ending with a CCO decision recorded through the reviewer
+UI ([ADR 0016](adr/0016-review-ui.md)). Designed to be captured in
+one take by the operator (every step is deterministic given the cached
+brochure + a real `ANTHROPIC_API_KEY`).
 
 A still-frame approximation of what the recording covers is in
 [`docs/images/demo-storyboard.png`](images/demo-storyboard.png) — 4
-panels in a 2x2 grid (IAPD page, pipeline terminal, rendered redline,
-HITL decision).
+panels in a 2x2 grid (IAPD page, pipeline running, reviewer UI with
+redline, HITL decision recorded).
 
 ## Recording setup
 
-- Window: ~1280x900, OBS / ScreenToGif / Kap, output to MP4 or GIF
+- Window: ~1440x900, OBS / ScreenToGif / Kap, output to MP4 or GIF
   (≤8 MB GIF for direct README embed).
-- One terminal pane on the right, browser pane on the left.
-- Repo root open in the terminal; `.env` already configured with
-  `ANTHROPIC_API_KEY` (and optionally `LANGFUSE_*`).
+- Browser pane (full-width works fine — the UI is the star).
+- Repo root open in a terminal in the background to kick the pipeline
+  off; the recording focuses on the browser.
+- `.env` already configured with `ANTHROPIC_API_KEY` (and optionally
+  `LANGFUSE_*`).
 - Brown Advisory brochure already cached at
-  `data/brochures/110181/1037550.pdf` (skip step 1 below if running
-  the recording multiple times).
+  `data/brochures/110181/1037550.pdf`.
+- App stack already up: `docker compose up -d postgres qdrant` plus
+  `uv run uvicorn adv_lens.app.main:app --reload` running on
+  `localhost:8000`.
+- Demo data seeded: `uv run python -m adv_lens.app.web.seed` (one-shot,
+  idempotent — loads the Brown Advisory sample state into the
+  `pipeline_runs` table so `/review` is non-empty before recording).
 
 ## Tool walkthrough — ScreenToGif on Windows (recommended)
 
@@ -113,77 +121,72 @@ Reviewers will skim, not watch. Optimise for:
 
 ## Capture script (60-90 seconds total)
 
-### t=0:00–0:10 — Open IAPD firm summary in browser
+The recording is browser-centric; the terminal is a quick aside in
+the middle. Two browser tabs (or one tab with back-button history):
 
-Navigate to `https://adviserinfo.sec.gov/firm/summary/110181`. Show
-the firm name (BROWN ADVISORY), CRD (110181), SEC# (801-38826), and
-the **PART 2 BROCHURES** button. *Voiceover-equivalent caption:* "Any
-SEC-registered RIA's brochure is here, identified by CRD."
+1. `https://adviserinfo.sec.gov/firm/summary/110181` (the IAPD page).
+2. `http://localhost:8000/review` (the local app — open *before*
+   pressing Record so the page is settled).
 
-### t=0:10–0:25 — Fetch the brochure
+### t=0:00–0:08 — IAPD firm summary
 
-In the terminal:
+Foreground the IAPD tab. Show the firm name (BROWN ADVISORY), CRD
+(110181), SEC# (801-38826), and the **PART 2 BROCHURES** button.
+*Caption:* "Any SEC-registered RIA's brochure is here, identified by
+CRD."
 
-```bash
-uv run python -m adv_lens.ingestion.cli fetch-brochure 110181
-```
+### t=0:08–0:20 — Pipeline run (terminal, brief)
 
-Expected output (one JSON line):
-```json
-{"crd": "110181", "brochure_version_id": "1037550",
- "path": "data/brochures/110181/1037550.pdf",
- "bytes": 666759, "from_cache": true,
- "sha256": "4492c6704f63ebec..."}
-```
-
-*Caption:* "ADV-Lens fetches the Part 2A PDF and caches it
-content-addressed."
-
-### t=0:25–0:55 — Run the full pipeline
+Tab to a small terminal (or use a side-by-side split for ~10s) and
+run:
 
 ```bash
 uv run python -m adv_lens.app.graph.cli 110181 --vid 1037550 \
     --trace-id demo-$(date +%s)
 ```
 
-The pipeline runs ~30-60 seconds. Recording can show the JSON output
-streaming or just cut to the end. *Caption:* "fetch → segment → 3
-extractors in parallel → peer retrieval → Opus redline writer → HITL
-gate." Highlight the `segmenter_backend: heuristic+llm_fallback` line
-in the output (proves the ADR 0014 rescue ran), the `overall_score`,
-and `review_status: "pending_review"`.
+Don't dwell — the goal is to show the pipeline runs end-to-end with
+no hand-holding. Either let the JSON stream for ~10s or cut directly
+to the result. *Caption:* "fetch → segment → 3 extractors in parallel
+→ peer retrieval → Opus redline writer → HITL gate, ~60 s."
 
-### t=0:55–1:10 — Render the report for the CCO
+### t=0:20–0:30 — Reviewer UI list view
 
-```bash
-uv run python -m adv_lens.redline.cli docs/examples/sample-report.json --pdf
-```
+Foreground the browser at `http://localhost:8000/review`. Show the
+list with the seeded Brown Advisory row: trace, CRD, status pill
+(`complete`), score `68` in the amber band, headline, and finding
+count. *Caption:* "Every pipeline run lands here for a CCO to
+review."
 
-Open the resulting `docs/examples/sample-report.pdf` in the PDF viewer
-pane. Show the score gauge, headline, category table, severity-coloured
-finding cards. *Caption:* "The CCO reads a 4-page artifact, not a JSON
-blob."
+Click the row to open the detail page.
 
-### t=1:10–1:30 — Record the CCO decision
+### t=0:30–0:55 — Reviewer detail: redline + decision form
 
-In the terminal:
+The detail page shows two panes: the redline iframe on the left
+(score gauge `68`, category table, severity-coloured finding cards)
+and the decision form on the right.
 
-```bash
-curl -X POST http://localhost:8000/report/decision \
-    -H 'content-type: application/json' \
-    -d '{
-      "trace_id": "demo-...",
-      "brochure_crd": "110181",
-      "report_hash": "<copied from state>",
-      "reviewer": "jane.cco@firm.example",
-      "decision": "revise_requested",
-      "rationale": "Confirm Items 11 and 12 spans before next amendment."
-    }'
-```
+- Scroll the redline iframe so the headline and the first finding
+  card are visible. *Caption:* "Same HTML the email/PDF path
+  produces — read-only here."
+- Move to the decision form. Click **Request revision**.
+- Type a reviewer email (e.g. `jane.cco@firm.example`) and a
+  short rationale: "Confirm Items 11/12 spans before next amendment."
 
-Show the 201 response with the audit row id. *Caption:* "One row in
-`human_reviews`. Pinned to the report's SHA-256 so the approval
-binds to the exact bytes the CCO read."
+### t=0:55–1:10 — Submit + audit row appears in place
+
+Click **Record decision**. The decisions-panel partial swaps in
+without a page reload — the new row is briefly highlighted
+(``toast-fresh``), with the decision pill, reviewer, rationale, the
+audit timestamp, and the first 16 hex chars of the report hash.
+*Caption:* "One row in `human_reviews`, pinned to the SHA-256 of the
+exact bytes the reviewer read."
+
+### t=1:10–1:25 — Closer
+
+Hover the report-hash chip in the decision-history panel
+(*Caption:* "A re-run with new numbers gets a new hash and won't
+satisfy this approval"), then cut.
 
 ## Where the GIF / MP4 lands
 

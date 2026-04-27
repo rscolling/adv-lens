@@ -1,0 +1,55 @@
+{% extends "base.html.j2" %}
+{% block title %}Pending review — ADV-Lens{% endblock %}
+{% block content %}
+
+<h1 style="margin-top:0">Pipeline runs</h1>
+<p class="muted">Click a row to open the redline + record a decision.</p>
+
+<div class="panel" style="padding:0">
+  {% if rows %}
+  <table>
+    <thead>
+      <tr>
+        <th>Trace</th>
+        <th>CRD</th>
+        <th>Status</th>
+        <th>Score</th>
+        <th>Findings</th>
+        <th>Headline</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr onclick="window.location='/review/{{ r.trace_id }}'" style="cursor:pointer">
+        <td><a href="/review/{{ r.trace_id }}"><code>{{ r.trace_id }}</code></a></td>
+        <td>{{ r.brochure_crd }}{% if r.brochure_version_id %}<span class="muted"> · v{{ r.brochure_version_id }}</span>{% endif %}</td>
+        <td><span class="pill pill-{{ r.status }}">{{ r.status }}</span></td>
+        <td>
+          {% if r.score is not none %}
+            {% if r.score >= 80 %}<span class="score-pill score-good">{{ r.score }}</span>
+            {% elif r.score >= 60 %}<span class="score-pill score-warn">{{ r.score }}</span>
+            {% else %}<span class="score-pill score-bad">{{ r.score }}</span>
+            {% endif %}
+          {% else %}<span class="muted">—</span>{% endif %}
+        </td>
+        <td>{{ r.finding_count }}</td>
+        <td style="max-width:36em">
+          {% if r.headline %}<span title="{{ r.headline }}">{{ r.headline[:120] }}{% if r.headline|length > 120 %}…{% endif %}</span>
+          {% else %}<span class="muted">—</span>{% endif %}
+        </td>
+        <td class="muted" style="white-space:nowrap">{{ r.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty">
+    No pipeline runs yet. Kick one off via
+    <code>POST /pipeline/run</code> or seed the demo with
+    <code>uv run python -m adv_lens.app.web.seed</code>.
+  </p>
+  {% endif %}
+</div>
+
+{% endblock %}

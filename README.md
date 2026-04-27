@@ -46,15 +46,36 @@ Advisory LLC (CRD 110181):
 
 Full artifact: [HTML](docs/examples/sample-report.html) · [PDF](docs/examples/sample-report.pdf) · [JSON](docs/examples/sample-report.json).
 
+## Reviewer UI
+
+A thin server-rendered review surface ships with the app at
+[`/review`](docs/adr/0016-review-ui.md). It lists pipeline runs, opens
+each one as a side-by-side redline + decision form, and writes the same
+``human_reviews`` row the JSON `POST /report/decision` would — so the
+audit semantics carry through unchanged.
+
+```bash
+docker compose up -d postgres qdrant
+uv run python -m adv_lens.app.web.seed   # one-shot: load Brown Advisory sample
+uv run uvicorn adv_lens.app.main:app --reload
+# → http://localhost:8000/review
+```
+
+The redline body is reused verbatim from `render_redline_html`
+(iframed) so the bytes a CCO sees in the browser are the same bytes
+the email/PDF path produces. Decision form posts via HTMX → the
+decisions panel updates in place. See
+[ADR 0016](docs/adr/0016-review-ui.md) for the design choices (server-
+rendered, iframe, HTMX, no SPA).
+
 ## Demo
 
 The 60-90s demo flow as a 4-panel storyboard
 ([docs/images/demo-storyboard.png](docs/images/demo-storyboard.png)):
-IAPD page → fetch + pipeline run → rendered redline → CCO decision via
-`POST /report/decision`. Operator-recorded GIF/MP4 capture is the next
-step; the recording playbook (deterministic given a cached brochure +
-`ANTHROPIC_API_KEY`) is at
-[docs/demo-playbook.md](docs/demo-playbook.md).
+IAPD page → pipeline run → reviewer UI → CCO decision recorded.
+Operator-recorded GIF/MP4 capture is the next step; the recording
+playbook (deterministic given a cached brochure + `ANTHROPIC_API_KEY`)
+is at [docs/demo-playbook.md](docs/demo-playbook.md).
 
 ![ADV-Lens demo storyboard](docs/images/demo-storyboard.png)
 
@@ -172,6 +193,10 @@ uv run python -m adv_lens.app.jobs.reaper
 
 ### Record a CCO decision on a pending report
 
+The reviewer UI at [`/review`](docs/adr/0016-review-ui.md) is the
+intended path — open a run, fill the form, the decision row writes
+itself. The JSON endpoint stays available for scripted/operator use:
+
 ```bash
 # Pipeline returns state.redline + state.report_hash + state.review_status="pending_review".
 # After the CCO reviews, record the decision (writes one row to human_reviews):
@@ -191,7 +216,9 @@ curl -s http://localhost:8000/report/decision/advlens-abc123 | jq
 ```
 
 See [docs/adr/0010-hitl-gate.md](docs/adr/0010-hitl-gate.md) for the
-marker-vs-interrupt design and audit-trail rationale.
+marker-vs-interrupt design and audit-trail rationale, and
+[docs/adr/0016-review-ui.md](docs/adr/0016-review-ui.md) for the
+server-rendered UI choice.
 
 ### Seed the peer corpus into Qdrant
 
@@ -356,9 +383,10 @@ ADR, or a callout in the user manual.
   scoring (ADR 0009 pending); golden-set scale-up to 65 fixtures
   using real-brochure prose; multi-run averaging in eval; CI
   regression gates that block PRs on F1 drop.
-- **Week 5** — 60-90s demo GIF; audit-trail bundle export endpoint;
-  layperson `docs/intro.md` (5th-grade reading level for a non-
-  technical audience); architecture diagram refresh; output-bundle
+- **Week 5** — reviewer UI ([ADR 0016](docs/adr/0016-review-ui.md)) +
+  60-90s demo GIF recorded against it; audit-trail bundle export
+  endpoint; layperson `docs/intro.md` (5th-grade reading level for a
+  non-technical audience); architecture diagram refresh; output-bundle
   layout across CLIs (`--out-dir`).
 - **Week 6 (optional)** — ADV-Diff bolt-on: scheduled quarterly
   change detector that reuses this project's parser + adds a
