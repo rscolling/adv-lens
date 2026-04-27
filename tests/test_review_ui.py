@@ -13,6 +13,7 @@ from sqlalchemy.pool import StaticPool
 from sqlmodel import Session, SQLModel, create_engine, select
 
 from adv_lens.app.jobs.models import PipelineRun
+from adv_lens.app.jobs.scheduler import get_scheduler
 from adv_lens.app.main import app
 from adv_lens.app.storage.audit import HumanReview
 from adv_lens.app.storage.db import get_session
@@ -36,15 +37,31 @@ def in_memory_session() -> Iterator[Session]:
 
 
 @pytest.fixture()
-def client(in_memory_session: Session) -> Iterator[TestClient]:
-    def _override() -> Iterator[Session]:
+def captured_schedules() -> list[tuple[str, object]]:
+    """Records (trace_id, session_factory) for every scheduler call."""
+    return []
+
+
+@pytest.fixture()
+def client(
+    in_memory_session: Session, captured_schedules: list[tuple[str, object]]
+) -> Iterator[TestClient]:
+    def _override_session() -> Iterator[Session]:
         yield in_memory_session
 
-    app.dependency_overrides[get_session] = _override
+    def _fake_scheduler() -> object:
+        def _record(trace_id: str, session_factory: object) -> None:
+            captured_schedules.append((trace_id, session_factory))
+
+        return _record
+
+    app.dependency_overrides[get_session] = _override_session
+    app.dependency_overrides[get_scheduler] = _fake_scheduler
     try:
         yield TestClient(app)
     finally:
         app.dependency_overrides.pop(get_session, None)
+        app.dependency_overrides.pop(get_scheduler, None)
 
 
 def _seed_run(
@@ -309,6 +326,119 @@ def test_decide_appends_to_history_for_repeat_decisions(
         select(HumanReview).where(HumanReview.trace_id == "multi").order_by(HumanReview.ts)
     ).all()
     assert [r.decision for r in rows] == ["revise", "approved"]
+
+
+# ── Run-from-UI POST ─────────────────────────────────────────────────
+def test_run_from_ui_creates_row_and_schedules(
+    client: TestClient,
+    in_memory_session: Session,
+    captured_schedules: list[tuple[str, object]],
+) -> None:
+    r = client.post(
+        "/review/runs",
+        data={"crd": "110181", "brochure_version_id": "1037550"},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    assert r.headers["location"].startswith("/review?queued=")
+
+    rows = in_memory_session.exec(
+        select(PipelineRun).where(PipelineRun.brochure_crd == "110181")
+    ).all()
+    assert len(rows) == 1
+    assert rows[0].status == "queued"
+    assert rows[0].brochure_version_id == "1037550"
+    assert len(captured_schedules) == 1
+    assert captured_schedules[0][0] == rows[0].trace_id
+
+
+def test_run_from_ui_accepts_blank_version_id(
+    client: TestClient, in_memory_session: Session
+) -> None:
+    r = client.post(
+        "/review/runs",
+        data={"crd": "108000", "brochure_version_id": ""},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    rows = in_memory_session.exec(
+        select(PipelineRun).where(PipelineRun.brochure_crd == "108000")
+    ).all()
+    assert len(rows) == 1
+    assert rows[0].brochure_version_id is None
+
+
+def test_run_from_ui_rejects_non_numeric_crd(
+    client: TestClient, in_memory_session: Session
+) -> None:
+    r = client.post(
+        "/review/runs",
+        data={"crd": "not-a-crd", "brochure_version_id": ""},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    assert "error=" in r.headers["location"]
+    rows = in_memory_session.exec(select(PipelineRun)).all()
+    assert rows == []
+
+
+def test_run_from_ui_rejects_non_numeric_version_id(
+    client: TestClient, in_memory_session: Session
+) -> None:
+    r = client.post(
+        "/review/runs",
+        data={"crd": "108000", "brochure_version_id": "not-numeric"},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    assert "error=" in r.headers["location"]
+    rows = in_memory_session.exec(select(PipelineRun)).all()
+    assert rows == []
+
+
+def test_run_from_ui_strips_whitespace(
+    client: TestClient, in_memory_session: Session
+) -> None:
+    r = client.post(
+        "/review/runs",
+        data={"crd": "  110181  ", "brochure_version_id": "  1037550 "},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    rows = in_memory_session.exec(
+        select(PipelineRun).where(PipelineRun.brochure_crd == "110181")
+    ).all()
+    assert len(rows) == 1
+    assert rows[0].brochure_version_id == "1037550"
+
+
+def test_review_list_shows_queued_flash(
+    client: TestClient, in_memory_session: Session
+) -> None:
+    r = client.get("/review?queued=advlens-test-flash")
+    assert r.status_code == 200
+    assert "advlens-test-flash" in r.text
+    assert "Queued pipeline run" in r.text
+
+
+def test_review_list_shows_error_flash(client: TestClient) -> None:
+    r = client.get("/review?error=Something%20broke")
+    assert r.status_code == 200
+    assert "Something broke" in r.text
+    assert "flash-bad" in r.text
+
+
+def test_review_list_warns_when_anthropic_key_missing(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from adv_lens.app import settings as settings_module
+    from adv_lens.app.web import routes as routes_module
+
+    monkeypatch.setattr(settings_module.settings, "anthropic_api_key", "")
+    monkeypatch.setattr(routes_module.settings, "anthropic_api_key", "")
+    r = client.get("/review")
+    assert r.status_code == 200
+    assert "ANTHROPIC_API_KEY not set" in r.text
 
 
 # ── Root redirect ────────────────────────────────────────────────────

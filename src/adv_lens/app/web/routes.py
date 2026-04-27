@@ -8,6 +8,7 @@ for an iframe — no template surgery on the existing renderer.
 
 from __future__ import annotations
 
+import re
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
@@ -17,7 +18,10 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, select
 
+from adv_lens.app.graph.pipeline import new_trace_id
 from adv_lens.app.jobs.models import PipelineRun
+from adv_lens.app.jobs.scheduler import get_scheduler
+from adv_lens.app.settings import settings
 from adv_lens.app.storage.audit import HumanReview
 from adv_lens.app.storage.db import get_session
 from adv_lens.extractors.schemas import RedlineReport
@@ -29,8 +33,10 @@ _TEMPLATE_DIR = Path(__file__).parent / "templates"
 templates = Jinja2Templates(directory=str(_TEMPLATE_DIR))
 
 SessionDep = Annotated[Session, Depends(get_session)]
+SchedulerDep = Annotated[object, Depends(get_scheduler)]
 
 _VALID_DECISIONS = {"approved", "rejected", "revise"}
+_CRD_OK = re.compile(r"^\d+$")
 
 
 def _redline_from_run(run: PipelineRun) -> RedlineReport | None:
@@ -69,7 +75,12 @@ def _summary_for_run(run: PipelineRun) -> dict[str, object]:
 
 
 @router.get("/review", response_class=HTMLResponse)
-def review_list(request: Request, session: SessionDep) -> HTMLResponse:
+def review_list(
+    request: Request,
+    session: SessionDep,
+    queued: str | None = None,
+    error: str | None = None,
+) -> HTMLResponse:
     runs = session.exec(
         select(PipelineRun).order_by(PipelineRun.created_at.desc())  # type: ignore[union-attr]
     ).all()
@@ -77,8 +88,72 @@ def review_list(request: Request, session: SessionDep) -> HTMLResponse:
     return templates.TemplateResponse(
         request,
         "review_list.html.j2",
-        {"rows": rows},
+        {
+            "rows": rows,
+            "anthropic_configured": bool(settings.anthropic_api_key),
+            "queued_trace_id": queued,
+            "error_message": error,
+        },
     )
+
+
+@router.post("/review/runs", response_class=HTMLResponse)
+def schedule_run_from_ui(
+    session: SessionDep,
+    scheduler: SchedulerDep,
+    crd: Annotated[str, Form()],
+    brochure_version_id: Annotated[str, Form()] = "",
+) -> RedirectResponse:
+    """Kick off a pipeline run from the UI form.
+
+    Mirrors ``POST /pipeline/run`` but accepts form-encoded input and
+    redirects back to the dashboard. Validation is intentionally tighter
+    than the JSON endpoint's because a stray space pasted into a CRD
+    field would otherwise hit the SEC fetcher and 404.
+    """
+    crd_clean = crd.strip()
+    vid_clean = brochure_version_id.strip()
+
+    if not _CRD_OK.match(crd_clean):
+        return RedirectResponse(
+            url=f"/review?error={_url_encode('CRD must be numeric')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+    if vid_clean and not _CRD_OK.match(vid_clean):
+        return RedirectResponse(
+            url=f"/review?error={_url_encode('Brochure version ID must be numeric if provided')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+    trace_id = new_trace_id()
+    session.add(
+        PipelineRun(
+            trace_id=trace_id,
+            brochure_crd=crd_clean,
+            brochure_version_id=vid_clean or None,
+            status="queued",
+        )
+    )
+    session.commit()
+
+    engine = session.get_bind()
+
+    def _factory() -> Session:
+        return Session(engine)
+
+    scheduler(trace_id, _factory)  # type: ignore[operator]
+
+    return RedirectResponse(
+        url=f"/review?queued={trace_id}",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
+def _url_encode(s: str) -> str:
+    """Tiny percent-encoder for redirect query strings (avoids urllib import noise)."""
+    from urllib.parse import quote
+
+    return quote(s, safe="")
 
 
 @router.get("/review/{trace_id}", response_class=HTMLResponse)

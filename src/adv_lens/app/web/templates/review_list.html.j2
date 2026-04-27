@@ -2,8 +2,93 @@
 {% block title %}Pending review — ADV-Lens{% endblock %}
 {% block content %}
 
-<h1 style="margin-top:0">Pipeline runs</h1>
-<p class="muted">Click a row to open the redline + record a decision.</p>
+<section class="intro">
+  <h1 style="margin:0 0 0.3em">ADV-Lens — Form ADV Part 2A reviewer</h1>
+  <p style="margin:0 0 0.8em;font-size:14px;color:var(--fg)">
+    A LangGraph agent that ingests an RIA's Form ADV Part 2A brochure
+    and produces a CCO-grade scorecard: fee-structure benchmarking
+    against peer advisers, disciplinary disclosure flags,
+    conflict-of-interest enumeration, and a redline against SEC
+    plain-English expectations.
+  </p>
+  <ol class="workflow">
+    <li><strong>Pipeline runs</strong> on a brochure (fetch &rarr;
+        segment &rarr; 3 extractors &rarr; peer retrieval &rarr; redline).</li>
+    <li><strong>This dashboard</strong> lists every run; open one to see
+        the redline alongside a reviewer decision form.</li>
+    <li><strong>Decision</strong> writes one row to the
+        <code>human_reviews</code> audit table, pinned to the report's
+        SHA-256 so a regenerated report won't satisfy the same approval.</li>
+  </ol>
+  <p class="intro-links">
+    <a href="https://github.com/rscolling/adv-lens#readme">README</a>
+    &middot;
+    <a href="https://github.com/rscolling/adv-lens/blob/main/docs/architecture.md">Architecture</a>
+    &middot;
+    <a href="https://github.com/rscolling/adv-lens/blob/main/docs/compliance.md">Compliance posture</a>
+    &middot;
+    <a href="https://github.com/rscolling/adv-lens/blob/main/docs/adr/0010-hitl-gate.md">ADR 0010 (HITL gate)</a>
+    &middot;
+    <a href="/docs">API reference</a>
+  </p>
+</section>
+
+{% if queued_trace_id %}
+<div class="flash flash-ok">
+  Queued pipeline run <code>{{ queued_trace_id }}</code>. Status will appear in the
+  table below — refresh to see it move from <code>queued</code> &rarr; <code>running</code>
+  &rarr; <code>complete</code> (~30-90s on a real brochure).
+</div>
+{% endif %}
+{% if error_message %}
+<div class="flash flash-bad">{{ error_message }}</div>
+{% endif %}
+
+<section class="run-form panel">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:0.6em">
+    <h2 style="margin:0;font-size:18px">Run on a new brochure</h2>
+    {% if not anthropic_configured %}
+      <span class="warn-chip" title="Set ANTHROPIC_API_KEY in .env to run the pipeline">
+        ANTHROPIC_API_KEY not set — runs will fail
+      </span>
+    {% endif %}
+  </div>
+  <form method="post" action="/review/runs"
+        style="display:flex;gap:0.6em;align-items:flex-end;flex-wrap:wrap;margin-top:0.7em">
+    <div style="flex:1;min-width:160px">
+      <label for="crd" style="display:block;font-size:11px;text-transform:uppercase;
+             letter-spacing:0.04em;color:var(--muted);margin-bottom:0.2em">CRD</label>
+      <input id="crd" name="crd" type="text" required pattern="\d+"
+             placeholder="110181"
+             style="width:100%;padding:0.45em 0.55em;font:inherit;
+                    border:1px solid var(--border);border-radius:4px;box-sizing:border-box">
+    </div>
+    <div style="flex:1;min-width:160px">
+      <label for="vid" style="display:block;font-size:11px;text-transform:uppercase;
+             letter-spacing:0.04em;color:var(--muted);margin-bottom:0.2em">
+        Brochure version ID <span style="text-transform:none;color:var(--muted)">(optional)</span>
+      </label>
+      <input id="vid" name="brochure_version_id" type="text" pattern="\d+"
+             placeholder="latest if blank"
+             style="width:100%;padding:0.45em 0.55em;font:inherit;
+                    border:1px solid var(--border);border-radius:4px;box-sizing:border-box">
+    </div>
+    <button type="submit"
+            style="padding:0.55em 1.2em;font:inherit;background:var(--accent);
+                   color:#fff;border:0;border-radius:4px;cursor:pointer;font-weight:600">
+      Run pipeline
+    </button>
+  </form>
+  <p class="muted" style="font-size:12px;margin:0.7em 0 0">
+    Fetches the brochure from SEC IAPD, runs the full pipeline (segmenter
+    &rarr; 3 extractors &rarr; peer retrieval &rarr; redline writer &rarr;
+    HITL gate). ~30-90s and ~$1 of Anthropic spend per run. The brochure
+    cache is content-addressed, so re-running on a known CRD is free.
+  </p>
+</section>
+
+<h2 style="margin:1.4em 0 0.2em;font-size:18px">Pipeline runs</h2>
+<p class="muted" style="margin:0 0 0.6em">Click a row to open the redline + record a decision.</p>
 
 <div class="panel" style="padding:0">
   {% if rows %}

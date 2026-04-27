@@ -1,6 +1,7 @@
 # ADR 0016 — Server-rendered review UI for the HITL gate
 
-- **Status:** Accepted
+- **Status:** Accepted (revised 2026-04-27 — scope expanded to include
+  pipeline-trigger form, see § Decision item 5)
 - **Date:** 2026-04-27
 - **Decider:** Robert Colling
 - **Amends:** ADR 0010 (HumanReviewGate). The decision endpoints defined
@@ -34,13 +35,18 @@ is therefore in-bounds and worth building because:
 
 The non-goals are equally important:
 
-- **No CRUD on pipeline runs.** Kicking off a run is the operator's
-  job (CLI / ``POST /pipeline/run``). The UI reviews; it does not run.
 - **No JSON-editing in the browser.** The redline body is rendered
   read-only; a "revise_requested" decision triggers a re-run, not an
   inline edit.
 - **No multi-tenant authentication.** This is a portfolio piece; the
   README states it explicitly. Auth lands when a real RIA pilots it.
+
+(An earlier version of this ADR also carved out "no CRUD on pipeline
+runs" — but operator feedback during the demo walk-through made it
+clear that a "watch a brochure get analyzed end-to-end" affordance was
+the missing piece for a hiring-manager demo. § Decision item 5
+documents the limited form of CRUD that did land: kick-off only,
+read-only thereafter, no edit/delete.)
 
 ## Decision
 
@@ -101,6 +107,45 @@ The ``POST /report/decision`` JSON endpoint is **kept**. Stripping it
 would break the existing CLI walkthrough in the demo playbook and any
 external integrations that already consume it.
 
+### 5. Pipeline kick-off via a small form, not full CRUD.
+
+The dashboard exposes one new form: CRD (required) + brochure version
+ID (optional). Submitting it does the same thing the existing
+``POST /pipeline/run`` JSON endpoint does — inserts a ``PipelineRun``
+row with ``status=queued``, schedules the runner via the existing
+``get_scheduler`` dependency, redirects back to ``/review`` with a
+flash message — but accepts form-encoded input so a browser can drive
+it. The list view's row rendering already handles every status, so no
+new UI is needed once the row exists.
+
+**Why this is "limited CRUD" not full CRUD:**
+
+- **Create only.** No edit, no delete, no cancel. A run that's failing
+  shows up as ``status=failed`` with the error message in the row;
+  the operator inspects, fixes the root cause (env var, CRD typo),
+  and creates a new run.
+- **Same audit semantics as the JSON endpoint.** The JSON
+  ``POST /pipeline/run`` is unchanged; the form route ``POST
+  /review/runs`` is a parallel surface that produces the same
+  ``PipelineRun`` row + same ``schedule_pipeline_job`` call. Everything
+  downstream — reaper, status polling, redline write — sees identical
+  rows regardless of which entry point created them.
+- **Honest about cost.** The form caption explicitly says ~30-90s and
+  ~$1 of Anthropic spend per run, plus a yellow chip warning when
+  ``ANTHROPIC_API_KEY`` is empty. The point is to make the cost visible
+  so a demo viewer doesn't think pipeline runs are free.
+- **Validation tighter than the JSON endpoint.** The CRD field strips
+  whitespace and rejects non-numeric input *before* the row is
+  created, so a stray copy-paste doesn't pollute the table with a
+  guaranteed-to-fail run. The JSON endpoint trusts its caller; the
+  form does not.
+
+This shape keeps the "UI reviews; it does not run" frame mostly
+intact — the UI still doesn't *do* the run (the LangGraph pipeline
+does), but it can now *trigger* one. That distinction matters for a
+CCO persona: triggering is operator-grade work; doing the analysis
+isn't.
+
 ### 4. Demo-data seeding via a one-shot CLI, not autoloaded.
 
 A new ``python -m adv_lens.app.web.seed`` command upserts a
@@ -134,6 +179,7 @@ applies cleanly.
   steps; same total work as before; ends on a clickable artifact
   instead of a JSON blob.
 - **No new tests outside the UI module.** All new tests live in
-  ``tests/test_review_ui.py`` (17 tests covering the four routes,
-  empty/missing/invalid edges, the seed CLI, and the root redirect).
+  ``tests/test_review_ui.py`` (25 tests covering the five routes,
+  empty/missing/invalid edges, the seed CLI, the root redirect, and
+  the pipeline-trigger form's validation + scheduler-call capture).
   ADR 0010's existing tests are unchanged.
