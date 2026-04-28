@@ -8,6 +8,7 @@ peer retriever, redline writer, and HITL gate.
 
 from __future__ import annotations
 
+import operator
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -69,4 +70,9 @@ class ADVState(BaseModel):
     report_hash: str | None = None
 
     # ── Diagnostics ──────────────────────────────────────────────────────
-    errors: list[str] = Field(default_factory=list)
+    # Annotated with operator.add so parallel branches that all hit error
+    # paths (e.g. segmenter fails → all three extractors short-circuit and
+    # each appends an error) accumulate cleanly instead of triggering
+    # LangGraph's "Can receive only one value per step" InvalidUpdateError.
+    # Same reducer pattern as ``extractions`` above.
+    errors: Annotated[list[str], operator.add] = Field(default_factory=list)

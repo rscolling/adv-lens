@@ -219,6 +219,59 @@ def test_build_pipeline_accepts_state_and_compiles() -> None:
     assert hasattr(pipeline, "ainvoke")
 
 
+async def test_state_errors_accumulates_from_parallel_branches() -> None:
+    """Regression: ``state.errors`` must use a reducer so parallel branches
+    can each append without colliding.
+
+    Reproduces a real failure observed in the live demo: a corrupted
+    cached PDF made segmentation fail, then the three parallel
+    extractor branches each short-circuited with their own error
+    message, and LangGraph raised
+    ``InvalidUpdateError: At key 'errors': Can receive only one value
+    per step. Use an Annotated key to handle multiple values.``
+    The fix annotates ``ADVState.errors`` with ``operator.add``; this
+    test pins the behavior in place by fanning out three error-emitting
+    nodes and asserting all three messages survive the fan-in.
+    """
+    from langgraph.graph import END, START, StateGraph
+
+    async def _branch_a(state: ADVState) -> dict:
+        return {"errors": ["branch_a failed"]}
+
+    async def _branch_b(state: ADVState) -> dict:
+        return {"errors": ["branch_b failed"]}
+
+    async def _branch_c(state: ADVState) -> dict:
+        return {"errors": ["branch_c failed"]}
+
+    async def _fanin(state: ADVState) -> dict:
+        return {}
+
+    graph = StateGraph(ADVState)
+    graph.add_node("a", _branch_a)
+    graph.add_node("b", _branch_b)
+    graph.add_node("c", _branch_c)
+    graph.add_node("fanin", _fanin)
+    graph.add_edge(START, "a")
+    graph.add_edge(START, "b")
+    graph.add_edge(START, "c")
+    graph.add_edge("a", "fanin")
+    graph.add_edge("b", "fanin")
+    graph.add_edge("c", "fanin")
+    graph.add_edge("fanin", END)
+    pipeline = graph.compile()
+
+    initial = ADVState(trace_id="errors-reducer-test", brochure_crd="123")
+    result = await pipeline.ainvoke(initial)
+    state = ADVState.model_validate(result)
+
+    assert sorted(state.errors) == [
+        "branch_a failed",
+        "branch_b failed",
+        "branch_c failed",
+    ]
+
+
 def test_pipeline_run_endpoint_validates_crd() -> None:
     client = TestClient(app)
     r = client.post("/pipeline/run", json={"crd": "abc"})
