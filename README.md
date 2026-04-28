@@ -102,14 +102,18 @@ skip the draft companion.
 
 ## Demo
 
-The 60-90s demo flow as a 4-panel storyboard
-([docs/images/demo-storyboard.png](docs/images/demo-storyboard.png)):
-IAPD page → pipeline run → reviewer UI → CCO decision recorded.
-Operator-recorded GIF/MP4 capture is the next step; the recording
-playbook (deterministic given a cached brochure + `ANTHROPIC_API_KEY`)
-is at [docs/demo-playbook.md](docs/demo-playbook.md).
+End-to-end flow: IAPD firm-summary page → reviewer dashboard with the
+two seeded runs → click into the Brown Advisory row → side-by-side
+redline + decision form → submit a `revise_requested` decision → audit
+row appears in place via HTMX. Recorded against the live local app.
 
-![ADV-Lens demo storyboard](docs/images/demo-storyboard.png)
+![ADV-Lens demo](docs/demo.gif)
+
+A still-frame 4-panel storyboard
+([docs/images/demo-storyboard.png](docs/images/demo-storyboard.png))
+covers the same flow for skim-readers who don't want to wait for the
+GIF to load. Recording playbook is at
+[docs/demo-playbook.md](docs/demo-playbook.md).
 
 ## Architecture
 
@@ -403,11 +407,10 @@ ADR, or a callout in the user manual.
 - **Audit-trail bundle export endpoint** is planned but not yet
   shipped; today operators join `pipeline_runs` / `llm_calls` /
   `human_reviews` on `trace_id` + `report_hash` directly.
-- **Demo GIF / video** not yet recorded — the live HTML/PDF redline
-  artifact at `docs/examples/sample-report.{html,pdf}` is the standing
-  visual-output proof until the GIF lands. Recording target is now the
-  reviewer UI flow (list view → detail page → decision submit) per the
-  updated [demo-playbook.md](docs/demo-playbook.md).
+- **Demo GIF** at [`docs/demo.gif`](docs/demo.gif) is operator-recorded
+  against the live local app and embedded in the
+  [Demo](#demo) section above. Captures the dashboard list view → row
+  click → redline + decision form → HTMX panel update on submit.
 - **No browser-side authentication.** The reviewer UI is local-only
   by design (single-CCO dev tool); a real RIA pilot would add SSO +
   per-firm tenancy. ADR 0016 § Context spells this out.
